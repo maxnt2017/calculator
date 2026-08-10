@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор</title>
+    <title>Калькулятор v1.0 build 10</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,9 +16,62 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
 
+        .app-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            max-width: 900px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Бічне меню */
+        .sidebar {
+            background-color: #22252d;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 220px;
+        }
+
+        .sidebar h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .sidebar button {
+            background-color: #292d36;
+            color: #ffffff;
+            font-size: 1rem;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar button:hover {
+            background-color: #3b404d;
+        }
+
+        .sidebar button:active {
+            transform: scale(0.97);
+        }
+
+        /* Калькулятор */
         .calculator {
             background-color: #22252d;
             width: 320px;
@@ -46,78 +99,178 @@
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
 
-        button {
+        .buttons button {
             border: none;
             outline: none;
             background-color: #292d36;
             color: #ffffff;
-            font-size: 1.5rem;
-            padding: 20px 0;
-            border-radius: 15px;
+            font-size: 1.4rem;
+            padding: 18px 0;
+            border-radius: 12px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s;
         }
 
-        button:active {
-            transform: scale(0.95);
+        .buttons button:active {
+            transform: scale(0.92);
         }
 
-        button:hover {
+        .buttons button:hover {
             background-color: #3b404d;
         }
 
-        .operator {
-            color: #26e6c2;
-            font-weight: bold;
-        }
-
-        .clear {
-            color: #f06a6a;
-            grid-column: span 2;
-            font-weight: bold;
-        }
-
+        .operator { color: #26e6c2; font-weight: bold; }
+        .action { color: #ffb84d; font-weight: bold; }
+        .clear { color: #f06a6a; font-weight: bold; }
+        
         .equals {
             background-color: #26e6c2;
             color: #22252d;
-            grid-column: span 2;
             font-weight: bold;
         }
 
-        .equals:hover {
-            background-color: #1bb598;
+        .equals:hover { background-color: #1bb598 !important; }
+
+        /* Модальні вікна */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #22252d;
+            color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .modal-content h3 {
+            color: #26e6c2;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .modal-content p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .close-btn {
+            background-color: #f06a6a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .close-btn:hover { background-color: #d15656; }
+
+        /* Адаптивність для мобільних */
+        @media (max-width: 650px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-width: 320px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="calculator">
-        <div class="display" id="display">0</div>
-        <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button class="operator" onclick="appendOperator('/')">÷</button>
-            <button class="operator" onclick="appendOperator('*')">×</button>
-            
-            <button onclick="appendNumber('7')">7</button>
-            <button onclick="appendNumber('8')">8</button>
-            <button onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="appendOperator('-')">−</button>
-            
-            <button onclick="appendNumber('4')">4</button>
-            <button onclick="appendNumber('5')">5</button>
-            <button onclick="appendNumber('6')">6</button>
-            <button class="operator" onclick="appendOperator('+')">+</button>
-            
-            <button onclick="appendNumber('1')">1</button>
-            <button onclick="appendNumber('2')">2</button>
-            <button onclick="appendNumber('3')">3</button>
-            <button class="equals" onclick="calculate()">=</button>
-            
-            <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
-            <button onclick="appendNumber('.')">.</button>
+    <div class="app-container">
+        <!-- Бічне меню -->
+        <aside class="sidebar">
+            <h2>Меню</h2>
+            <button onclick="openModal('about-modal')">ℹ️ Про калькулятор</button>
+            <button onclick="openModal('help-modal')">❓ Довідка (Версія)</button>
+        </aside>
+
+        <!-- Калькулятор -->
+        <main class="calculator">
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <!-- Ряд 1: Спеціальні дії -->
+                <button class="clear" onclick="clearDisplay()">C</button>
+                <button class="action" onclick="backspace()">⌫</button>
+                <button class="action" onclick="calculateSquareRoot()">√</button>
+                <button class="operator" onclick="appendOperator('/')">÷</button>
+                
+                <!-- Ряд 2 -->
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="appendOperator('*')">×</button>
+                
+                <!-- Ряд 3 -->
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="appendOperator('-')">−</button>
+                
+                <!-- Ряд 4 -->
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button class="operator" onclick="appendOperator('+')">+</button>
+                
+                <!-- Ряд 5 -->
+                <button class="action" onclick="calculatePercentage()">%</button>
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendNumber('.')">.</button>
+                <button class="equals" onclick="calculate()">=</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальне вікно: Про калькулятор -->
+    <div class="modal-overlay" id="about-modal">
+        <div class="modal-content">
+            <h3>Про калькулятор</h3>
+            <p>Цей застосунок створено як зручний та сучасний інструмент для повсякденних обчислень.</p>
+            <p>Він має стильний темний дизайн, підтримує адаптивність для мобільних пристроїв та захищений від типових математичних помилок (наприклад, ділення на нуль).</p>
+            <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Модальне вікно: Довідка -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal-content">
+            <h3>Довідка</h3>
+            <p><strong>Версія:</strong> v1.0 (Build 10)</p>
+            <p><strong>Нові можливості:</strong></p>
+            <ul style="padding-left: 20px; color: #ccc; margin-bottom: 10px;">
+                <li><strong>⌫</strong> - Видалення останньої цифри</li>
+                <li><strong>√</strong> - Обчислення квадратного кореня</li>
+                <li><strong>%</strong> - Переведення числа у відсотки</li>
+            </ul>
+            <p>Для обчислення просто введіть числа та натисніть "=".</p>
+            <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>
     </div>
 
@@ -140,6 +293,39 @@
             updateDisplay();
         }
 
+        // Нова функція: Видалення останнього символу (Backspace)
+        function backspace() {
+            if (shouldResetDisplay) return;
+            if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-'))) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        // Нова функція: Квадратний корінь
+        function calculateSquareRoot() {
+            const current = parseFloat(currentInput);
+            if (current < 0) {
+                currentInput = 'Помилка';
+            } else {
+                let result = Math.sqrt(current);
+                currentInput = (Math.round(result * 100000000) / 100000000).toString();
+            }
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        // Нова функція: Відсотки
+        function calculatePercentage() {
+            const current = parseFloat(currentInput);
+            let result = current / 100;
+            currentInput = (Math.round(result * 100000000) / 100000000).toString();
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
         function appendNumber(number) {
             if (shouldResetDisplay) {
                 currentInput = '';
@@ -155,7 +341,7 @@
         }
 
         function appendOperator(op) {
-            if (operator !== undefined) {
+            if (operator !== undefined && !shouldResetDisplay) {
                 calculate();
             }
             operator = op;
@@ -171,15 +357,9 @@
             if (isNaN(prev) || isNaN(current)) return;
 
             switch (operator) {
-                case '+':
-                    computation = prev + current;
-                    break;
-                case '-':
-                    computation = prev - current;
-                    break;
-                case '*':
-                    computation = prev * current;
-                    break;
+                case '+': computation = prev + current; break;
+                case '-': computation = prev - current; break;
+                case '*': computation = prev * current; break;
                 case '/':
                     if (current === 0) {
                         currentInput = 'Помилка';
@@ -190,15 +370,29 @@
                     }
                     computation = prev / current;
                     break;
-                default:
-                    return;
+                default: return;
             }
 
-            // Округлення для уникнення проблем з плаваючою комою (наприклад, 0.1 + 0.2)
-            currentInput = Math.round(computation * 100000000) / 100000000;
+            currentInput = (Math.round(computation * 100000000) / 100000000).toString();
             operator = undefined;
             shouldResetDisplay = true;
             updateDisplay();
+        }
+
+        // Логіка модальних вікон (Меню)
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Закриття при кліку поза вікном
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
         }
     </script>
 </body>
