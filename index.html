@@ -2,96 +2,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор v1.0 build 10</title>
+    <title>Калькулятор v1.2 build 27</title>
     <style>
+        :root {
+            /* Темна тема (За замовчуванням) */
+            --bg-body: #e3e6f3;
+            --bg-calc: #22252d;
+            --bg-display: #292d36;
+            --bg-btn: #292d36;
+            --bg-btn-hover: #3b404d;
+            --text-main: #ffffff;
+            --text-muted: #999999;
+            --accent-operator: #26e6c2;
+            --accent-action: #ffb84d;
+            --accent-clear: #f06a6a;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            --modal-bg: rgba(0, 0, 0, 0.7);
+        }
+
+        [data-theme="light"] {
+            --bg-body: #d1d8e0;
+            --bg-calc: #ffffff;
+            --bg-display: #f1f2f6;
+            --bg-btn: #f1f2f6;
+            --bg-btn-hover: #dfe4ea;
+            --text-main: #2f3542;
+            --text-muted: #747d8c;
+            --accent-operator: #1e90ff;
+            --accent-action: #ffa502;
+            --accent-clear: #ff4757;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --modal-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="neon"] {
+            --bg-body: #050505;
+            --bg-calc: #0a0a0a;
+            --bg-display: #111111;
+            --bg-btn: #1a1a1a;
+            --bg-btn-hover: #333333;
+            --text-main: #00ffff;
+            --text-muted: #005555;
+            --accent-operator: #ff00ff;
+            --accent-action: #ffff00;
+            --accent-clear: #ff003c;
+            --shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            --modal-bg: rgba(0, 0, 0, 0.9);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #e3e6f3;
+            background-color: var(--bg-body);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+            width: 100%;
         }
 
         .app-container {
             display: flex;
-            gap: 30px;
-            align-items: center;
+            gap: 20px;
+            align-items: flex-start;
             max-width: 900px;
             width: 100%;
             justify-content: center;
+            margin-bottom: 30px;
         }
 
         /* Бічне меню */
         .sidebar {
-            background-color: #22252d;
-            padding: 25px;
+            background-color: var(--bg-calc);
+            padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
             min-width: 220px;
         }
 
         .sidebar h2 {
-            color: #ffffff;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         .sidebar button {
-            background-color: #292d36;
-            color: #ffffff;
+            background-color: var(--bg-btn);
+            color: var(--text-main);
             font-size: 1rem;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
             text-align: left;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .sidebar button:hover {
-            background-color: #3b404d;
-        }
-
-        .sidebar button:active {
-            transform: scale(0.97);
-        }
+        .sidebar button:hover { background-color: var(--bg-btn-hover); }
+        .sidebar button:active { transform: scale(0.97); }
 
         /* Калькулятор */
         .calculator {
-            background-color: #22252d;
-            width: 320px;
+            background-color: var(--bg-calc);
+            width: 340px;
             border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-shadow: var(--shadow);
         }
 
         .display {
-            background-color: #292d36;
-            color: #ffffff;
-            font-size: 2.5rem;
-            text-align: right;
-            padding: 20px;
+            background-color: var(--bg-display);
             border-radius: 15px;
-            margin-bottom: 25px;
-            min-height: 80px;
+            margin-bottom: 20px;
+            padding: 15px;
+            text-align: right;
             display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 90px;
+            cursor: pointer; /* Для копіювання */
+            position: relative;
+        }
+
+        .display:hover { filter: brightness(1.1); }
+        .display:active { transform: scale(0.98); }
+
+        .history-line {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            min-height: 1.5rem;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+
+        .current-line {
+            color: var(--text-main);
+            font-size: 2.5rem;
             overflow-x: auto;
             white-space: nowrap;
         }
@@ -99,193 +173,274 @@
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
         .buttons button {
             border: none;
-            outline: none;
-            background-color: #292d36;
-            color: #ffffff;
-            font-size: 1.4rem;
-            padding: 18px 0;
+            background-color: var(--bg-btn);
+            color: var(--text-main);
+            font-size: 1.25rem;
+            padding: 14px 0;
             border-radius: 12px;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .buttons button:active {
-            transform: scale(0.92);
-        }
+        .buttons button:active { transform: scale(0.92); }
+        .buttons button:hover { background-color: var(--bg-btn-hover); }
 
-        .buttons button:hover {
-            background-color: #3b404d;
-        }
-
-        .operator { color: #26e6c2; font-weight: bold; }
-        .action { color: #ffb84d; font-weight: bold; }
-        .clear { color: #f06a6a; font-weight: bold; }
+        .operator { color: var(--accent-operator); font-weight: bold; }
+        .action { color: var(--accent-action); font-weight: bold; }
+        .clear { color: var(--accent-clear); font-weight: bold; }
+        .memory { color: #a55eea; font-size: 1.1rem !important; }
         
         .equals {
-            background-color: #26e6c2;
-            color: #22252d;
+            background-color: var(--accent-operator);
+            color: var(--bg-calc);
             font-weight: bold;
         }
+        .equals:hover { filter: brightness(1.1); }
 
-        .equals:hover { background-color: #1bb598 !important; }
+        [data-theme="neon"] .equals { color: #000; }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+            padding-top: 20px;
+            font-weight: 500;
+        }
 
         /* Модальні вікна */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none;
+            background-color: var(--modal-bg);
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
 
         .modal-content {
-            background-color: #22252d;
-            color: #fff;
-            padding: 30px;
+            background-color: var(--bg-calc);
+            color: var(--text-main);
+            padding: 25px;
             border-radius: 15px;
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
 
-        .modal-content h3 {
-            color: #26e6c2;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
 
-        .modal-content p {
-            line-height: 1.6;
-            margin-bottom: 10px;
-            color: #ccc;
-        }
+        .modal-content h3 { color: var(--accent-operator); margin-bottom: 15px; }
+        .modal-content p, .modal-content li { margin-bottom: 10px; line-height: 1.5; }
 
         .close-btn {
-            background-color: #f06a6a;
+            background-color: var(--accent-clear);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
             border-radius: 8px;
             cursor: pointer;
             margin-top: 15px;
-            font-weight: bold;
             width: 100%;
+            font-weight: bold;
         }
 
-        .close-btn:hover { background-color: #d15656; }
+        .theme-btn {
+            background-color: var(--bg-btn);
+            color: var(--text-main);
+            border: none;
+            padding: 10px;
+            margin-bottom: 5px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-        /* Адаптивність для мобільних */
+        #history-list { list-style: none; }
+        #history-list li {
+            padding: 10px;
+            border-bottom: 1px solid var(--bg-btn);
+            cursor: pointer;
+        }
+        #history-list li:hover { background-color: var(--bg-btn-hover); }
+        #history-list li .calc-eq { font-size: 0.9rem; color: var(--text-muted); }
+        #history-list li .calc-res { font-size: 1.2rem; color: var(--text-main); font-weight: bold; text-align: right; }
+
         @media (max-width: 650px) {
-            .app-container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                max-width: 320px;
-            }
+            .app-container { flex-direction: column; align-items: center; margin-bottom: 20px; }
+            .sidebar { width: 100%; max-width: 340px; flex-direction: row; flex-wrap: wrap; justify-content: center;}
+            .sidebar button { flex: 1 1 45%; justify-content: center; }
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <div class="app-container">
-        <!-- Бічне меню -->
-        <aside class="sidebar">
-            <h2>Меню</h2>
-            <button onclick="openModal('about-modal')">ℹ️ Про калькулятор</button>
-            <button onclick="openModal('help-modal')">❓ Довідка (Версія)</button>
-        </aside>
+    <div class="main-wrapper">
+        <div class="app-container">
+            <!-- Бічне меню -->
+            <aside class="sidebar">
+                <h2>Меню v1.2</h2>
+                <button onclick="openModal('history-modal')">🕒 Історія</button>
+                <button onclick="openModal('theme-modal')">🎨 Теми</button>
+                <button onclick="openModal('about-modal')">ℹ️ Про застосунок</button>
+                <button onclick="openModal('help-modal')">❓ Довідка</button>
+            </aside>
 
-        <!-- Калькулятор -->
-        <main class="calculator">
-            <div class="display" id="display">0</div>
-            <div class="buttons">
-                <!-- Ряд 1: Спеціальні дії -->
-                <button class="clear" onclick="clearDisplay()">C</button>
-                <button class="action" onclick="backspace()">⌫</button>
-                <button class="action" onclick="calculateSquareRoot()">√</button>
-                <button class="operator" onclick="appendOperator('/')">÷</button>
-                
-                <!-- Ряд 2 -->
-                <button onclick="appendNumber('7')">7</button>
-                <button onclick="appendNumber('8')">8</button>
-                <button onclick="appendNumber('9')">9</button>
-                <button class="operator" onclick="appendOperator('*')">×</button>
-                
-                <!-- Ряд 3 -->
-                <button onclick="appendNumber('4')">4</button>
-                <button onclick="appendNumber('5')">5</button>
-                <button onclick="appendNumber('6')">6</button>
-                <button class="operator" onclick="appendOperator('-')">−</button>
-                
-                <!-- Ряд 4 -->
-                <button onclick="appendNumber('1')">1</button>
-                <button onclick="appendNumber('2')">2</button>
-                <button onclick="appendNumber('3')">3</button>
-                <button class="operator" onclick="appendOperator('+')">+</button>
-                
-                <!-- Ряд 5 -->
-                <button class="action" onclick="calculatePercentage()">%</button>
-                <button onclick="appendNumber('0')">0</button>
-                <button onclick="appendNumber('.')">.</button>
-                <button class="equals" onclick="calculate()">=</button>
-            </div>
-        </main>
+            <!-- Калькулятор -->
+            <main class="calculator">
+                <!-- Дисплей (Тепер клікабельний для копіювання) -->
+                <div class="display" onclick="copyToClipboard()" title="Натисніть, щоб скопіювати">
+                    <div class="history-line" id="history-line"></div>
+                    <div class="current-line" id="display">0</div>
+                </div>
+                <div class="buttons">
+                    <!-- Ряд 1: Пам'ять -->
+                    <button class="memory" onclick="memoryClear()">MC</button>
+                    <button class="memory" onclick="memoryRecall()">MR</button>
+                    <button class="memory" onclick="memoryAdd()">M+</button>
+                    <button class="memory" onclick="memorySubtract()">M-</button>
+
+                    <!-- Ряд 2: Інженерні функції 1 -->
+                    <button class="action" onclick="calculateSquareRoot()">√</button>
+                    <button class="action" onclick="appendOperator('^')">xⁿ</button>
+                    <button class="action" onclick="calculateFactorial()">x!</button>
+                    <button class="action" onclick="insertPi()">π</button>
+                    
+                    <!-- Ряд 3: Керування та ділення -->
+                    <button class="clear" onclick="clearDisplay()">C</button>
+                    <button class="action" onclick="backspace()">⌫</button>
+                    <button class="action" onclick="toggleSign()">+/-</button>
+                    <button class="operator" onclick="appendOperator('/')">÷</button>
+                    
+                    <!-- Ряд 4: Цифри та множення -->
+                    <button onclick="appendNumber('7')">7</button>
+                    <button onclick="appendNumber('8')">8</button>
+                    <button onclick="appendNumber('9')">9</button>
+                    <button class="operator" onclick="appendOperator('*')">×</button>
+                    
+                    <!-- Ряд 5: Цифри та віднімання -->
+                    <button onclick="appendNumber('4')">4</button>
+                    <button onclick="appendNumber('5')">5</button>
+                    <button onclick="appendNumber('6')">6</button>
+                    <button class="operator" onclick="appendOperator('-')">−</button>
+                    
+                    <!-- Ряд 6: Цифри та додавання -->
+                    <button onclick="appendNumber('1')">1</button>
+                    <button onclick="appendNumber('2')">2</button>
+                    <button onclick="appendNumber('3')">3</button>
+                    <button class="operator" onclick="appendOperator('+')">+</button>
+                    
+                    <!-- Ряд 7: Додатково та дорівнює -->
+                    <button class="action" onclick="calculateInverse()">1/x</button>
+                    <button onclick="appendNumber('0')">0</button>
+                    <button onclick="appendNumber('.')">.</button>
+                    <button class="equals" onclick="calculate()">=</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Футер з копірайтом -->
+        <footer class="footer">
+            Автор: MaxNT Official
+        </footer>
     </div>
 
-    <!-- Модальне вікно: Про калькулятор -->
+    <!-- Модалки -->
+    <div class="modal-overlay" id="theme-modal">
+        <div class="modal-content">
+            <h3>🎨 Вибір теми</h3>
+            <button class="theme-btn" onclick="setTheme('dark')">Темна (Класика)</button>
+            <button class="theme-btn" onclick="setTheme('light')">Світла</button>
+            <button class="theme-btn" onclick="setTheme('neon')">Неонова (Кіберпанк)</button>
+            <button class="close-btn" onclick="closeModal('theme-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal-content">
+            <h3>🕒 Історія обчислень</h3>
+            <ul id="history-list">
+                <li style="text-align:center; color: var(--text-muted);">Історія порожня</li>
+            </ul>
+            <button class="theme-btn" onclick="clearHistory()" style="margin-top: 10px; color: var(--accent-clear);">Очистити історію</button>
+            <button class="close-btn" onclick="closeModal('history-modal')">Закрити</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="about-modal">
         <div class="modal-content">
-            <h3>Про калькулятор</h3>
-            <p>Цей застосунок створено як зручний та сучасний інструмент для повсякденних обчислень.</p>
-            <p>Він має стильний темний дизайн, підтримує адаптивність для мобільних пристроїв та захищений від типових математичних помилок (наприклад, ділення на нуль).</p>
+            <h3>ℹ️ Про застосунок</h3>
+            <p><strong>Калькулятор Pro</strong> — ваш надійний помічник у світі математики.</p>
+            <p>Версія: <strong>v1.2 (Build 27)</strong></p>
+            <p>Цей застосунок підтримує роботу з клавіатурою, зберігає історію, має вбудовану пам'ять та стильні теми оформлення.</p>
             <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
         </div>
     </div>
 
-    <!-- Модальне вікно: Довідка -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-content">
-            <h3>Довідка</h3>
-            <p><strong>Версія:</strong> v1.0 (Build 10)</p>
-            <p><strong>Нові можливості:</strong></p>
-            <ul style="padding-left: 20px; color: #ccc; margin-bottom: 10px;">
-                <li><strong>⌫</strong> - Видалення останньої цифри</li>
-                <li><strong>√</strong> - Обчислення квадратного кореня</li>
-                <li><strong>%</strong> - Переведення числа у відсотки</li>
+            <h3>❓ Довідка та Нововведення</h3>
+            <p><strong>Що нового в v1.2 build 27:</strong></p>
+            <ul style="padding-left: 20px; font-size: 0.95rem; margin-bottom: 15px;">
+                <li><strong>Копіювання результату:</strong> Просто натисніть на екран з цифрами, щоб скопіювати їх.</li>
+                <li><strong>x! (Факторіал):</strong> Обчислює добуток усіх цілих чисел до введеного.</li>
+                <li><strong>1/x (Обернене число):</strong> Швидко ділить 1 на поточне число.</li>
+                <li><strong>xⁿ (Ступінь):</strong> Зводить число у вказаний ступінь.</li>
             </ul>
-            <p>Для обчислення просто введіть числа та натисніть "=".</p>
+            <p><strong>Гарячі клавіші:</strong></p>
+            <ul style="padding-left: 20px; font-size: 0.95rem;">
+                <li><code>0-9</code> та <code>.</code> - Введення чисел</li>
+                <li><code>+</code> <code>-</code> <code>*</code> <code>/</code> - Операції</li>
+                <li><code>Enter</code> - Результат (=)</li>
+                <li><code>Backspace</code> - Видалити символ (⌫)</li>
+                <li><code>Escape</code> - Очистити все (C)</li>
+            </ul>
             <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>
     </div>
 
     <script>
+        // Стан калькулятора
         let currentInput = '0';
         let previousInput = '';
         let operator = undefined;
         let shouldResetDisplay = false;
+        let memoryValue = 0;
+        let history = [];
 
         const displayElement = document.getElementById('display');
+        const historyLineElement = document.getElementById('history-line');
+        const historyListElement = document.getElementById('history-list');
 
+        // Оновлення екрану
         function updateDisplay() {
             displayElement.innerText = currentInput;
+            if (operator != null) {
+                let opSymbol = operator;
+                if (opSymbol === '*') opSymbol = '×';
+                if (opSymbol === '/') opSymbol = '÷';
+                if (opSymbol === '^') opSymbol = '^';
+                historyLineElement.innerText = `${previousInput} ${opSymbol}`;
+            } else {
+                historyLineElement.innerText = '';
+            }
         }
 
+        // Базові функції
         function clearDisplay() {
             currentInput = '0';
             previousInput = '';
@@ -293,10 +448,9 @@
             updateDisplay();
         }
 
-        // Нова функція: Видалення останнього символу (Backspace)
         function backspace() {
             if (shouldResetDisplay) return;
-            if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-'))) {
+            if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-')) || currentInput === 'Помилка' || currentInput === 'Скопійовано!') {
                 currentInput = '0';
             } else {
                 currentInput = currentInput.slice(0, -1);
@@ -304,29 +458,8 @@
             updateDisplay();
         }
 
-        // Нова функція: Квадратний корінь
-        function calculateSquareRoot() {
-            const current = parseFloat(currentInput);
-            if (current < 0) {
-                currentInput = 'Помилка';
-            } else {
-                let result = Math.sqrt(current);
-                currentInput = (Math.round(result * 100000000) / 100000000).toString();
-            }
-            shouldResetDisplay = true;
-            updateDisplay();
-        }
-
-        // Нова функція: Відсотки
-        function calculatePercentage() {
-            const current = parseFloat(currentInput);
-            let result = current / 100;
-            currentInput = (Math.round(result * 100000000) / 100000000).toString();
-            shouldResetDisplay = true;
-            updateDisplay();
-        }
-
         function appendNumber(number) {
+            if (currentInput === 'Помилка' || currentInput === 'Скопійовано!') clearDisplay();
             if (shouldResetDisplay) {
                 currentInput = '';
                 shouldResetDisplay = false;
@@ -341,20 +474,110 @@
         }
 
         function appendOperator(op) {
+            if (currentInput === 'Помилка' || currentInput === 'Скопійовано!') return;
             if (operator !== undefined && !shouldResetDisplay) {
-                calculate();
+                calculate(false);
             }
             operator = op;
             previousInput = currentInput;
             shouldResetDisplay = true;
+            updateDisplay();
         }
 
-        function calculate() {
+        // Інженерні функції
+        function toggleSign() {
+            if (currentInput === '0' || currentInput === 'Помилка') return;
+            currentInput = (parseFloat(currentInput) * -1).toString();
+            updateDisplay();
+        }
+
+        function insertPi() {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+            currentInput = Math.PI.toFixed(8).replace(/\.?0+$/, '');
+            updateDisplay();
+        }
+
+        function calculateSquareRoot() {
+            const current = parseFloat(currentInput);
+            if (current < 0) { currentInput = 'Помилка'; } 
+            else {
+                let result = Math.sqrt(current);
+                let formatted = formatResult(result);
+                addToHistory(`√(${current})`, formatted);
+                currentInput = formatted;
+            }
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function calculateInverse() {
+            const current = parseFloat(currentInput);
+            if (current === 0) { currentInput = 'Помилка'; } 
+            else {
+                let result = 1 / current;
+                let formatted = formatResult(result);
+                addToHistory(`1/(${current})`, formatted);
+                currentInput = formatted;
+            }
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function calculateFactorial() {
+            let num = parseInt(currentInput);
+            if (num < 0 || isNaN(num) || currentInput.includes('.')) { 
+                currentInput = 'Помилка'; 
+            } else if (num === 0 || num === 1) { 
+                addToHistory(`${num}!`, '1');
+                currentInput = '1'; 
+            } else if (num > 170) {
+                currentInput = 'Помилка'; // Запобігання Infinity
+            } else {
+                let res = 1;
+                for(let i = 1; i <= num; i++) { res *= i; }
+                let formatted = res.toString();
+                addToHistory(`${num}!`, formatted);
+                currentInput = formatted;
+            }
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        // Функція копіювання
+        function copyToClipboard() {
+            if (currentInput === 'Помилка' || currentInput === 'Скопійовано!') return;
+            navigator.clipboard.writeText(currentInput).then(() => {
+                const originalText = currentInput;
+                displayElement.innerText = "Скопійовано!";
+                displayElement.style.color = "var(--accent-operator)";
+                
+                setTimeout(() => {
+                    displayElement.style.color = "var(--text-main)";
+                    updateDisplay();
+                }, 1000);
+            });
+        }
+
+        // Пам'ять
+        function memoryClear() { memoryValue = 0; }
+        function memoryRecall() { 
+            currentInput = memoryValue.toString(); 
+            shouldResetDisplay = true; 
+            updateDisplay(); 
+        }
+        function memoryAdd() { memoryValue += parseFloat(currentInput) || 0; shouldResetDisplay = true; }
+        function memorySubtract() { memoryValue -= parseFloat(currentInput) || 0; shouldResetDisplay = true; }
+
+        // Обчислення
+        function calculate(saveToHistory = true) {
             let computation;
             const prev = parseFloat(previousInput);
             const current = parseFloat(currentInput);
             
-            if (isNaN(prev) || isNaN(current)) return;
+            if (isNaN(prev) || isNaN(current) || operator === undefined) return;
 
             switch (operator) {
                 case '+': computation = prev + current; break;
@@ -370,30 +593,92 @@
                     }
                     computation = prev / current;
                     break;
+                case '^': computation = Math.pow(prev, current); break;
                 default: return;
             }
 
-            currentInput = (Math.round(computation * 100000000) / 100000000).toString();
+            let resultStr = formatResult(computation);
+            
+            if (saveToHistory) {
+                let opSymbol = operator;
+                if (opSymbol === '*') opSymbol = '×';
+                if (opSymbol === '/') opSymbol = '÷';
+                addToHistory(`${prev} ${opSymbol} ${current}`, resultStr);
+            }
+
+            currentInput = resultStr;
             operator = undefined;
             shouldResetDisplay = true;
             updateDisplay();
         }
 
-        // Логіка модальних вікон (Меню)
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+        function formatResult(num) {
+            return parseFloat(num.toFixed(10)).toString();
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        // Історія
+        function addToHistory(equation, result) {
+            history.unshift({ equation, result });
+            if (history.length > 20) history.pop(); 
+            renderHistory();
         }
 
-        // Закриття при кліку поза вікном
+        function renderHistory() {
+            if (history.length === 0) {
+                historyListElement.innerHTML = '<li style="text-align:center; color: var(--text-muted);">Історія порожня</li>';
+                return;
+            }
+            historyListElement.innerHTML = '';
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<div class="calc-eq">${item.equation} =</div><div class="calc-res">${item.result}</div>`;
+                li.onclick = () => {
+                    currentInput = item.result;
+                    shouldResetDisplay = true;
+                    updateDisplay();
+                    closeModal('history-modal');
+                };
+                historyListElement.appendChild(li);
+            });
+        }
+
+        function clearHistory() {
+            history = [];
+            renderHistory();
+        }
+
+        // Теми
+        function setTheme(themeName) {
+            document.body.setAttribute('data-theme', themeName);
+            closeModal('theme-modal');
+        }
+
+        // Модальні вікна
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        
         window.onclick = function(event) {
             if (event.target.classList.contains('modal-overlay')) {
                 event.target.classList.remove('active');
             }
         }
+
+        // Підтримка клавіатури
+        document.addEventListener('keydown', (event) => {
+            if (event.key >= '0' && event.key <= '9') appendNumber(event.key);
+            if (event.key === '.') appendNumber('.');
+            if (event.key === '=' || event.key === 'Enter') { event.preventDefault(); calculate(); }
+            if (event.key === 'Backspace') backspace();
+            if (event.key === 'Escape') clearDisplay();
+            if (event.key === '+' || event.key === '-') appendOperator(event.key);
+            if (event.key === '*' || event.key === 'x') appendOperator('*');
+            if (event.key === '/') appendOperator('/');
+            if (event.key === '^') appendOperator('^');
+            // Підтримка швидкого копіювання через Ctrl+C / Cmd+C
+            if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+                copyToClipboard();
+            }
+        });
     </script>
 </body>
 </html>
