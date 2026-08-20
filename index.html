@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор v1.5 (Build 100) RTM</title>
-    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro версії 1.5 build 100 RTM з підтримкою 10 тем, кастомних шпалер, конвертера величин, програмістських систем числення (HEX/DEC/BIN/OCT), звукових профілів Web Audio та розширеної математики.">
+    <title>Калькулятор v1.6 (Build 126) Redstone 1, RTM</title>
+    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro версії 1.6 build 126 Redstone 1 RTM з підтримкою 16 тем, палітри акцентних кольорів, вибору шрифтів, розумного порадника щодо заборонених операцій (ділення на 0, від'ємні корені, log <= 0), графіку функцій 2D, голосового озвучення, фінансових розрахунків та конвертерів.">
+    <!-- Google Fonts: 5 сучасних шрифтів -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body data-theme="dark">
+<body data-theme="redstone" class="font-inter">
 
     <!-- Фоновий шар шпалер та атмосферного світла -->
     <div class="bg-wallpaper-layer" id="bg-wallpaper"></div>
@@ -21,7 +25,7 @@
                     <span class="app-icon">🧮</span>
                     <div class="sidebar-title-group">
                         <h2>Calculator Pro</h2>
-                        <span class="version-tag">v1.5 b100 RTM</span>
+                        <span class="version-tag">v1.6 b126 Redstone 1 RTM</span>
                     </div>
                 </div>
 
@@ -32,8 +36,17 @@
                     <button onclick="openModal('history-modal')" title="Переглянути історію" id="btn-nav-history">
                         <span class="btn-icon">🕒</span> Історія
                     </button>
-                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (10 тем)" id="btn-nav-themes">
-                        <span class="btn-icon">🎨</span> Теми <span class="nav-chip">10</span>
+                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (16 тем + Палітра)" id="btn-nav-themes">
+                        <span class="btn-icon">🎨</span> Теми & Кольори <span class="nav-chip">16</span>
+                    </button>
+                    <button onclick="openModal('font-modal')" title="Змінити шрифт інтерфейсу та дисплею" id="btn-nav-fonts">
+                        <span class="btn-icon">🔤</span> Шрифти <span class="nav-chip" id="current-font-chip">Inter</span>
+                    </button>
+                    <button onclick="openModal('advisor-modal')" title="Математичний порадник щодо заборонених операцій (ділення на 0 тощо)" id="btn-nav-advisor">
+                        <span class="btn-icon">🧠</span> Порадник помилок
+                    </button>
+                    <button onclick="openModal('graph-modal')" title="Інтерактивний 2D Графік функцій" id="btn-nav-graph">
+                        <span class="btn-icon">📈</span> Графік 2D
                     </button>
                     <button onclick="openModal('wallpaper-modal')" title="Шпалери та фон інтерфейсу" id="btn-nav-wallpapers">
                         <span class="btn-icon">🖼️</span> Шпалери & Фон
@@ -43,6 +56,12 @@
                     </button>
                     <button onclick="openModal('programmer-modal')" title="Програмістські системи числення (HEX/BIN/OCT)" id="btn-nav-prog">
                         <span class="btn-icon">💻</span> Програміст
+                    </button>
+                    <button onclick="openModal('finance-modal')" title="Фінансовий калькулятор: знижки, чайові, податки" id="btn-nav-finance">
+                        <span class="btn-icon">💰</span> Фінанси & Знижки
+                    </button>
+                    <button onclick="openModal('rng-modal')" title="Генератор випадкових чисел та кубики (d6, d20)" id="btn-nav-rng">
+                        <span class="btn-icon">🎲</span> RNG & Кубики
                     </button>
                     <button onclick="openModal('constants-modal')" title="Наукові константи (π, e, φ, c, h, G)" id="btn-nav-const">
                         <span class="btn-icon">⚛️</span> Константи
@@ -74,15 +93,17 @@
                         <div class="display-badges">
                             <span class="mode-badge" id="mode-badge" onclick="event.stopPropagation(); toggleAngleMode();" title="Натисніть для зміни DEG/RAD">DEG</span>
                             <span class="secondary-badge" id="secondary-badge" onclick="event.stopPropagation(); toggleSecondMode();" title="Режим додаткових функцій (2nd / Shift)">2nd</span>
-                            <span class="memory-badge" id="memory-badge">M</span>
-                            <span class="audio-badge" id="audio-badge" onclick="event.stopPropagation(); toggleSound();" title="Перемкнути звук">🔊</span>
+                            <span class="memory-badge" id="memory-badge" onclick="event.stopPropagation(); openModal('memory-modal');" title="Пам'ять калькулятора (M)">M</span>
+                            <span class="speech-badge" id="speech-badge" onclick="event.stopPropagation(); speakCurrentResult();" title="Озвучити результат голосом (Speech Synthesis)">🗣️</span>
+                            <span class="advisor-badge" id="advisor-badge" onclick="event.stopPropagation(); openModal('advisor-modal');" title="Математичний порадник з правил обчислень">🧠</span>
+                            <span class="audio-badge" id="audio-badge" onclick="event.stopPropagation(); cycleSoundProfile();" title="Перемкнути профіль звуку">🔊</span>
                         </div>
                         <div class="history-line" id="history-line"></div>
                     </div>
                     <div class="current-line" id="display">0</div>
                     <div class="display-footer">
                         <span class="copy-tooltip">📋 Клік — копіювати</span>
-                        <span class="formula-preview" id="formula-preview"></span>
+                        <span class="precision-indicator" id="precision-tag" onclick="event.stopPropagation(); cyclePrecision();" title="Натисніть для зміни точності округлення (Auto / 0..10)">Округлення: Auto</span>
                     </div>
                 </div>
 
@@ -151,12 +172,12 @@
             </main>
         </div>
 
-        <!-- Преміальний фірмовий футер v1.5 (Build 100) RTM -->
+        <!-- Преміальний фірмовий футер v1.6 Redstone 1, RTM -->
         <footer class="footer">
             <div class="footer-left">
-                <span class="footer-badge" title="Calculator Pro v1.5 Release to Manufacturing">
+                <span class="footer-badge" title="Calculator Pro v1.6 Redstone 1 RTM Edition">
                     <span class="pulse-dot"></span>
-                    v1.5 (Build 100) RTM
+                    v1.6 (Build 126) Redstone 1, RTM
                 </span>
                 <span class="footer-stat" id="footer-stat-ops" title="Кількість виконаних обчислень за поточну сесію">
                     🧮 Сесія: <strong id="ops-counter">0</strong> оп.
@@ -169,22 +190,25 @@
                     <span class="dot-separator">•</span>
                     <span class="rights-tag">Всі права захищені</span>
                     <span class="dot-separator">•</span>
-                    <span class="edition-tag">Calculator Pro™ Master Edition</span>
+                    <span class="edition-tag">Calculator Pro™ Redstone 1 Master Edition</span>
                 </div>
             </div>
 
             <div class="footer-right">
-                <button class="footer-btn" onclick="openModal('wallpaper-modal')" title="Налаштування фону та шпалер">
-                    <span>🖼️</span> Фон
+                <button class="footer-btn" onclick="openModal('advisor-modal')" title="Математичний порадник з помилок">
+                    <span>🧠</span> Порадник
                 </button>
-                <button class="footer-btn" onclick="openModal('converter-modal')" title="Конвертер величин">
-                    <span>🔄</span> Конвертер
+                <button class="footer-btn" onclick="openModal('graph-modal')" title="Графік функцій 2D">
+                    <span>📈</span> Графік
                 </button>
-                <button class="footer-btn" id="footer-audio-btn" onclick="cycleSoundProfile()" title="Змінити профіль звуку">
-                    <span>🔊</span> Classic
+                <button class="footer-btn" onclick="openModal('font-modal')" title="Вибір шрифту">
+                    <span>🔤</span> Шрифт
                 </button>
-                <button class="footer-btn" onclick="openModal('hotkeys-modal')" title="Список гарячих клавіш">
-                    <span>⌨️</span> Клавіші
+                <button class="footer-btn" onclick="speakCurrentResult()" title="Озвучити результат голосом">
+                    <span>🗣️</span> Озвучити
+                </button>
+                <button class="footer-btn" onclick="openModal('theme-modal')" title="Теми та кольори">
+                    <span>🎨</span> Кольори
                 </button>
                 <button class="footer-btn" onclick="openModal('export-modal')" title="Експорт історії (TXT / CSV / JSON)">
                     <span>📥</span> Експорт
@@ -200,39 +224,374 @@
          Модальні вікна (Modals)
          ========================================================================== -->
     
-    <!-- Вікно "Головна" -->
-    <div class="modal-overlay" id="home-modal">
-        <div class="modal-content" style="text-align: center;">
-            <h3>👋 Ласкаво просимо!</h3>
-            <p>Калькулятор скинуто до початкового стану <strong>Головної сторінки</strong>.</p>
-            <p>Екран, формулу та пам'ять оновлено. <strong>Calculator Pro v1.5 RTM</strong> готовий до нових надточних розрахунків!</p>
-            <button class="close-btn" onclick="closeModal('home-modal')" style="background-color: var(--accent-operator); color: var(--bg-card);">Почати роботу</button>
+    <!-- Інтерактивне вікно Діагностики та Порадника Помилок (НОВЕ v1.6 Smart Math Error Modal) -->
+    <div class="modal-overlay" id="error-advisor-modal">
+        <div class="modal-content error-advisor-content">
+            <div class="error-header">
+                <span class="error-icon" id="error-diag-icon">⚠️</span>
+                <h3 id="error-diag-title">Заборонена математична дія!</h3>
+            </div>
+            
+            <div class="error-body">
+                <div class="error-rule-box">
+                    <span class="rule-label">Математичне зауваження:</span>
+                    <p id="error-diag-rule">У математиці ця операція є забороненою або невизначеною.</p>
+                </div>
+
+                <div class="error-explanation-box">
+                    <span class="rule-label">Чому так відбувається?</span>
+                    <p id="error-diag-explanation"></p>
+                </div>
+
+                <div class="error-remedy-box">
+                    <span class="rule-label">💡 Порада: Як можна виправити та змінити?</span>
+                    <p id="error-diag-remedy"></p>
+                </div>
+            </div>
+
+            <div class="error-actions-grid" id="error-actions-container">
+                <!-- Динамічні кнопки виправлення -->
+            </div>
+
+            <button class="close-btn" onclick="closeModal('error-advisor-modal')">Зрозуміло</button>
         </div>
     </div>
 
-    <!-- Вікно Помилки ділення на нуль -->
-    <div class="modal-overlay" id="zero-modal">
-        <div class="modal-content">
-            <h3>⚠️ Ділення на нуль неможливе!</h3>
-            <p><strong>Чому так?</strong></p>
-            <p>У математиці ділення — це пошук числа, яке при множенні на дільник дасть ділене.</p>
-            <p>Наприклад: <code>10 ÷ 2 = 5</code>, бо <code>5 × 2 = 10</code>.</p>
-            <p>Але якщо спробувати <code>10 ÷ 0 = ?</code>, нам потрібно знайти число, яке при множенні на 0 дасть 10. Оскільки будь-яке число при множенні на нуль дає нуль, такого числа просто <strong>не існує</strong>!</p>
-            <button class="close-btn" onclick="closeModal('zero-modal')">Я зрозумів(-ла)</button>
+    <!-- Вікно Повного Математичного Порадника (НОВЕ v1.6 Smart Advisor Directory) -->
+    <div class="modal-overlay" id="advisor-modal">
+        <div class="modal-content advisor-guide-content">
+            <h3>🧠 Математичний Порадник: Заборонені Операції</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+                Ознайомтеся з правилами вищої та базової математики, чому певні операції заборонені та як їх коректно розв'язувати:
+            </p>
+
+            <div class="advisor-accordion">
+                <!-- 1. Ділення на нуль -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>1. 🚫 Ділення на нуль (x ÷ 0 або x mod 0)</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> Ділення — це операція, обернена до множення. Вираз <code>a ÷ b = c</code> означає, що <code>c × b = a</code>. Якщо <code>b = 0</code>, то <code>c × 0 = 0</code> для будь-якого числа <code>c</code>, тому отримати ненульове число <code>a</code> неможливо. Якщо ж <code>a = 0</code>, виникає невизначеність <code>0/0</code>.</p>
+                        <p><strong>💡 Як виправити:</strong> Перевірте значення знаменника. Якщо ви шукаєте границю функції (ліміт), використовуйте прямування до нуля (наприклад, <code>0.00001</code>). В іншому випадку замініть дільник на число, відмінне від нуля.</p>
+                    </div>
+                </div>
+
+                <!-- 2. Корінь з від'ємного -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>2. 🚫 Квадратний корінь з від'ємного числа (√(-x))</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> У множині дійсних чисел <code>ℝ</code> квадрат будь-якого числа завжди невід'ємний: <code>x² ≥ 0</code> (наприклад, <code>(-3)² = 9</code> та <code>3² = 9</code>). Тому не існує дійсного числа, квадрат якого дорівнює <code>-9</code>.</p>
+                        <p><strong>💡 Як виправити:</strong> Для обчислення в дійсних числах візьміть модуль <code>|x|</code> перед добуванням кореня. Для вищої математики переходьте у площину комплексних чисел через уявну одиницю <code>i = √(-1)</code>: наприклад, <code>√(-25) = 5i</code>.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Логарифм від недопустимого -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>3. 🚫 Логарифм нуля та від'ємних чисел (ln(x), log(x) при x ≤ 0)</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> Логарифм <code>log_b(x) = y</code> означає, що <code>bʸ = x</code>. Оскільки основа <code>b > 0</code>, піднесення додатного числа до будь-якого степеня завжди дає додатне число. <code>bʸ</code> ніколи не дорівнює нулю або від'ємному числу.</p>
+                        <p><strong>💡 Як виправити:</strong> Переконайтеся, що аргумент логарифма строго додатний (<code>x > 0</code>). Якщо від'ємне число отримано в результаті іншого розрахунку, візьміть його модуль <code>|x|</code> або додайте зміщення (offset).</p>
+                    </div>
+                </div>
+
+                <!-- 4. Арксинус поза [-1, 1] -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>4. 🚫 Арксинус та Арккосинус (asin(x), acos(x) при |x| > 1)</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> Область значень функцій <code>sin(α)</code> та <code>cos(α)</code> на тригонометричному колі обмежена відрізком <code>[-1, 1]</code>. Гіпотенуза прямокутного трикутника завжди довша за катет, тому відношення не може перевищувати 1.</p>
+                        <p><strong>💡 Як виправити:</strong> Нормалізуйте величину або перевірте формулу амплітуди. Якщо значення вийшло, наприклад, <code>1.000002</code> через похибку float, округліть його до <code>1.0</code>.</p>
+                    </div>
+                </div>
+
+                <!-- 5. Тангенс 90 градусів -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>5. 🚫 Тангенс 90° та 270° (tan 90°)</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> <code>tan(α) = sin(α) / cos(α)</code>. При куті <code>90°</code> (або <code>π/2</code> рад) косинус дорівнює нулю: <code>cos(90°) = 0</code>. Виникає ділення на нуль, а графік тангенса прямує до нескінченності (вертикальна асимптота).</p>
+                        <p><strong>💡 Як виправити:</strong> Використовуйте апроксимацію кута (наприклад, <code>89.999°</code>), якщо потрібна гранична поведінка, або перевірте геометрію задачі.</p>
+                    </div>
+                </div>
+
+                <!-- 6. Факторіал від дробу чи від'ємного -->
+                <div class="advisor-item">
+                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
+                        <span>6. 🚫 Факторіал від'ємного або дробового числа ((-4)! або 2.5!)</span>
+                        <em>▼</em>
+                    </div>
+                    <div class="advisor-item-body">
+                        <p><strong>Зауваження:</strong> Класичний факторіал <code>n! = 1 × 2 × ... × n</code> визначений лише для невід'ємних цілих чисел (<code>0! = 1</code>).</p>
+                        <p><strong>💡 Як виправити:</strong> Для розрахунку факторіала дробових чисел у математичному аналізі використовують неперервну Гамма-функцію <code>Γ(z)</code>. У стандартному режимі округліть число до найближчого цілого <code>Math.round(x)</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('advisor-modal')">Зрозуміло</button>
         </div>
     </div>
 
-    <!-- Вікно вибору теми (10 Преміум Тем v1.5) -->
+    <!-- Вікно Вибору Шрифтів (НОВЕ v1.6 Multi-Font Typography Studio) -->
+    <div class="modal-overlay" id="font-modal">
+        <div class="modal-content font-modal-content">
+            <h3>🔤 Вибір Шрифту та Типографіки</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+                Оберіть гарнітуру шрифту для інтерфейсу та дисплею калькулятора:
+            </p>
+
+            <div class="font-options-grid">
+                <div class="font-card active" data-font="font-inter" onclick="setFontFamily('font-inter')">
+                    <span class="font-sample" style="font-family: 'Inter', sans-serif;">12345.67 ÷ sin(45°)</span>
+                    <div class="font-meta">
+                        <strong>Inter (Clean Modern)</strong>
+                        <small>Стандартний сучасний інтерфейсний шрифт</small>
+                    </div>
+                </div>
+
+                <div class="font-card" data-font="font-jetbrains" onclick="setFontFamily('font-jetbrains')">
+                    <span class="font-sample" style="font-family: 'JetBrains Mono', monospace;">12345.67 ÷ sin(45°)</span>
+                    <div class="font-meta">
+                        <strong>JetBrains Mono (Developer Tech)</strong>
+                        <small>Ідеальний моноширинний шрифт розробників</small>
+                    </div>
+                </div>
+
+                <div class="font-card" data-font="font-orbitron" onclick="setFontFamily('font-orbitron')">
+                    <span class="font-sample" style="font-family: 'Orbitron', sans-serif;">12345.67 ÷ SIN(45°)</span>
+                    <div class="font-meta">
+                        <strong>Orbitron (Sci-Fi Cyber Digital)</strong>
+                        <small>Футуристичний цифровий стиль дисплеїв</small>
+                    </div>
+                </div>
+
+                <div class="font-card" data-font="font-outfit" onclick="setFontFamily('font-outfit')">
+                    <span class="font-sample" style="font-family: 'Outfit', sans-serif;">12345.67 ÷ sin(45°)</span>
+                    <div class="font-meta">
+                        <strong>Outfit (Geometric Minimalist)</strong>
+                        <small>Елегантний геометричний гротеск</small>
+                    </div>
+                </div>
+
+                <div class="font-card" data-font="font-firacode" onclick="setFontFamily('font-firacode')">
+                    <span class="font-sample" style="font-family: 'Fira Code', monospace;">12345.67 ÷ sin(45°)</span>
+                    <div class="font-meta">
+                        <strong>Fira Code (Terminal Ligatures)</strong>
+                        <small>Чіткий термінальний шрифт з лігатурами</small>
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('font-modal')">Застосувати шрифт</button>
+        </div>
+    </div>
+
+    <!-- Вікно Графіка Функцій 2D (НОВЕ v1.6 Function Plotter) -->
+    <div class="modal-overlay" id="graph-modal">
+        <div class="modal-content graph-modal-content">
+            <h3>📈 Інтерактивний 2D Графік Функцій</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:10px;">
+                Візуалізуйте математичні функції на координатній сітці:
+            </p>
+
+            <div class="graph-presets-row">
+                <button class="btn-secondary" onclick="plotFunction('sin')">sin(x)</button>
+                <button class="btn-secondary" onclick="plotFunction('cos')">cos(x)</button>
+                <button class="btn-secondary" onclick="plotFunction('tan')">tan(x)</button>
+                <button class="btn-secondary" onclick="plotFunction('sqr')">x²</button>
+                <button class="btn-secondary" onclick="plotFunction('cube')">x³</button>
+                <button class="btn-secondary" onclick="plotFunction('sqrt')">√x</button>
+                <button class="btn-secondary" onclick="plotFunction('ln')">ln(x)</button>
+                <button class="btn-secondary" onclick="plotFunction('inv')">1/x</button>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="function-canvas" width="460" height="260"></canvas>
+            </div>
+
+            <div class="graph-controls-row">
+                <span id="graph-current-func">Функція: <strong>y = sin(x)</strong></span>
+                <button class="btn-secondary" onclick="resetGraphZoom()">Скинути масштаб</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('graph-modal')">Закрити графік</button>
+        </div>
+    </div>
+
+    <!-- Вікно Фінансів та Знижок (НОВЕ v1.6 Quick Financial Tool) -->
+    <div class="modal-overlay" id="finance-modal">
+        <div class="modal-content finance-modal-content">
+            <h3>💰 Фінансовий Калькулятор: Знижки & Податки</h3>
+            
+            <div class="finance-body">
+                <div class="finance-input-row">
+                    <label>Початкова сума (Ціна):</label>
+                    <input type="number" id="fin-amount" value="1000" oninput="calculateFinance()">
+                </div>
+
+                <div class="finance-input-row">
+                    <label>Знижка (%):</label>
+                    <input type="number" id="fin-discount" value="15" oninput="calculateFinance()">
+                </div>
+
+                <div class="finance-input-row">
+                    <label>Податок / ПДВ (%):</label>
+                    <input type="number" id="fin-tax" value="20" oninput="calculateFinance()">
+                </div>
+
+                <div class="finance-input-row">
+                    <label>Чайові (%):</label>
+                    <input type="number" id="fin-tip" value="10" oninput="calculateFinance()">
+                </div>
+
+                <div class="finance-results-box">
+                    <div class="fin-res-line">
+                        <span>Сума зі знижкою:</span>
+                        <strong id="fin-discounted-val">850.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line">
+                        <span>Податок / ПДВ:</span>
+                        <strong id="fin-tax-val">+ 170.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line">
+                        <span>Чайові:</span>
+                        <strong id="fin-tip-val">+ 85.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line total-line">
+                        <span>Разом до сплати:</span>
+                        <strong id="fin-total-val">1105.00 ₴</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions">
+                <button class="btn-secondary" onclick="insertFinanceToCalc()">📥 Вставити суму в калькулятор</button>
+                <button class="btn-secondary" onclick="copyFinanceTotal()">📋 Скопіювати</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('finance-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Вікно RNG та Кубиків (НОВЕ v1.6 Random & Dice Tool) -->
+    <div class="modal-overlay" id="rng-modal">
+        <div class="modal-content rng-modal-content">
+            <h3>🎲 Генератор Випадкових Чисел та Кубики</h3>
+            
+            <div class="rng-body">
+                <div class="rng-range-row">
+                    <div>
+                        <label>Від (Min):</label>
+                        <input type="number" id="rng-min" value="1">
+                    </div>
+                    <div>
+                        <label>До (Max):</label>
+                        <input type="number" id="rng-max" value="100">
+                    </div>
+                    <button class="btn-secondary rng-btn" onclick="generateRandomNumber()">Згенерувати</button>
+                </div>
+
+                <div class="rng-result-display" id="rng-result">42</div>
+
+                <h4 style="font-size:0.9rem; margin:14px 0 8px;">🎲 Кидок ігрових кубиків (D&D / Настілки):</h4>
+                <div class="dice-grid">
+                    <button class="btn-secondary" onclick="rollDice(4)">d4</button>
+                    <button class="btn-secondary" onclick="rollDice(6)">d6</button>
+                    <button class="btn-secondary" onclick="rollDice(8)">d8</button>
+                    <button class="btn-secondary" onclick="rollDice(10)">d10</button>
+                    <button class="btn-secondary" onclick="rollDice(12)">d12</button>
+                    <button class="btn-secondary" onclick="rollDice(20)">d20</button>
+                    <button class="btn-secondary" onclick="rollDice(100)">d100</button>
+                    <button class="btn-secondary" onclick="flipCoin()">🪙 Монета</button>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:14px;">
+                <button class="btn-secondary" onclick="insertRngToCalc()">📥 Вставити в калькулятор</button>
+                <button class="close-btn" style="margin-top:0;" onclick="closeModal('rng-modal')">Закрити</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вікно вибору теми (16 Преміум Тем + Палітра Кольорів v1.6) -->
     <div class="modal-overlay" id="theme-modal">
         <div class="modal-content theme-modal-content">
-            <h3>🎨 Вибір теми оформлення (10 Тем)</h3>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">Оберіть одну з 10 авторських колірних схем:</p>
+            <h3>🎨 16 Авторських Тем та Палітра Акцентів</h3>
+            
+            <div class="accent-palette-box">
+                <h4>✨ Швидкий вибір акцентного кольору:</h4>
+                <div class="accent-swatches-grid">
+                    <button class="accent-swatch redstone-swatch" onclick="setCustomAccent('#ef4444', 'Redstone Crimson')" title="Redstone Crimson"></button>
+                    <button class="accent-swatch cyan-swatch" onclick="setCustomAccent('#2dd4bf', 'Teal Neon')" title="Teal Neon"></button>
+                    <button class="accent-swatch amber-swatch" onclick="setCustomAccent('#f59e0b', 'Amber Gold')" title="Amber Gold"></button>
+                    <button class="accent-swatch emerald-swatch" onclick="setCustomAccent('#10b981', 'Emerald Jade')" title="Emerald Jade"></button>
+                    <button class="accent-swatch purple-swatch" onclick="setCustomAccent('#c084fc', 'Ultra Violet')" title="Ultra Violet"></button>
+                    <button class="accent-swatch pink-swatch" onclick="setCustomAccent('#f472b6', 'Sakura Pink')" title="Sakura Pink"></button>
+                    <button class="accent-swatch blue-swatch" onclick="setCustomAccent('#38bdf8', 'Arctic Sky')" title="Arctic Sky"></button>
+                    <button class="accent-swatch orange-swatch" onclick="setCustomAccent('#fb923c', 'Solar Orange')" title="Solar Orange"></button>
+                </div>
+            </div>
+
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:12px 0 8px;">Колекція з 16 авторських тем оформления:</p>
             <div class="theme-grid">
+                <button class="theme-card" data-theme="redstone" onclick="setTheme('redstone')">
+                    <div class="theme-preview redstone-prev"></div>
+                    <div class="theme-info">
+                        <strong>🔴 Redstone Flux</strong>
+                        <small>Фірмовий рубіновий Redstone 1</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="cyber_amber" onclick="setTheme('cyber_amber')">
+                    <div class="theme-preview cyber-amber-prev"></div>
+                    <div class="theme-info">
+                        <strong>⚡ Amber Cyber</strong>
+                        <small>Бурштиновий кіберпанк</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="nordic_frost" onclick="setTheme('nordic_frost')">
+                    <div class="theme-preview nordic-frost-prev"></div>
+                    <div class="theme-info">
+                        <strong>❄️ Nordic Glacier</strong>
+                        <small>Арктичний льодовиковий ціан</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="vintage_retro" onclick="setTheme('vintage_retro')">
+                    <div class="theme-preview vintage-prev"></div>
+                    <div class="theme-info">
+                        <strong>📼 80s Synthwave</strong>
+                        <small>Ретро футуризм та м'ята</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="matrix_terminal" onclick="setTheme('matrix_terminal')">
+                    <div class="theme-preview matrix-prev"></div>
+                    <div class="theme-info">
+                        <strong>📟 Matrix Terminal</strong>
+                        <small>Фосфорний зелений CRT</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="obsidian_gold" onclick="setTheme('obsidian_gold')">
+                    <div class="theme-preview obsidian-prev"></div>
+                    <div class="theme-info">
+                        <strong>👑 Obsidian Royal Gold</strong>
+                        <small>Чорне золото та розкіш</small>
+                    </div>
+                </button>
                 <button class="theme-card" data-theme="dark" onclick="setTheme('dark')">
                     <div class="theme-preview dark-prev"></div>
                     <div class="theme-info">
                         <strong>🌙 Dark Charcoal</strong>
-                        <small>Глибокий графіт (Стандарт)</small>
+                        <small>Глибокий темний графіт</small>
                     </div>
                 </button>
                 <button class="theme-card" data-theme="light" onclick="setTheme('light')">
@@ -246,7 +605,7 @@
                     <div class="theme-preview neon-prev"></div>
                     <div class="theme-info">
                         <strong>⚡ Cyberpunk Glow</strong>
-                        <small>Неоновий кіберпанк</small>
+                        <small>Неонове сяйво</small>
                     </div>
                 </button>
                 <button class="theme-card" data-theme="purple" onclick="setTheme('purple')">
@@ -267,14 +626,14 @@
                     <div class="theme-preview sunset-prev"></div>
                     <div class="theme-info">
                         <strong>🌅 Sunset Aura</strong>
-                        <small>Теплий бурштиновий захід</small>
+                        <small>Теплий захід сонця</small>
                     </div>
                 </button>
                 <button class="theme-card" data-theme="ocean" onclick="setTheme('ocean')">
                     <div class="theme-preview ocean-prev"></div>
                     <div class="theme-info">
                         <strong>🌊 Nordic Ocean</strong>
-                        <small>Крижана океанічна глибина</small>
+                        <small>Океанічна глибина</small>
                     </div>
                 </button>
                 <button class="theme-card" data-theme="coffee" onclick="setTheme('coffee')">
@@ -295,7 +654,7 @@
                     <div class="theme-preview glass-prev"></div>
                     <div class="theme-info">
                         <strong>💎 Frost Glassmorphism</strong>
-                        <small>Люксове матове скло</small>
+                        <small>Матове люксове скло</small>
                     </div>
                 </button>
             </div>
@@ -303,7 +662,7 @@
         </div>
     </div>
 
-    <!-- Вікно Шпалер та Фону (НОВЕ v1.5 Background Studio) -->
+    <!-- Вікно Шпалер та Фону (Background Studio) -->
     <div class="modal-overlay" id="wallpaper-modal">
         <div class="modal-content wallpaper-modal-content">
             <h3>🖼️ Шпалери & Фонове оформлення</h3>
@@ -366,7 +725,7 @@
         </div>
     </div>
 
-    <!-- Вікно Конвертера Величин (НОВЕ v1.5) -->
+    <!-- Вікно Конвертера Величин -->
     <div class="modal-overlay" id="converter-modal">
         <div class="modal-content converter-modal-content">
             <h3>🔄 Універсальний Конвертер Величин</h3>
@@ -411,7 +770,7 @@
         </div>
     </div>
 
-    <!-- Вікно Програмістського Режиму (НОВЕ v1.5 Programmer Mode) -->
+    <!-- Вікно Програмістського Режиму -->
     <div class="modal-overlay" id="programmer-modal">
         <div class="modal-content programmer-modal-content">
             <h3>💻 Програмістські Системи Числення</h3>
@@ -452,7 +811,7 @@
         </div>
     </div>
 
-    <!-- Вікно Наукових Констант (НОВЕ v1.5) -->
+    <!-- Вікно Наукових Констант -->
     <div class="modal-overlay" id="constants-modal">
         <div class="modal-content">
             <h3>⚛️ Фундаментальні Наукові Константи</h3>
@@ -526,7 +885,7 @@
         </div>
     </div>
 
-    <!-- Вікно розширеного Експорту (НОВЕ v1.5) -->
+    <!-- Вікно розширеного Експорту -->
     <div class="modal-overlay" id="export-modal">
         <div class="modal-content">
             <h3>📥 Експорт історії розрахунків</h3>
@@ -569,6 +928,7 @@
                 <tr><td>!</td><td>Факторіал числа (x!)</td></tr>
                 <tr><td>S</td><td>Перемкнути режим 2nd (Shift)</td></tr>
                 <tr><td>D</td><td>Перемкнути DEG / RAD</td></tr>
+                <tr><td>V</td><td>Озвучити поточний результат (Voice)</td></tr>
                 <tr><td>Ctrl + C</td><td>Скопіювати число з екрану</td></tr>
                 <tr><td>Ctrl + V</td><td>Вставити число в калькулятор</td></tr>
             </table>
@@ -576,22 +936,33 @@
         </div>
     </div>
 
-    <!-- Вікно "Про застосунок" v1.5 RTM -->
+    <!-- Вікно "Головна" -->
+    <div class="modal-overlay" id="home-modal">
+        <div class="modal-content" style="text-align: center;">
+            <h3>👋 Ласкаво просимо!</h3>
+            <p>Калькулятор скинуто до початкового стану <strong>Головної сторінки</strong>.</p>
+            <p>Екран, формулу та пам'ять оновлено. <strong>Calculator Pro v1.6 Redstone 1 RTM</strong> готовий до нових надточних розрахунків!</p>
+            <button class="close-btn" onclick="closeModal('home-modal')" style="background-color: var(--accent-operator); color: var(--bg-card);">Почати роботу</button>
+        </div>
+    </div>
+
+    <!-- Вікно "Про застосунок" v1.6 Redstone 1 RTM -->
     <div class="modal-overlay" id="about-modal">
         <div class="modal-content">
             <h3>ℹ️ Про застосунок</h3>
-            <p><strong>Calculator Pro™ Master Edition</strong> — провідний багатофункціональний науковий та інженерний калькулятор.</p>
-            <p>Версія релізу: <strong>v1.5 (Build 100) RTM</strong></p>
+            <p><strong>Calculator Pro™ Redstone 1 Master Edition</strong> — сучасний флагманський науковий та інженерний калькулятор.</p>
+            <p>Версія релізу: <strong>v1.6 (Build 126) Redstone 1, RTM</strong></p>
             <p>Розробник & Автор: <strong>MaxNT Official, 2026(с)</strong></p>
-            <p><strong>Головні нововведення версії 1.5 RTM:</strong></p>
+            <p><strong>Головні нововведення версії 1.6 Redstone 1 RTM:</strong></p>
             <ul style="padding-left: 20px; font-size: 0.92rem; margin-bottom: 12px;">
-                <li>🎨 <strong>10 авторських колірних тем</strong> (Sunset, Ocean, Mocha, Sakura, Frosted Glass тощо).</li>
-                <li>🖼️ <strong>Wallpaper Studio:</strong> Арт-шпалери для інтерфейсу, кастомне розмиття, затемнення та завантаження власних зображень.</li>
-                <li>🔄 <strong>Універсальний конвертер величин</strong> (довжина, маса, температура, пам'ять, швидкість, час).</li>
-                <li>💻 <strong>Програмістський модуль:</strong> Миттєвий перевід HEX/DEC/BIN/OCT та бітові операції.</li>
-                <li>⚛️ <strong>Наукові константи:</strong> π, e, φ, c, G, h.</li>
-                <li>🔔 <strong>4 звукових профілі Web Audio:</strong> Classic, Tactile, 8-Bit, Sci-Fi Glass.</li>
-                <li>🛡️ <strong>Master Copyright Footer:</strong> Жива статистика сесії та швидка панель керування.</li>
+                <li>🧠 <strong>Розумний Математичний Порадник:</strong> Детальне пояснення заборонених операцій (ділення на 0, від'ємні корені, log <= 0, asin поза межами) з кнопками миттєвого виправлення!</li>
+                <li>🔤 <strong>Студія Шрифтів:</strong> 5 гарнітур (Inter, JetBrains Mono, Orbitron, Outfit, Fira Code).</li>
+                <li>🎨 <strong>16 авторських тем + Палітра кольорів:</strong> Redstone Flux, Amber Cyber, Nordic Glacier, 80s Synthwave, Matrix Terminal тощо.</li>
+                <li>📈 <strong>2D Графік функцій:</strong> Візуалізація математичних кривих на координатній сітці.</li>
+                <li>🗣️ <strong>Голосовий асистент:</strong> Озвучення результатів розрахунків голосом.</li>
+                <li>💰 <strong>Фінансовий модуль:</strong> Знижки, чайові та податки в один клік.</li>
+                <li>🎲 <strong>RNG & Кубики:</strong> Генератор чисел та кубиків (d4..d100).</li>
+                <li>🛡️ <strong>Redstone 1 Master Footer:</strong> Пульсуючий рубіновий індикатор та живий статус.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
         </div>
@@ -600,15 +971,12 @@
     <!-- Вікно "Довідка" -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-content">
-            <h3>❓ Довідка та Математичні Можливості (v1.5 Build 100)</h3>
+            <h3>❓ Довідка (v1.6 Build 126 Redstone 1)</h3>
             <ul style="padding-left: 20px; font-size: 0.93rem; margin-bottom: 15px; line-height:1.6;">
-                <li><strong>2nd (Shift):</strong> Активує зворотну тригонометрію (<code>asin</code>, <code>acos</code>, <code>atan</code>), гіперболічний косинус <code>cosh</code>, куб <code>x³</code>, кубічний корінь <code>∛x</code>, експоненти <code>10ˣ</code>, <code>eˣ</code> та <code>log₂</code>.</li>
-                <li><strong>DEG / RAD:</strong> Перемикач кутових одиниць для всіх тригонометричних розрахунків.</li>
-                <li><strong>Модуль (|x|):</strong> Обчислює абсолютне додатне значення числа.</li>
-                <li><strong>Обернене (1/x):</strong> Розрахунок одиниці, поділеної на поточне число.</li>
-                <li><strong>Остача (mod):</strong> Обчислення залишку від цілочисельного ділення.</li>
-                <li><strong>Дужки ( ):</strong> Підтримка складних дужкових виразів.</li>
-                <li><strong>Експорт:</strong> Можливість вивантаження історії у формати TXT, Excel CSV або JSON.</li>
+                <li><strong>Діагностика помилок:</strong> При спробі ділення на нуль або неможливій операції автоматично відкривається вікно з поясненням та порадою щодо виправлення.</li>
+                <li><strong>2nd (Shift):</strong> Активує зворотну тригонометрію (<code>asin</code>, <code>acos</code>, <code>atan</code>), <code>cosh</code>, <code>x³</code>, <code>∛x</code>, <code>10ˣ</code>, <code>eˣ</code> та <code>log₂</code>.</li>
+                <li><strong>Озвучення:</strong> Клікніть на значок <code>🗣️</code> у дисплеї або натисніть клавішу <code>V</code>.</li>
+                <li><strong>Округлення:</strong> Клікніть на індикатор <code>Округлення</code> внизу дисплея для зміни точності від 0 до 10 знаків або Auto.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>
