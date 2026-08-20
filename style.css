@@ -1,17 +1,17 @@
 /* ==========================================================================
-   Calculator Pro v1.4 (Build 72) - Master Stylesheet
+   Calculator Pro v1.5 (Build 100) RTM - Master Stylesheet
    Author: MaxNT Official, 2026
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
 :root {
-    /* Темна тема (Dark Charcoal - За замовчуванням) */
-    --bg-body: #13151a;
-    --bg-card: #1c1f26;
-    --bg-card-glass: rgba(28, 31, 38, 0.85);
-    --bg-display: #242832;
-    --bg-btn: #272b36;
+    /* 1. Темна тема (Dark Charcoal - За замовчуванням) */
+    --bg-body: #111318;
+    --bg-card: rgba(28, 31, 38, 0.88);
+    --bg-card-glass: rgba(28, 31, 38, 0.75);
+    --bg-display: rgba(36, 40, 50, 0.95);
+    --bg-btn: rgba(39, 43, 54, 0.85);
     --bg-btn-hover: #353b49;
     --bg-btn-active: #1e222b;
     
@@ -24,6 +24,7 @@
     --accent-clear: #f87171;
     --accent-memory: #a78bfa;
     --accent-sci: #f472b6;
+    --accent-shift: #38bdf8;
     --accent-equals: #14b8a6;
     --accent-equals-text: #042f2e;
     
@@ -31,19 +32,19 @@
     --badge-border: rgba(45, 212, 191, 0.3);
     --status-active: #10b981;
     
-    --shadow-main: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.05);
-    --shadow-btn: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    --modal-bg: rgba(10, 12, 16, 0.8);
-    --border-subtle: rgba(255, 255, 255, 0.08);
+    --shadow-main: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+    --shadow-btn: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+    --modal-bg: rgba(8, 10, 14, 0.82);
+    --border-subtle: rgba(255, 255, 255, 0.1);
 }
 
+/* 2. Світла тема (Clean Porcelain) */
 [data-theme="light"] {
-    /* Світла тема (Clean Porcelain) */
-    --bg-body: #e5e9f0;
-    --bg-card: #ffffff;
-    --bg-card-glass: rgba(255, 255, 255, 0.9);
+    --bg-body: #e6ebf2;
+    --bg-card: rgba(255, 255, 255, 0.92);
+    --bg-card-glass: rgba(255, 255, 255, 0.85);
     --bg-display: #f1f5f9;
-    --bg-btn: #f8fafc;
+    --bg-btn: rgba(248, 250, 252, 0.9);
     --bg-btn-hover: #e2e8f0;
     --bg-btn-active: #cbd5e1;
     
@@ -56,6 +57,7 @@
     --accent-clear: #ef4444;
     --accent-memory: #7c3aed;
     --accent-sci: #db2777;
+    --accent-shift: #0284c7;
     --accent-equals: #2563eb;
     --accent-equals-text: #ffffff;
     
@@ -63,31 +65,32 @@
     --badge-border: rgba(37, 99, 235, 0.25);
     --status-active: #10b981;
     
-    --shadow-main: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+    --shadow-main: 0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.06);
     --shadow-btn: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --modal-bg: rgba(30, 41, 59, 0.45);
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --modal-bg: rgba(30, 41, 59, 0.5);
+    --border-subtle: rgba(0, 0, 0, 0.09);
 }
 
+/* 3. Неонова тема (Cyberpunk Glow) */
 [data-theme="neon"] {
-    /* Неонова тема (Cyberpunk High-Contrast) */
-    --bg-body: #050508;
-    --bg-card: #0c0d14;
-    --bg-card-glass: rgba(12, 13, 20, 0.9);
-    --bg-display: #121420;
-    --bg-btn: #161826;
+    --bg-body: #050509;
+    --bg-card: rgba(12, 13, 20, 0.92);
+    --bg-card-glass: rgba(12, 13, 20, 0.82);
+    --bg-display: #10121d;
+    --bg-btn: rgba(22, 24, 38, 0.9);
     --bg-btn-hover: #262a40;
     --bg-btn-active: #0f101b;
     
     --text-main: #00f0ff;
     --text-muted: #008b99;
-    --text-accent: #ff0055;
+    --text-accent: #ff007f;
     
     --accent-operator: #ff007f;
     --accent-action: #ffe600;
     --accent-clear: #ff003c;
     --accent-memory: #a855f7;
     --accent-sci: #00f0ff;
+    --accent-shift: #00ff88;
     --accent-equals: #00f0ff;
     --accent-equals-text: #050508;
     
@@ -95,21 +98,21 @@
     --badge-border: rgba(0, 240, 255, 0.4);
     --status-active: #00ff88;
     
-    --shadow-main: 0 0 35px rgba(0, 240, 255, 0.18), 0 0 1px 1px rgba(0, 240, 255, 0.3);
-    --shadow-btn: 0 0 10px rgba(0, 240, 255, 0.08);
+    --shadow-main: 0 0 40px rgba(0, 240, 255, 0.22), 0 0 1px 1px rgba(0, 240, 255, 0.35);
+    --shadow-btn: 0 0 10px rgba(0, 240, 255, 0.1);
     --modal-bg: rgba(5, 5, 8, 0.92);
-    --border-subtle: rgba(0, 240, 255, 0.2);
+    --border-subtle: rgba(0, 240, 255, 0.22);
 }
 
+/* 4. Фіолетова тема (Midnight Purple) */
 [data-theme="purple"] {
-    /* Фіолетова тема (Midnight Purple) */
-    --bg-body: #0f0b1e;
-    --bg-card: #18122e;
-    --bg-card-glass: rgba(24, 18, 46, 0.9);
-    --bg-display: #221a3f;
-    --bg-btn: #261e47;
-    --bg-btn-hover: #362c63;
-    --bg-btn-active: #1d1637;
+    --bg-body: #0c081a;
+    --bg-card: rgba(24, 18, 46, 0.92);
+    --bg-card-glass: rgba(24, 18, 46, 0.8);
+    --bg-display: #1d1637;
+    --bg-btn: rgba(38, 30, 71, 0.88);
+    --bg-btn-hover: #3b2d6a;
+    --bg-btn-active: #191333;
     
     --text-main: #f5f3ff;
     --text-muted: #a78bfa;
@@ -120,6 +123,7 @@
     --accent-clear: #f43f5e;
     --accent-memory: #818cf8;
     --accent-sci: #38bdf8;
+    --accent-shift: #e879f9;
     --accent-equals: #a855f7;
     --accent-equals-text: #ffffff;
     
@@ -127,21 +131,21 @@
     --badge-border: rgba(192, 132, 252, 0.3);
     --status-active: #34d399;
     
-    --shadow-main: 0 20px 40px -10px rgba(120, 50, 220, 0.25), 0 0 1px 1px rgba(192, 132, 252, 0.2);
+    --shadow-main: 0 20px 45px -10px rgba(120, 50, 220, 0.3), 0 0 1px 1px rgba(192, 132, 252, 0.2);
     --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
-    --modal-bg: rgba(15, 11, 30, 0.85);
-    --border-subtle: rgba(192, 132, 252, 0.15);
+    --modal-bg: rgba(12, 8, 26, 0.88);
+    --border-subtle: rgba(192, 132, 252, 0.16);
 }
 
+/* 5. Смарагдова тема (Emerald Forest) */
 [data-theme="emerald"] {
-    /* Смарагдова тема (Emerald Forest) */
-    --bg-body: #061412;
-    --bg-card: #0c221f;
-    --bg-card-glass: rgba(12, 34, 31, 0.9);
-    --bg-display: #11302b;
-    --bg-btn: #163b35;
-    --bg-btn-hover: #1f5049;
-    --bg-btn-active: #102b27;
+    --bg-body: #051411;
+    --bg-card: rgba(12, 34, 31, 0.92);
+    --bg-card-glass: rgba(12, 34, 31, 0.8);
+    --bg-display: #0f2b26;
+    --bg-btn: rgba(22, 59, 53, 0.88);
+    --bg-btn-hover: #1f534a;
+    --bg-btn-active: #0d2621;
     
     --text-main: #ecfdf5;
     --text-muted: #6ee7b7;
@@ -152,6 +156,7 @@
     --accent-clear: #fb7185;
     --accent-memory: #2dd4bf;
     --accent-sci: #67e8f9;
+    --accent-shift: #a7f3d0;
     --accent-equals: #10b981;
     --accent-equals-text: #022c22;
     
@@ -159,10 +164,175 @@
     --badge-border: rgba(52, 211, 153, 0.3);
     --status-active: #10b981;
     
-    --shadow-main: 0 20px 40px -10px rgba(16, 185, 129, 0.2), 0 0 1px 1px rgba(52, 211, 153, 0.2);
+    --shadow-main: 0 20px 45px -10px rgba(16, 185, 129, 0.25), 0 0 1px 1px rgba(52, 211, 153, 0.2);
     --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
-    --modal-bg: rgba(6, 20, 18, 0.88);
-    --border-subtle: rgba(52, 211, 153, 0.15);
+    --modal-bg: rgba(5, 20, 17, 0.9);
+    --border-subtle: rgba(52, 211, 153, 0.18);
+}
+
+/* 6. Захід Сонця (Sunset Aura) - НОВЕ v1.5 */
+[data-theme="sunset"] {
+    --bg-body: #160812;
+    --bg-card: rgba(38, 16, 28, 0.92);
+    --bg-card-glass: rgba(38, 16, 28, 0.8);
+    --bg-display: #2f1222;
+    --bg-btn: rgba(56, 24, 42, 0.88);
+    --bg-btn-hover: #4e223a;
+    --bg-btn-active: #240e1b;
+    
+    --text-main: #fff1f2;
+    --text-muted: #fda4af;
+    --text-accent: #fb923c;
+    
+    --accent-operator: #fb923c;
+    --accent-action: #facc15;
+    --accent-clear: #f43f5e;
+    --accent-memory: #e879f9;
+    --accent-sci: #f472b6;
+    --accent-shift: #f97316;
+    --accent-equals: #ea580c;
+    --accent-equals-text: #ffffff;
+    
+    --badge-bg: rgba(251, 146, 60, 0.18);
+    --badge-border: rgba(251, 146, 60, 0.35);
+    --status-active: #f97316;
+    
+    --shadow-main: 0 20px 45px -10px rgba(249, 115, 22, 0.3), 0 0 1px 1px rgba(251, 146, 60, 0.25);
+    --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
+    --modal-bg: rgba(22, 8, 18, 0.9);
+    --border-subtle: rgba(251, 146, 60, 0.2);
+}
+
+/* 7. Океанічна Глибина (Nordic Ocean) - НОВЕ v1.5 */
+[data-theme="ocean"] {
+    --bg-body: #04121e;
+    --bg-card: rgba(10, 30, 48, 0.92);
+    --bg-card-glass: rgba(10, 30, 48, 0.8);
+    --bg-display: #0e273f;
+    --bg-btn: rgba(16, 46, 73, 0.88);
+    --bg-btn-hover: #1b3d5e;
+    --bg-btn-active: #0b1f32;
+    
+    --text-main: #f0f9ff;
+    --text-muted: #7dd3fc;
+    --text-accent: #38bdf8;
+    
+    --accent-operator: #38bdf8;
+    --accent-action: #fbbf24;
+    --accent-clear: #fb7185;
+    --accent-memory: #818cf8;
+    --accent-sci: #22d3ee;
+    --accent-shift: #67e8f9;
+    --accent-equals: #0284c7;
+    --accent-equals-text: #ffffff;
+    
+    --badge-bg: rgba(56, 189, 248, 0.15);
+    --badge-border: rgba(56, 189, 248, 0.3);
+    --status-active: #0ea5e9;
+    
+    --shadow-main: 0 20px 45px -10px rgba(2, 132, 199, 0.3), 0 0 1px 1px rgba(56, 189, 248, 0.25);
+    --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
+    --modal-bg: rgba(4, 18, 30, 0.9);
+    --border-subtle: rgba(56, 189, 248, 0.2);
+}
+
+/* 8. Кавова Карамель (Mocha Latte) - НОВЕ v1.5 */
+[data-theme="coffee"] {
+    --bg-body: #16100c;
+    --bg-card: rgba(36, 26, 20, 0.92);
+    --bg-card-glass: rgba(36, 26, 20, 0.8);
+    --bg-display: #2d2019;
+    --bg-btn: rgba(51, 38, 29, 0.88);
+    --bg-btn-hover: #483528;
+    --bg-btn-active: #221812;
+    
+    --text-main: #fef3c7;
+    --text-muted: #d97706;
+    --text-accent: #f59e0b;
+    
+    --accent-operator: #f59e0b;
+    --accent-action: #fbbf24;
+    --accent-clear: #f87171;
+    --accent-memory: #c084fc;
+    --accent-sci: #fb923c;
+    --accent-shift: #fed7aa;
+    --accent-equals: #b45309;
+    --accent-equals-text: #ffffff;
+    
+    --badge-bg: rgba(245, 158, 11, 0.15);
+    --badge-border: rgba(245, 158, 11, 0.3);
+    --status-active: #d97706;
+    
+    --shadow-main: 0 20px 45px -10px rgba(180, 83, 9, 0.3), 0 0 1px 1px rgba(245, 158, 11, 0.25);
+    --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
+    --modal-bg: rgba(22, 16, 12, 0.9);
+    --border-subtle: rgba(245, 158, 11, 0.2);
+}
+
+/* 9. Сакура (Sakura Bloom) - НОВЕ v1.5 */
+[data-theme="sakura"] {
+    --bg-body: #190c13;
+    --bg-card: rgba(41, 20, 31, 0.92);
+    --bg-card-glass: rgba(41, 20, 31, 0.8);
+    --bg-display: #331826;
+    --bg-btn: rgba(58, 29, 44, 0.88);
+    --bg-btn-hover: #50273d;
+    --bg-btn-active: #28131e;
+    
+    --text-main: #fdf2f8;
+    --text-muted: #f472b6;
+    --text-accent: #f43f5e;
+    
+    --accent-operator: #f472b6;
+    --accent-action: #fbbf24;
+    --accent-clear: #f43f5e;
+    --accent-memory: #c084fc;
+    --accent-sci: #ec4899;
+    --accent-shift: #fbcfe8;
+    --accent-equals: #db2777;
+    --accent-equals-text: #ffffff;
+    
+    --badge-bg: rgba(244, 114, 182, 0.18);
+    --badge-border: rgba(244, 114, 182, 0.35);
+    --status-active: #ec4899;
+    
+    --shadow-main: 0 20px 45px -10px rgba(236, 72, 153, 0.3), 0 0 1px 1px rgba(244, 114, 182, 0.25);
+    --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.3);
+    --modal-bg: rgba(25, 12, 19, 0.9);
+    --border-subtle: rgba(244, 114, 182, 0.2);
+}
+
+/* 10. Морозне Скло (Frost Glassmorphism) - НОВЕ v1.5 */
+[data-theme="glass"] {
+    --bg-body: #0b1120;
+    --bg-card: rgba(255, 255, 255, 0.08);
+    --bg-card-glass: rgba(255, 255, 255, 0.06);
+    --bg-display: rgba(255, 255, 255, 0.1);
+    --bg-btn: rgba(255, 255, 255, 0.07);
+    --bg-btn-hover: rgba(255, 255, 255, 0.15);
+    --bg-btn-active: rgba(255, 255, 255, 0.04);
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-accent: #60a5fa;
+    
+    --accent-operator: #60a5fa;
+    --accent-action: #fbbf24;
+    --accent-clear: #f87171;
+    --accent-memory: #a78bfa;
+    --accent-sci: #38bdf8;
+    --accent-shift: #c084fc;
+    --accent-equals: #3b82f6;
+    --accent-equals-text: #ffffff;
+    
+    --badge-bg: rgba(96, 165, 250, 0.2);
+    --badge-border: rgba(96, 165, 250, 0.4);
+    --status-active: #60a5fa;
+    
+    --shadow-main: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    --shadow-btn: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --modal-bg: rgba(11, 17, 32, 0.85);
+    --border-subtle: rgba(255, 255, 255, 0.18);
 }
 
 /* ==========================================================================
@@ -191,19 +361,50 @@ body {
     overflow-x: hidden;
 }
 
-/* Фоновий легкий градієнт-ефект */
-body::before {
-    content: '';
+/* ==========================================================================
+   Фонові шпалери та візуальні ефекти (Wallpaper Engine)
+   ========================================================================== */
+
+.bg-wallpaper-layer {
     position: fixed;
-    top: -20%;
-    left: 20%;
-    width: 60vw;
-    height: 60vw;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--accent-operator) 0%, transparent 70%);
-    opacity: 0.05;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
     pointer-events: none;
-    z-index: 0;
+    transition: background-image 0.5s ease, filter 0.3s ease;
+}
+
+.bg-overlay-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    z-index: -1;
+    pointer-events: none;
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Стандартні стилі шпалер */
+.wp-stars {
+    background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                      radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                      radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+}
+
+.wp-grid {
+    background-image: linear-gradient(to right, rgba(45, 212, 191, 0.08) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(45, 212, 191, 0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
 
 .main-wrapper {
@@ -211,26 +412,26 @@ body::before {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 1050px;
+    max-width: 1080px;
     flex: 1;
     justify-content: center;
     position: relative;
     z-index: 1;
-    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-16px); }
+    from { opacity: 0; transform: translateY(-14px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .app-container {
     display: flex;
-    gap: 24px;
+    gap: 22px;
     align-items: stretch;
     justify-content: center;
     width: 100%;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 /* ==========================================================================
@@ -239,56 +440,65 @@ body::before {
 
 .sidebar {
     background-color: var(--bg-card);
-    backdrop-filter: blur(16px);
-    padding: 24px 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 22px 18px;
     border-radius: 24px;
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    width: 250px;
+    gap: 10px;
+    width: 255px;
     justify-content: space-between;
 }
 
 .sidebar-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
-    text-align: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .sidebar-header .app-icon {
     font-size: 2.2rem;
     line-height: 1;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.sidebar-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .sidebar-header h2 {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.22rem;
+    font-weight: 800;
     letter-spacing: -0.5px;
     color: var(--text-main);
 }
 
 .sidebar-header .version-tag {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
     background-color: var(--badge-bg);
     color: var(--accent-operator);
     border: 1px solid var(--badge-border);
     border-radius: 20px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    display: inline-block;
+    width: fit-content;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
 }
 
@@ -296,26 +506,38 @@ body::before {
     background-color: var(--bg-btn);
     color: var(--text-main);
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 500;
-    padding: 12px 16px;
-    border-radius: 14px;
+    padding: 10px 14px;
+    border-radius: 12px;
     border: 1px solid transparent;
     cursor: pointer;
     text-align: left;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     box-shadow: var(--shadow-btn);
     transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
 }
 
 .sidebar button span.btn-icon {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
+    width: 22px;
+}
+
+.nav-chip {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background-color: var(--badge-bg);
+    color: var(--accent-operator);
+    border: 1px solid var(--badge-border);
 }
 
 .sidebar button:hover {
@@ -330,14 +552,28 @@ body::before {
 }
 
 .sidebar-extra {
-    margin-top: 10px;
-    padding-top: 14px;
+    margin-top: 8px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
+}
+
+.sidebar-sound-row {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 4px 6px;
+    border-radius: 8px;
+}
+.sidebar-sound-row:hover {
+    background-color: var(--bg-btn-hover);
+    color: var(--text-main);
 }
 
 /* ==========================================================================
@@ -346,10 +582,11 @@ body::before {
 
 .calculator {
     background-color: var(--bg-card);
-    backdrop-filter: blur(16px);
-    width: 380px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    width: 400px;
     border-radius: 24px;
-    padding: 22px;
+    padding: 20px;
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-subtle);
     display: flex;
@@ -363,16 +600,16 @@ body::before {
 .display {
     background-color: var(--bg-display);
     border-radius: 18px;
-    margin-bottom: 18px;
-    padding: 14px 18px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 110px;
+    min-height: 116px;
     cursor: pointer;
     position: relative;
     border: 1px solid var(--border-subtle);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
     user-select: none;
     overflow: hidden;
 }
@@ -381,7 +618,6 @@ body::before {
     border-color: var(--accent-operator);
 }
 
-/* Верхній рядок дисплея з індикаторами та історією */
 .display-header {
     display: flex;
     justify-content: space-between;
@@ -392,15 +628,15 @@ body::before {
 
 .display-badges {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     align-items: center;
 }
 
-.mode-badge {
+.mode-badge, .secondary-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 6px;
     background-color: var(--badge-bg);
     color: var(--accent-operator);
@@ -409,14 +645,22 @@ body::before {
     transition: all 0.2s ease;
 }
 
-.mode-badge:hover {
-    filter: brightness(1.2);
-    transform: scale(1.05);
+.secondary-badge {
+    color: var(--accent-shift);
+    border-color: rgba(56, 189, 248, 0.3);
+    background-color: rgba(56, 189, 248, 0.1);
+}
+
+.secondary-badge.active {
+    background-color: var(--accent-shift);
+    color: #04121e;
+    font-weight: 800;
+    box-shadow: 0 0 8px var(--accent-shift);
 }
 
 .memory-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 6px;
@@ -443,9 +687,9 @@ body::before {
 .history-line {
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.95rem;
     text-align: right;
-    min-height: 1.4rem;
+    min-height: 1.3rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -455,7 +699,7 @@ body::before {
 .current-line {
     color: var(--text-main);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 2.3rem;
+    font-size: 2.2rem;
     font-weight: 700;
     text-align: right;
     overflow-x: auto;
@@ -469,15 +713,23 @@ body::before {
     display: none;
 }
 
-/* Підказка копіювання */
-.copy-tooltip {
-    position: absolute;
-    bottom: 4px;
-    left: 14px;
+.display-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.7rem;
     color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.copy-tooltip {
     opacity: 0.6;
     pointer-events: none;
+}
+
+.formula-preview {
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.7;
 }
 
 /* ==========================================================================
@@ -487,7 +739,7 @@ body::before {
 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 9px;
+    gap: 8px;
 }
 
 .buttons button {
@@ -495,9 +747,9 @@ body::before {
     background-color: var(--bg-btn);
     color: var(--text-main);
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    padding: 12px 0;
+    padding: 11px 0;
     border-radius: 12px;
     cursor: pointer;
     box-shadow: var(--shadow-btn);
@@ -513,7 +765,7 @@ body::before {
 
 .buttons button:hover {
     background-color: var(--bg-btn-hover);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .buttons button:active,
@@ -541,53 +793,61 @@ body::before {
 
 .memory {
     color: var(--accent-memory) !important;
-    font-size: 0.95rem !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
 }
 
 .sci {
     color: var(--accent-sci) !important;
-    font-size: 0.95rem !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
+}
+
+.shift-btn.active {
+    background-color: var(--accent-shift) !important;
+    color: #04121e !important;
+    font-weight: 800 !important;
+    box-shadow: 0 0 12px var(--accent-shift) !important;
 }
 
 .equals {
     background-color: var(--accent-equals) !important;
     color: var(--accent-equals-text) !important;
-    font-size: 1.4rem !important;
+    font-size: 1.35rem !important;
     font-weight: 700 !important;
     border-color: transparent !important;
 }
 
 .equals:hover {
     filter: brightness(1.15);
-    box-shadow: 0 0 15px var(--accent-equals);
+    box-shadow: 0 0 16px var(--accent-equals);
 }
 
 /* ==========================================================================
-   Оновлений Інтерактивний Футер (Enhanced Footer)
+   Преміальний Футер (Enhanced Master Footer)
    ========================================================================== */
 
 .footer {
     background-color: var(--bg-card-glass);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-subtle);
-    padding: 14px 22px;
+    padding: 12px 20px;
     width: 100%;
-    max-width: 900px;
+    max-width: 950px;
     margin-top: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
 }
 
 .footer-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .footer-badge {
@@ -595,13 +855,14 @@ body::before {
     align-items: center;
     gap: 6px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 700;
     padding: 4px 10px;
     background-color: var(--badge-bg);
     color: var(--accent-operator);
     border: 1px solid var(--badge-border);
     border-radius: 20px;
+    white-space: nowrap;
 }
 
 .pulse-dot {
@@ -619,37 +880,77 @@ body::before {
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
+.footer-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background-color: var(--bg-display);
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
+}
+
+.footer-stat strong {
+    color: var(--accent-action);
+}
+
 .footer-center {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-muted);
     text-align: center;
 }
 
-.footer-center strong {
+.copyright-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.author-tag {
     color: var(--text-main);
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent-operator), var(--accent-shift));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dot-separator {
+    color: var(--border-subtle);
+    font-size: 0.9rem;
+}
+
+.edition-tag {
+    color: var(--text-muted);
+    font-size: 0.8rem;
 }
 
 .footer-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .footer-btn {
     background-color: var(--bg-btn);
     color: var(--text-muted);
     border: 1px solid var(--border-subtle);
-    padding: 7px 12px;
+    padding: 6px 10px;
     border-radius: 10px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-family: inherit;
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .footer-btn:hover {
@@ -671,14 +972,15 @@ body::before {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: var(--modal-bg);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s ease;
     padding: 15px;
 }
 
@@ -690,14 +992,14 @@ body::before {
 .modal-content {
     background-color: var(--bg-card);
     color: var(--text-main);
-    padding: 28px;
-    border-radius: 24px;
-    max-width: 460px;
+    padding: 24px;
+    border-radius: 22px;
+    max-width: 480px;
     width: 100%;
-    max-height: 85vh;
+    max-height: 88vh;
     overflow-y: auto;
-    transform: scale(0.92) translateY(10px);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.93) translateY(12px);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
     border: 1px solid var(--border-subtle);
 }
@@ -708,29 +1010,19 @@ body::before {
 
 .modal-content h3 {
     color: var(--accent-operator);
-    margin-bottom: 16px;
-    font-size: 1.45rem;
+    margin-bottom: 14px;
+    font-size: 1.35rem;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .modal-content p {
-    margin-bottom: 12px;
-    line-height: 1.6;
-    font-size: 0.98rem;
-    color: var(--text-main);
-}
-
-.modal-content ul {
-    margin-bottom: 16px;
-}
-
-.modal-content li {
-    margin-bottom: 8px;
-    line-height: 1.5;
+    margin-bottom: 10px;
+    line-height: 1.55;
     font-size: 0.95rem;
+    color: var(--text-main);
 }
 
 .modal-content code {
@@ -739,27 +1031,27 @@ body::before {
     padding: 2px 6px;
     border-radius: 6px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     border: 1px solid var(--border-subtle);
 }
 
 .modal-actions {
     display: flex;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .close-btn {
     background-color: var(--accent-clear);
     color: white;
     border: none;
-    padding: 13px;
+    padding: 12px;
     border-radius: 12px;
     cursor: pointer;
-    margin-top: 18px;
+    margin-top: 16px;
     width: 100%;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1rem;
     box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
     transition: all 0.2s ease;
 }
@@ -773,54 +1065,479 @@ body::before {
     transform: scale(0.98);
 }
 
-/* Вибір тем */
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 16px 0;
+/* ==========================================================================
+   Вибір Тем (10 Theme Grid)
+   ========================================================================== */
+
+.theme-modal-content {
+    max-width: 540px;
 }
 
-.theme-btn {
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.theme-card {
     background-color: var(--bg-btn);
-    color: var(--text-main);
     border: 1px solid var(--border-subtle);
-    padding: 14px 16px;
     border-radius: 12px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-family: inherit;
-    font-weight: 500;
+    padding: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
     transition: all 0.2s ease;
 }
 
-.theme-btn:hover {
+.theme-card:hover {
+    background-color: var(--bg-btn-hover);
+    border-color: var(--accent-operator);
+    transform: translateY(-2px);
+}
+
+.theme-card.active {
+    border-color: var(--accent-operator);
+    background-color: var(--badge-bg);
+}
+
+.theme-preview {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.dark-prev { background: linear-gradient(135deg, #13151a 50%, #2dd4bf 50%); }
+.light-prev { background: linear-gradient(135deg, #f1f5f9 50%, #2563eb 50%); }
+.neon-prev { background: linear-gradient(135deg, #050508 50%, #ff007f 50%); }
+.purple-prev { background: linear-gradient(135deg, #0f0b1e 50%, #c084fc 50%); }
+.emerald-prev { background: linear-gradient(135deg, #061412 50%, #10b981 50%); }
+.sunset-prev { background: linear-gradient(135deg, #160812 50%, #fb923c 50%); }
+.ocean-prev { background: linear-gradient(135deg, #04121e 50%, #38bdf8 50%); }
+.coffee-prev { background: linear-gradient(135deg, #16100c 50%, #f59e0b 50%); }
+.sakura-prev { background: linear-gradient(135deg, #190c13 50%, #f472b6 50%); }
+.glass-prev { background: linear-gradient(135deg, #0b1120 50%, #60a5fa 50%); }
+
+.theme-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.theme-info strong {
+    font-size: 0.88rem;
+    color: var(--text-main);
+}
+
+.theme-info small {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Шпалери & Фон (Wallpaper Studio)
+   ========================================================================== */
+
+.wallpaper-modal-content {
+    max-width: 560px;
+}
+
+.wallpaper-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.wallpaper-card {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.wallpaper-card:hover {
+    border-color: var(--accent-operator);
+    transform: translateY(-2px);
+}
+
+.wallpaper-card.active {
+    border-color: var(--accent-operator);
+    background-color: var(--badge-bg);
+}
+
+.wp-thumb {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+}
+
+.wp-thumb-default {
+    background: radial-gradient(circle at top right, var(--accent-operator), var(--bg-body));
+}
+.wp-thumb-cyber {
+    background: url('images/cyber.jpg') center/cover;
+}
+.wp-thumb-sunset {
+    background: url('images/sunset.jpg') center/cover;
+}
+.wp-thumb-emerald {
+    background: url('images/emerald.jpg') center/cover;
+}
+.wp-thumb-stars {
+    background-color: #050510;
+    background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 20px);
+    background-size: 40px 40px;
+}
+.wp-thumb-grid {
+    background-color: #04121e;
+    background-image: linear-gradient(to right, rgba(45, 212, 191, 0.2) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(45, 212, 191, 0.2) 1px, transparent 1px);
+    background-size: 12px 12px;
+}
+
+.wallpaper-card span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.wallpaper-controls-box {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+
+.wallpaper-controls-box h4,
+.custom-wallpaper-section h4 {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.control-row label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+.control-row input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent-operator);
+}
+
+.custom-wallpaper-section {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+}
+
+.custom-wp-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.custom-wp-inputs input[type="file"] {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.url-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.url-input-group input {
+    flex: 1;
+    background-color: var(--bg-btn);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-family: inherit;
+}
+
+/* ==========================================================================
+   Конвертер Величин (Universal Unit Converter)
+   ========================================================================== */
+
+.converter-modal-content {
+    max-width: 520px;
+}
+
+.converter-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    scrollbar-width: none;
+}
+
+.converter-tabs::-webkit-scrollbar { display: none; }
+
+.conv-tab {
+    background-color: var(--bg-btn);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.conv-tab:hover {
+    color: var(--text-main);
+    background-color: var(--bg-btn-hover);
+}
+
+.conv-tab.active {
+    background-color: var(--badge-bg);
+    color: var(--accent-operator);
+    border-color: var(--accent-operator);
+}
+
+.converter-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.converter-input-block {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.converter-input-block label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.conv-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.conv-input-row input {
+    flex: 1;
+    background-color: var(--bg-btn);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.conv-input-row select {
+    width: 140px;
+    background-color: var(--bg-btn);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.converter-swap-btn {
+    align-self: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    color: var(--accent-operator);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 800;
+    transition: transform 0.2s ease;
+}
+
+.converter-swap-btn:hover {
+    transform: rotate(180deg) scale(1.1);
+}
+
+.converter-quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   Програмістський Режим (Programmer Base System)
+   ========================================================================== */
+
+.programmer-modal-content {
+    max-width: 520px;
+}
+
+.programmer-bases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.prog-base-item {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.prog-base-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--accent-operator);
+    width: 75px;
+}
+
+.prog-base-item input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    outline: none;
+}
+
+.prog-bitwise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Наукові Константи (Constants Drawer)
+   ========================================================================== */
+
+.constants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-bottom: 14px;
+}
+
+.const-item {
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.const-item:hover {
     background-color: var(--bg-btn-hover);
     border-color: var(--accent-operator);
     transform: translateX(4px);
 }
 
-.theme-btn.active {
-    border-color: var(--accent-operator);
-    background-color: var(--badge-bg);
-    font-weight: 700;
+.const-sym {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 800;
     color: var(--accent-operator);
+    width: 32px;
+    text-align: center;
 }
 
-/* Історія обчислень */
+.const-desc {
+    display: flex;
+    flex-direction: column;
+}
+
+.const-desc strong {
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.const-desc span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Історія та Експорт
+   ========================================================================== */
+
+.history-search-row input {
+    width: 100%;
+    background-color: var(--bg-display);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 9px 14px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+}
+
 #history-list {
     list-style: none;
-    max-height: 280px;
+    max-height: 260px;
     overflow-y: auto;
     padding-right: 4px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 #history-list li {
-    padding: 12px;
+    padding: 10px 14px;
     border-radius: 10px;
     margin-bottom: 6px;
     background-color: var(--bg-display);
@@ -836,13 +1553,13 @@ body::before {
 }
 
 #history-list li .calc-eq {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
 }
 
 #history-list li .calc-res {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: var(--text-main);
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
@@ -852,17 +1569,42 @@ body::before {
 .history-actions {
     display: flex;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 8px;
+}
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0;
+}
+
+.export-type-btn {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 16px;
+}
+
+.export-type-btn strong {
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.export-type-btn small {
+    font-size: 0.78rem;
+    color: var(--text-muted);
 }
 
 .btn-secondary {
     background-color: var(--bg-btn);
     color: var(--text-main);
     border: 1px solid var(--border-subtle);
-    padding: 11px;
+    padding: 10px 14px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     flex: 1;
     transition: all 0.2s ease;
@@ -870,15 +1612,11 @@ body::before {
 
 .btn-secondary:hover {
     background-color: var(--bg-btn-hover);
+    border-color: var(--accent-operator);
 }
 
 .btn-danger {
     color: var(--accent-clear) !important;
-}
-
-/* Стиль помилки */
-#zero-modal .modal-content h3 {
-    color: var(--accent-clear);
 }
 
 /* Таблиця гарячих клавіш */
@@ -886,19 +1624,19 @@ body::before {
     width: 100%;
     border-collapse: collapse;
     margin: 12px 0 16px;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
 
 .hotkeys-table td {
-    padding: 7px 10px;
+    padding: 6px 8px;
     border-bottom: 1px solid var(--border-subtle);
 }
 
 .hotkeys-table td:first-child {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--accent-operator);
-    width: 38%;
+    width: 40%;
 }
 
 /* ==========================================================================
@@ -923,8 +1661,8 @@ body::before {
     border: 1px solid var(--border-subtle);
     padding: 10px 18px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    font-size: 0.9rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    font-size: 0.88rem;
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -943,50 +1681,40 @@ body::before {
 }
 
 /* ==========================================================================
-   Адаптивність (Responsive Media Queries)
+   Адаптивність (Responsive Design)
    ========================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
     body {
-        padding: 12px 10px;
+        padding: 10px;
     }
     
     .app-container {
         flex-direction: column;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 16px;
+        gap: 14px;
+        margin-bottom: 14px;
     }
     
     .sidebar {
         width: 100%;
-        max-width: 380px;
-        padding: 16px;
+        max-width: 400px;
+        padding: 14px;
     }
     
     .sidebar-header {
-        flex-direction: row;
-        justify-content: space-between;
-        margin-bottom: 8px;
-    }
-    
-    .sidebar-header .app-icon {
-        font-size: 1.6rem;
-    }
-    
-    .sidebar-header h2 {
-        font-size: 1.15rem;
+        margin-bottom: 6px;
     }
     
     .sidebar-nav {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        gap: 6px;
     }
     
     .sidebar button {
-        padding: 10px 12px;
-        font-size: 0.88rem;
+        padding: 8px 10px;
+        font-size: 0.84rem;
     }
     
     .sidebar-extra {
@@ -995,19 +1723,19 @@ body::before {
     
     .calculator {
         width: 100%;
-        max-width: 380px;
+        max-width: 400px;
         padding: 16px;
     }
     
     .current-line {
-        font-size: 2rem;
+        font-size: 1.9rem;
     }
     
     .footer {
         flex-direction: column;
         padding: 14px 16px;
         text-align: center;
-        gap: 12px;
+        gap: 10px;
     }
     
     .footer-left,
@@ -1015,5 +1743,10 @@ body::before {
         justify-content: center;
         width: 100%;
         flex-wrap: wrap;
+    }
+
+    .theme-grid,
+    .wallpaper-presets-grid {
+        grid-template-columns: 1fr;
     }
 }
