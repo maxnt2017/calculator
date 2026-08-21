@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux - Master Application Logic
+ * Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -24,8 +24,10 @@ const state = {
     wallpaperOverlay: parseInt(localStorage.getItem('calc_wp_overlay') || '60'),
     customWallpaperUrl: localStorage.getItem('calc_custom_wp') || '',
     particlesEnabled: localStorage.getItem('calc_particles') !== 'off',
+    particleSpeedMode: localStorage.getItem('calc_part_mode') || 'standard', // 'standard', 'aurora', 'starlight', 'warp'
     history: JSON.parse(localStorage.getItem('calc_history') || '[]'),
     tapeEntries: JSON.parse(localStorage.getItem('calc_tape') || '[]'),
+    bookmarks: JSON.parse(localStorage.getItem('calc_bookmarks') || '[{"id":1,"title":"Швидкість світла c","val":"299792458","tag":"Фізика"},{"id":2,"title":"Золотий перетин φ","val":"1.618033988","tag":"Геометрія"}]'),
     operationsCount: 0,
     sessionSeconds: 0,
     bracketDepth: 0,
@@ -34,6 +36,9 @@ const state = {
     glassIntensity: localStorage.getItem('calc_glass') || 'heavy',
     activeGraphFunc: 'sin',
     activeDateTab: 'diff',
+    activeTriangleMode: 'sss', // 'sss', 'sas', 'asa'
+    triangleResults: { area: '14.697', perim: '18.00' },
+    loanResults: { monthly: '17205.12', total: '619384.32' },
     matrixSize: 2,
     matrixDetVal: '10',
     bitmaskValue: 42,
@@ -41,7 +46,7 @@ const state = {
     statMeanVal: '0',
     gcdVal: '12',
     lcmVal: '720',
-    funcSingleRes: '36',
+    funcSingleRes: '16',
     currencyRates: {
         UAH: 1.0,
         USD: 41.5,
@@ -235,10 +240,21 @@ setInterval(() => {
 }, 1000);
 
 // ==========================================================================
-// Живі Бордові Частинки на Canvas (Particle Constellation System)
+// Динамічний Canvas з Інтерактивними Частинками (Particle Dynamics)
 // ==========================================================================
 let particles = [];
 let animFrameId = null;
+let mousePos = { x: -1000, y: -1000, active: false };
+
+window.addEventListener('mousemove', (e) => {
+    mousePos.x = e.clientX;
+    mousePos.y = e.clientY;
+    mousePos.active = true;
+});
+
+window.addEventListener('mouseleave', () => {
+    mousePos.active = false;
+});
 
 function initParticlesCanvas() {
     const canvas = dom.bgParticlesCanvas;
@@ -248,15 +264,21 @@ function initParticlesCanvas() {
     canvas.height = window.innerHeight;
 
     particles = [];
-    const count = Math.floor((canvas.width * canvas.height) / 28000);
+    const count = Math.floor((canvas.width * canvas.height) / 26000);
+
+    let speedMult = 1.0;
+    if (state.particleSpeedMode === 'aurora') speedMult = 0.5;
+    if (state.particleSpeedMode === 'starlight') speedMult = 0.8;
+    if (state.particleSpeedMode === 'warp') speedMult = 2.4;
+
     for (let i = 0; i < count; i++) {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: (Math.random() - 0.5) * 0.4,
-            radius: Math.random() * 2 + 1,
-            color: Math.random() > 0.4 ? 'rgba(139, 21, 56, ' : 'rgba(245, 158, 11, '
+            vx: (Math.random() - 0.5) * 0.5 * speedMult,
+            vy: (Math.random() - 0.5) * 0.5 * speedMult,
+            radius: Math.random() * 2.2 + 1,
+            color: Math.random() > 0.4 ? 'rgba(192, 38, 211, ' : (Math.random() > 0.5 ? 'rgba(245, 158, 11, ' : 'rgba(255, 0, 85, ')
         });
     }
 
@@ -269,6 +291,18 @@ function initParticlesCanvas() {
 
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
+
+            // Інтерактивне гравітаційне тяжіння до миші
+            if (mousePos.active) {
+                const dx = mousePos.x - p.x;
+                const dy = mousePos.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 140 && dist > 10) {
+                    p.x += (dx / dist) * 0.6;
+                    p.y += (dy / dist) * 0.6;
+                }
+            }
+
             p.x += p.vx;
             p.y += p.vy;
 
@@ -279,7 +313,7 @@ function initParticlesCanvas() {
 
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color + '0.7)';
+            ctx.fillStyle = p.color + '0.75)';
             ctx.fill();
 
             for (let j = i + 1; j < particles.length; j++) {
@@ -287,11 +321,11 @@ function initParticlesCanvas() {
                 const dx = p.x - p2.x;
                 const dy = p.y - p2.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 110) {
+                if (dist < 115) {
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                     ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = `rgba(139, 21, 56, ${0.35 * (1 - dist / 110)})`;
+                    ctx.strokeStyle = `rgba(192, 38, 211, ${0.35 * (1 - dist / 115)})`;
                     ctx.lineWidth = 0.8;
                     ctx.stroke();
                 }
@@ -302,6 +336,17 @@ function initParticlesCanvas() {
 
     if (animFrameId) cancelAnimationFrame(animFrameId);
     render();
+}
+
+function setParticleSpeedMode(mode) {
+    state.particleSpeedMode = mode;
+    localStorage.setItem('calc_part_mode', mode);
+    document.querySelectorAll('.particle-preset-btn').forEach(b => {
+        b.classList.toggle('active', b.id === `part-btn-${mode}`);
+    });
+    initParticlesCanvas();
+    const names = { standard: 'Стандарт (Calm)', aurora: 'Aurora Flow', starlight: 'Starlight', warp: 'Warp Speed' };
+    showToast(`Динаміка частинок: ${names[mode]}`, '✨');
 }
 
 window.addEventListener('resize', () => {
@@ -325,6 +370,30 @@ function toggleParticlesSetting(val) {
         showToast('Фонові частинки вимкнено', '⏸️');
     }
 }
+
+// ==========================================================================
+// Хвильова Ripple-Анімація при кліках на кнопки
+// ==========================================================================
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.buttons button, .footer-btn, .conv-tab, .sidebar-nav button');
+    if (!btn) return;
+
+    const circle = document.createElement('span');
+    const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+    const radius = diameter / 2;
+    const rect = btn.getBoundingClientRect();
+
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.clientX - rect.left - radius}px`;
+    circle.style.top = `${e.clientY - rect.top - radius}px`;
+    circle.classList.add('btn-ripple-wave');
+
+    const ripple = btn.getElementsByClassName('btn-ripple-wave')[0];
+    if (ripple) ripple.remove();
+
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 550);
+});
 
 // ==========================================================================
 // Форматування чисел з розділювачами розрядів
@@ -1194,7 +1263,482 @@ function clearAllMemorySlots() {
 }
 
 // ==========================================================================
-// 1. НОВЕ v1.8.1: Розрахункова Стрічка з Нотатками (Paper Tape Roll)
+// 1. НОВЕ v1.8.3: Фізико-Математичний Формулатор (Formula Solver)
+// ==========================================================================
+function solvePhysicsFormula(type) {
+    if (type === 'ek') {
+        const m = parseFloat(document.getElementById('f-ek-m').value) || 0;
+        const v = parseFloat(document.getElementById('f-ek-v').value) || 0;
+        const ek = 0.5 * m * (v * v);
+        const el = document.getElementById('f-ek-res');
+        if (el) el.innerText = `${formatResult(ek)} Дж`;
+    } else if (type === 'ohm') {
+        const u = parseFloat(document.getElementById('f-ohm-u').value) || 0;
+        const r = parseFloat(document.getElementById('f-ohm-r').value) || 1;
+        const i = r !== 0 ? u / r : 0;
+        const p = u * i;
+        const el = document.getElementById('f-ohm-res');
+        if (el) el.innerText = `${formatResult(i)} А (${formatResult(p)} Вт)`;
+    } else if (type === 'fall') {
+        const t = parseFloat(document.getElementById('f-fall-t').value) || 0;
+        const g = parseFloat(document.getElementById('f-fall-g').value) || 9.806;
+        const h = 0.5 * g * (t * t);
+        const v = g * t;
+        const el = document.getElementById('f-fall-res');
+        if (el) el.innerText = `${formatResult(h)} м (${formatResult(v)} м/с)`;
+    } else if (type === 'rho') {
+        const m = parseFloat(document.getElementById('f-rho-m').value) || 0;
+        const v = parseFloat(document.getElementById('f-rho-v').value) || 1;
+        const rho = v !== 0 ? m / v : 0;
+        const el = document.getElementById('f-rho-res');
+        if (el) el.innerText = `${formatResult(rho)} кг/м³`;
+    } else if (type === 'grav') {
+        const m1 = parseFloat(document.getElementById('f-grav-m1').value) || 0;
+        const m2 = parseFloat(document.getElementById('f-grav-m2').value) || 0;
+        const G = 6.6743e-11;
+        const r = 6371000; // радіус Землі за замовчуванням
+        const f = (G * m1 * m2) / (r * r);
+        const el = document.getElementById('f-grav-res');
+        if (el) el.innerText = `${formatResult(f)} Н`;
+    } else if (type === 'gas') {
+        const n = parseFloat(document.getElementById('f-gas-n').value) || 1;
+        const t = parseFloat(document.getElementById('f-gas-t').value) || 293.15;
+        const R = 8.314;
+        const V = 0.0224;
+        const p = (n * R * t) / V;
+        const el = document.getElementById('f-gas-res');
+        if (el) el.innerText = `${formatResult(p)} Па`;
+    }
+}
+
+function insertFormulaValToCalc(resId) {
+    audio.playAction();
+    const el = document.getElementById(resId);
+    if (el) {
+        const raw = el.innerText.split(' ')[0].replace(/[^\d.-]/g, '');
+        if (raw) {
+            state.currentInput = raw;
+            state.shouldResetDisplay = true;
+            updateDisplay();
+            closeModal('formula-solver-modal');
+            showToast(`Значення ${raw} вставлено`, '⚡');
+        }
+    }
+}
+
+// ==========================================================================
+// 2. НОВЕ v1.8.3: Геометричний Розв'язувач Трикутників (Triangle Solver)
+// ==========================================================================
+function switchTriangleMode(mode) {
+    state.activeTriangleMode = mode;
+    document.querySelectorAll('[data-ttab]').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-ttab') === mode);
+    });
+
+    const l1 = document.getElementById('tri-lbl-1');
+    const l2 = document.getElementById('tri-lbl-2');
+    const l3 = document.getElementById('tri-lbl-3');
+    const i1 = document.getElementById('tri-val-1');
+    const i2 = document.getElementById('tri-val-2');
+    const i3 = document.getElementById('tri-val-3');
+
+    if (mode === 'sss') {
+        if (l1) l1.innerText = 'Сторона a:';
+        if (l2) l2.innerText = 'Сторона b:';
+        if (l3) l3.innerText = 'Сторона c:';
+        if (i1) i1.value = '5';
+        if (i2) i2.value = '6';
+        if (i3) i3.value = '7';
+    } else if (mode === 'sas') {
+        if (l1) l1.innerText = 'Сторона a:';
+        if (l2) l2.innerText = 'Сторона b:';
+        if (l3) l3.innerText = 'Кут γ між ними (градуси):';
+        if (i1) i1.value = '5';
+        if (i2) i2.value = '6';
+        if (i3) i3.value = '60';
+    } else if (mode === 'asa') {
+        if (l1) l1.innerText = 'Сторона a:';
+        if (l2) l2.innerText = 'Кут β (градуси):';
+        if (l3) l3.innerText = 'Кут γ (градуси):';
+        if (i1) i1.value = '6';
+        if (i2) i2.value = '50';
+        if (i3) i3.value = '70';
+    }
+    solveTriangleGeometry();
+}
+
+function solveTriangleGeometry() {
+    let v1 = parseFloat(document.getElementById('tri-val-1').value) || 0;
+    let v2 = parseFloat(document.getElementById('tri-val-2').value) || 0;
+    let v3 = parseFloat(document.getElementById('tri-val-3').value) || 0;
+
+    let a = 0, b = 0, c = 0;
+    let alpha = 0, beta = 0, gamma = 0;
+
+    const areaEl = document.getElementById('tri-res-area');
+    const perimEl = document.getElementById('tri-res-perim');
+    const anglesEl = document.getElementById('tri-res-angles');
+    const radiiEl = document.getElementById('tri-res-radii');
+    const badgeEl = document.getElementById('tri-type-badge');
+
+    if (state.activeTriangleMode === 'sss') {
+        a = v1; b = v2; c = v3;
+        if (a + b <= c || a + c <= b || b + c <= a || a <= 0 || b <= 0 || c <= 0) {
+            if (badgeEl) badgeEl.innerText = 'Трикутник з такими сторонами не існує!';
+            if (areaEl) areaEl.innerText = '—';
+            if (perimEl) perimEl.innerText = '—';
+            return;
+        }
+        // Теорема косинусів
+        const cosA = (b * b + c * c - a * a) / (2 * b * c);
+        const cosB = (a * a + c * c - b * b) / (2 * a * c);
+        const cosC = (a * a + b * b - c * c) / (2 * a * b);
+        alpha = Math.acos(Math.max(-1, Math.min(1, cosA))) * (180 / Math.PI);
+        beta = Math.acos(Math.max(-1, Math.min(1, cosB))) * (180 / Math.PI);
+        gamma = Math.acos(Math.max(-1, Math.min(1, cosC))) * (180 / Math.PI);
+    } else if (state.activeTriangleMode === 'sas') {
+        a = v1; b = v2; gamma = v3;
+        if (gamma <= 0 || gamma >= 180 || a <= 0 || b <= 0) {
+            if (badgeEl) badgeEl.innerText = 'Некоректний кут або сторони';
+            return;
+        }
+        const radG = gamma * (Math.PI / 180);
+        c = Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(radG));
+        const cosA = (b * b + c * c - a * a) / (2 * b * c);
+        alpha = Math.acos(Math.max(-1, Math.min(1, cosA))) * (180 / Math.PI);
+        beta = 180 - alpha - gamma;
+    } else if (state.activeTriangleMode === 'asa') {
+        a = v1; beta = v2; gamma = v3;
+        alpha = 180 - beta - gamma;
+        if (alpha <= 0 || beta <= 0 || gamma <= 0 || a <= 0) {
+            if (badgeEl) badgeEl.innerText = 'Сума кутів перевищує 180°';
+            return;
+        }
+        const radA = alpha * (Math.PI / 180);
+        const radB = beta * (Math.PI / 180);
+        const radG = gamma * (Math.PI / 180);
+        b = a * (Math.sin(radB) / Math.sin(radA));
+        c = a * (Math.sin(radG) / Math.sin(radA));
+    }
+
+    const perim = a + b + c;
+    const s = perim / 2;
+    const area = Math.sqrt(Math.max(0, s * (s - a) * (s - b) * (s - c)));
+    const rIn = area > 0 ? area / s : 0;
+    const rOut = area > 0 ? (a * b * c) / (4 * area) : 0;
+
+    state.triangleResults.area = formatResult(area);
+    state.triangleResults.perim = formatResult(perim);
+
+    if (areaEl) areaEl.innerText = state.triangleResults.area;
+    if (perimEl) perimEl.innerText = state.triangleResults.perim;
+    if (anglesEl) anglesEl.innerText = `${alpha.toFixed(1)}° / ${beta.toFixed(1)}° / ${gamma.toFixed(1)}°`;
+    if (radiiEl) radiiEl.innerText = `r = ${rIn.toFixed(2)} | R = ${rOut.toFixed(2)}`;
+
+    // Класифікація
+    let typeStr = '';
+    if (Math.abs(a - b) < 0.01 && Math.abs(b - c) < 0.01) typeStr = 'Рівносторонній';
+    else if (Math.abs(a - b) < 0.01 || Math.abs(b - c) < 0.01 || Math.abs(a - c) < 0.01) typeStr = 'Рівнобедрений';
+    else typeStr = 'Різносторонній';
+
+    const maxAngle = Math.max(alpha, beta, gamma);
+    if (Math.abs(maxAngle - 90) < 0.1) typeStr += ', Прямокутний';
+    else if (maxAngle > 90) typeStr += ', Тупокутний';
+    else typeStr += ', Гострокутний';
+
+    if (badgeEl) badgeEl.innerText = typeStr;
+}
+
+function insertTriangleAreaToCalc() {
+    audio.playAction();
+    state.currentInput = state.triangleResults.area;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('triangle-solver-modal');
+    showToast(`Площу S = ${state.triangleResults.area} вставлено`, '📐');
+}
+
+function insertTrianglePerimToCalc() {
+    audio.playAction();
+    state.currentInput = state.triangleResults.perim;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('triangle-solver-modal');
+    showToast(`Периметр P = ${state.triangleResults.perim} вставлено`, '📐');
+}
+
+// ==========================================================================
+// 3. НОВЕ v1.8.3: Іпотечний та Кредитний Калькулятор (Loan Amortization)
+// ==========================================================================
+function calculateLoanAmortization() {
+    const P = parseFloat(document.getElementById('loan-amount').value) || 0;
+    const annualRate = parseFloat(document.getElementById('loan-rate').value) || 0;
+    const n = parseInt(document.getElementById('loan-term').value, 10) || 1;
+    const type = document.getElementById('loan-type').value;
+
+    const monthlyEl = document.getElementById('loan-monthly-val');
+    const interestEl = document.getElementById('loan-interest-val');
+    const totalEl = document.getElementById('loan-total-val');
+    const pctEl = document.getElementById('loan-pct-val');
+    const tbody = document.getElementById('loan-table-tbody');
+
+    if (P <= 0 || n <= 0) return;
+
+    const r = annualRate / 100 / 12; // місячна ставка
+    let monthlyPay = 0;
+    let totalPaid = 0;
+    let totalInterest = 0;
+
+    if (tbody) tbody.innerHTML = '';
+
+    if (type === 'annuity') {
+        if (r > 0) {
+            monthlyPay = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        } else {
+            monthlyPay = P / n;
+        }
+        totalPaid = monthlyPay * n;
+        totalInterest = totalPaid - P;
+
+        let balance = P;
+        const previewLimit = Math.min(n, 24); // показуємо до 24 рядків
+        for (let m = 1; m <= previewLimit; m++) {
+            const interest = balance * r;
+            const principal = monthlyPay - interest;
+            balance = Math.max(0, balance - principal);
+
+            if (tbody) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center;">${m}</td>
+                    <td>${monthlyPay.toFixed(2)}</td>
+                    <td>${principal.toFixed(2)}</td>
+                    <td>${interest.toFixed(2)}</td>
+                    <td>${balance.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+    } else {
+        // Диференційований
+        const principalFixed = P / n;
+        let balance = P;
+        let firstMonthPay = 0;
+
+        for (let m = 1; m <= n; m++) {
+            const interest = balance * r;
+            const pay = principalFixed + interest;
+            if (m === 1) firstMonthPay = pay;
+            totalPaid += pay;
+            balance = Math.max(0, balance - principalFixed);
+
+            if (tbody && m <= 24) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center;">${m}</td>
+                    <td>${pay.toFixed(2)}</td>
+                    <td>${principalFixed.toFixed(2)}</td>
+                    <td>${interest.toFixed(2)}</td>
+                    <td>${balance.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+        totalInterest = totalPaid - P;
+        monthlyPay = firstMonthPay; // стартовий платіж
+    }
+
+    state.loanResults.monthly = monthlyPay.toFixed(2);
+    state.loanResults.total = totalPaid.toFixed(2);
+
+    if (monthlyEl) monthlyEl.innerText = `${monthlyPay.toFixed(2)} ₴${type === 'diff' ? ' (1-й міс.)' : ''}`;
+    if (interestEl) interestEl.innerText = `${totalInterest.toFixed(2)} ₴`;
+    if (totalEl) totalEl.innerText = `${totalPaid.toFixed(2)} ₴`;
+    if (pctEl) pctEl.innerText = `+${((totalInterest / P) * 100).toFixed(2)}%`;
+}
+
+function insertLoanMonthlyToCalc() {
+    audio.playAction();
+    state.currentInput = state.loanResults.monthly;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('loan-calc-modal');
+    showToast(`Платіж ${state.loanResults.monthly} ₴ вставлено`, '🏦');
+}
+
+function insertLoanTotalToCalc() {
+    audio.playAction();
+    state.currentInput = state.loanResults.total;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('loan-calc-modal');
+    showToast(`Загальну вартість ${state.loanResults.total} ₴ вставлено`, '🏦');
+}
+
+// ==========================================================================
+// 4. НОВЕ v1.8.3: Блокнот Обраних Виразів (Bookmarks & Memory Pad)
+// ==========================================================================
+function renderBookmarks() {
+    const container = document.getElementById('bookmarks-list-box');
+    if (!container) return;
+
+    if (state.bookmarks.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Блокнот порожній. Додайте важливі числа або формули.</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+    state.bookmarks.forEach((bm, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bookmark-card';
+        card.innerHTML = `
+            <div style="flex-grow:1;">
+                <span class="bookmark-tag-chip">${bm.tag || 'Збережено'}</span>
+                <div style="font-weight:700; color:var(--text-primary); font-size:0.9rem;">${bm.title}</div>
+                <div style="font-family:'JetBrains Mono', monospace; color:var(--accent-operator); font-size:0.95rem; font-weight:800;">${bm.val}</div>
+            </div>
+            <div class="bookmark-actions">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="insertBookmarkVal('${bm.val}')" title="Вставити в калькулятор">📥 Вставити</button>
+                <button class="btn-secondary btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteBookmark(${bm.id})">🗑️</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function addCurrentAsBookmark() {
+    const titleInp = document.getElementById('bm-title-input');
+    const valInp = document.getElementById('bm-val-input');
+    const title = titleInp ? titleInp.value.trim() || 'Користувацький запис' : 'Запис';
+    const val = (valInp && valInp.value.trim()) ? valInp.value.trim() : state.currentInput;
+
+    audio.playAction();
+    state.bookmarks.unshift({
+        id: Date.now(),
+        title,
+        val,
+        tag: 'Мій запис'
+    });
+    localStorage.setItem('calc_bookmarks', JSON.stringify(state.bookmarks));
+    if (titleInp) titleInp.value = '';
+    if (valInp) valInp.value = '';
+    renderBookmarks();
+    showToast(`Запис "${title}" додано до блокнота`, '🔖');
+}
+
+function insertBookmarkVal(val) {
+    audio.playAction();
+    state.currentInput = val.toString();
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('bookmarks-modal');
+    showToast(`Значення ${val} вставлено`, '📥');
+}
+
+function deleteBookmark(id) {
+    audio.playAction();
+    state.bookmarks = state.bookmarks.filter(b => b.id !== id);
+    localStorage.setItem('calc_bookmarks', JSON.stringify(state.bookmarks));
+    renderBookmarks();
+    showToast('Запис видалено', '🗑️');
+}
+
+function clearAllBookmarks() {
+    audio.playAction();
+    state.bookmarks = [];
+    localStorage.removeItem('calc_bookmarks');
+    renderBookmarks();
+    showToast('Блокнот очищено', '🧹');
+}
+
+// ==========================================================================
+// 5. НОВЕ v1.8.3: 3-Канальний Живий HSL Мікшер та Гармонії
+// ==========================================================================
+let mixerHue = 340;
+let mixerSat = 80;
+let mixerDark = 8;
+
+function updateLiveHueMixer(val) {
+    mixerHue = parseInt(val);
+    const label = document.getElementById('hue-accent-val');
+    if (label) label.innerText = `${val}°`;
+    applyLiveHslMixer();
+}
+
+function updateLiveSatMixer(val) {
+    mixerSat = parseInt(val);
+    const label = document.getElementById('sat-accent-val');
+    if (label) label.innerText = `${val}%`;
+    applyLiveHslMixer();
+}
+
+function updateLiveDarkMixer(val) {
+    mixerDark = parseInt(val);
+    const label = document.getElementById('dark-bg-val');
+    if (label) label.innerText = `${val}%`;
+    applyLiveHslMixer();
+}
+
+function applyLiveHslMixer() {
+    const accent = `hsl(${mixerHue}, ${mixerSat}%, 45%)`;
+    const glow = `hsl(${mixerHue}, ${mixerSat}%, 60%)`;
+    const bg = `hsl(${mixerHue}, ${Math.max(10, mixerSat - 40)}%, ${mixerDark}%)`;
+
+    document.documentElement.style.setProperty('--accent-operator', accent);
+    document.documentElement.style.setProperty('--accent-equals', glow);
+    document.documentElement.style.setProperty('--bg-body', bg);
+    document.documentElement.style.setProperty('--badge-bg', `hsla(${mixerHue}, ${mixerSat}%, 50%, 0.18)`);
+    document.documentElement.style.setProperty('--badge-border', `hsla(${mixerHue}, ${mixerSat}%, 50%, 0.45)`);
+}
+
+function applyColorHarmony(preset) {
+    audio.playAction();
+    const hSlider = document.getElementById('slider-accent-hue');
+    const sSlider = document.getElementById('slider-accent-sat');
+    const dSlider = document.getElementById('slider-bg-dark');
+
+    if (preset === 'wine_gold') {
+        mixerHue = 345; mixerSat = 85; mixerDark = 6;
+        document.documentElement.style.setProperty('--accent-operator', '#8b1538');
+        document.documentElement.style.setProperty('--accent-equals', '#f59e0b');
+        document.documentElement.style.setProperty('--bg-body', '#0d0205');
+    } else if (preset === 'ruby_cyber') {
+        mixerHue = 350; mixerSat = 100; mixerDark = 4;
+        document.documentElement.style.setProperty('--accent-operator', '#ff0055');
+        document.documentElement.style.setProperty('--accent-equals', '#ff00a0');
+        document.documentElement.style.setProperty('--bg-body', '#060003');
+    } else if (preset === 'blood_moon') {
+        mixerHue = 0; mixerSat = 90; mixerDark = 5;
+        document.documentElement.style.setProperty('--accent-operator', '#dc2626');
+        document.documentElement.style.setProperty('--accent-equals', '#ea580c');
+        document.documentElement.style.setProperty('--bg-body', '#0c0203');
+    } else if (preset === 'cosmic_amethyst') {
+        mixerHue = 290; mixerSat = 85; mixerDark = 6;
+        document.documentElement.style.setProperty('--accent-operator', '#c026d3');
+        document.documentElement.style.setProperty('--accent-equals', '#e11d48');
+        document.documentElement.style.setProperty('--bg-body', '#0e010e');
+    } else if (preset === 'emerald_wine') {
+        mixerHue = 160; mixerSat = 80; mixerDark = 5;
+        document.documentElement.style.setProperty('--accent-operator', '#10b981');
+        document.documentElement.style.setProperty('--accent-equals', '#8b1538');
+        document.documentElement.style.setProperty('--bg-body', '#02120e');
+    }
+
+    if (hSlider) hSlider.value = mixerHue;
+    if (sSlider) sSlider.value = mixerSat;
+    if (dSlider) dSlider.value = mixerDark;
+    const hL = document.getElementById('hue-accent-val');
+    const sL = document.getElementById('sat-accent-val');
+    const dL = document.getElementById('dark-bg-val');
+    if (hL) hL.innerText = `${mixerHue}°`;
+    if (sL) sL.innerText = `${mixerSat}%`;
+    if (dL) dL.innerText = `${mixerDark}%`;
+
+    showToast(`Гармонію ${preset} застосовано`, '🎨');
+}
+
+// ==========================================================================
+// Розрахункова Стрічка (Paper Tape Roll)
 // ==========================================================================
 function addTapeEntry(equation, result, note = '') {
     const entry = {
@@ -1274,7 +1818,7 @@ function printTapeRoll() {
 
 function copyTapeAsText() {
     audio.playAction();
-    let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.1 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
+    let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.3 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
     let sum = 0;
     state.tapeEntries.forEach((it, i) => {
         text += `${i+1}. ${it.equation} = ${it.result} ${it.note ? '(' + it.note + ')' : ''}\n`;
@@ -1294,7 +1838,7 @@ function clearTapeRoll() {
 }
 
 // ==========================================================================
-// 2. НОВЕ v1.8.1: НСД, НСК та Прості Множники (Prime Factorization, GCD & LCM)
+// НСД, НСК та Прості Множники
 // ==========================================================================
 function solvePrimeFactorization() {
     const numInput = document.getElementById('prime-num-input');
@@ -1318,7 +1862,6 @@ function solvePrimeFactorization() {
         return;
     }
 
-    // Розклад на прості множники
     let temp = n;
     const factors = {};
     for (let d = 2; d * d <= temp; d++) {
@@ -1351,7 +1894,6 @@ function solvePrimeFactorization() {
         isPrimeBadge.style.color = isPrime ? 'var(--accent-equals)' : 'var(--accent-operator)';
     }
 
-    // Пошук всіх дільників
     const divisors = [];
     for (let i = 1; i * i <= n; i++) {
         if (n % i === 0) {
@@ -1444,7 +1986,7 @@ function insertLcmToCalc() {
 }
 
 // ==========================================================================
-// 3. НОВЕ v1.8.1: Порівняння Цін за Одиницю (Unit Price Deal Comparator)
+// Порівняння Цін за Одиницю
 // ==========================================================================
 function calculateUnitDeal() {
     const pA = parseFloat(document.getElementById('deal-a-price').value) || 0;
@@ -1455,7 +1997,6 @@ function calculateUnitDeal() {
     const qB = parseFloat(document.getElementById('deal-b-qty').value) || 1;
     const uB = document.getElementById('deal-b-unit').value;
 
-    // Нормалізація до базової одиниці (кг, л, шт)
     const factorMap = { g: 0.001, kg: 1.0, ml: 0.001, l: 1.0, pcs: 1.0 };
     const normA = qA * (factorMap[uA] || 1.0);
     const normB = qB * (factorMap[uB] || 1.0);
@@ -1500,7 +2041,7 @@ function calculateUnitDeal() {
 }
 
 // ==========================================================================
-// 4. НОВЕ v1.8.1: Обчислювач Функцій f(x) та Таблиці Значень
+// Обчислювач Функцій f(x)
 // ==========================================================================
 function parseAndEvalFormula(expr, xVal) {
     try {
@@ -1516,9 +2057,7 @@ function parseAndEvalFormula(expr, xVal) {
             .replace(/pi/g, 'Math.PI')
             .replace(/e/g, 'Math.E');
 
-        // Безпечна заміна x на число
         clean = clean.replace(/\bx\b/g, `(${xVal})`);
-        // Вставка множення при 2(x) або 2x
         clean = clean.replace(/(\d)\(/g, '$1*(');
 
         const res = Function(`'use strict'; return (${clean})`)();
@@ -1550,7 +2089,7 @@ function buildFuncTable() {
 
     tbody.innerHTML = '';
     const safeStep = Math.max(0.01, Math.abs(step));
-    const safeEnd = Math.min(start + (safeStep * 50), end); // максимум 50 рядків
+    const safeEnd = Math.min(start + (safeStep * 50), end);
 
     for (let x = start; x <= safeEnd + 0.0001; x += safeStep) {
         const val = parseAndEvalFormula(expr, x);
@@ -1571,7 +2110,7 @@ function insertFuncResToCalc() {
     state.shouldResetDisplay = true;
     updateDisplay();
     closeModal('func-eval-modal');
-    showToast(`Значення f(x) = ${state.funcSingleRes} вставлено`, '📐');
+    showToast(`Значення f(x) = ${state.funcSingleRes} вставлено`, '📈');
 }
 
 function insertTableValToCalc(val) {
@@ -1648,7 +2187,6 @@ function solveMatrixMath() {
     state.matrixDetVal = det.toFixed(4);
     if (detEl) detEl.innerText = state.matrixDetVal;
 
-    // Транспонована
     if (tBox) {
         tBox.className = `matrix-grid-mini matrix-${size}x${size}`;
         tBox.innerHTML = '';
@@ -1661,7 +2199,6 @@ function solveMatrixMath() {
         }
     }
 
-    // Обернена
     if (invBox) {
         invBox.className = `matrix-grid-mini matrix-${size}x${size}`;
         invBox.innerHTML = '';
@@ -1699,7 +2236,7 @@ function resetMatrixInputs() {
 }
 
 // ==========================================================================
-// Інтерактивний Бітовий Інспектор (Bitmask Visualizer)
+// Інтерактивний Бітовий Інспектор
 // ==========================================================================
 function renderBitmaskGrid() {
     const grid = document.getElementById('bits-interactive-grid');
@@ -1850,7 +2387,7 @@ function copyCurrencyVal() {
 }
 
 // ==========================================================================
-// Головний розрахунок (Calculate)
+// Головний розрахунок (Calculate) + Результатне Світіння
 // ==========================================================================
 function calculate(saveToHistory = true) {
     let computation;
@@ -1915,6 +2452,12 @@ function calculate(saveToHistory = true) {
     state.operator = undefined;
     state.shouldResetDisplay = true;
     updateDisplay();
+
+    // Ефект неонового підсвічування дисплея
+    if (dom.display) {
+        dom.display.classList.add('display-result-glow');
+        setTimeout(() => dom.display.classList.remove('display-result-glow'), 600);
+    }
 }
 
 function formatResult(num) {
@@ -2260,7 +2803,7 @@ function setFontFamily(fontClass) {
 }
 
 // ==========================================================================
-// Теми та Кольори (24 Themes)
+// Теми та Кольори (28 Themes)
 // ==========================================================================
 function setTheme(themeName) {
     audio.playAction();
@@ -2286,6 +2829,10 @@ function setCustomAccent(colorHex, name) {
 
 function getThemeNameUA(theme) {
     const names = {
+        amethyst_crimson: 'Amethyst Crimson Royal',
+        cyber_ruby: 'Cyber Ruby Neon',
+        golden_bordeaux: 'Golden Bordeaux Imperial',
+        midnight_sapphire: 'Midnight Sapphire Velvet',
         bordeaux_luxury: 'Bordeaux Imperial Wine',
         velvet_burgundy: 'Velvet Burgundy Noir',
         autumn_crimson: 'Autumn Crimson',
@@ -2315,7 +2862,7 @@ function getThemeNameUA(theme) {
 }
 
 // ==========================================================================
-// Wallpaper Studio
+// Wallpaper Studio (9 HD Шпалер)
 // ==========================================================================
 function setWallpaper(wpName) {
     audio.playAction();
@@ -2332,6 +2879,9 @@ function setWallpaper(wpName) {
 
 function getWallpaperNameUA(wp) {
     const map = {
+        amethyst_crystal: 'Аметистовий Кристал',
+        cyber_matrix_red: 'Бордова Кібер-Сітка',
+        aurora_ruby: 'Рубінове Полярне Сяйво',
         burgundy: 'Bordeaux Velvet',
         nebula_wine: 'Wine Nebula Space',
         cyber_redstone3: 'Redstone 3 Cybernet',
@@ -2350,7 +2900,13 @@ function applyWallpaperToDom() {
 
     dom.bgWallpaper.className = 'bg-wallpaper-layer';
 
-    if (state.currentWallpaper === 'burgundy') {
+    if (state.currentWallpaper === 'amethyst_crystal') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/amethyst_crystal.jpg')";
+    } else if (state.currentWallpaper === 'cyber_matrix_red') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/cyber_matrix_red.jpg')";
+    } else if (state.currentWallpaper === 'aurora_ruby') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/aurora_ruby.jpg')";
+    } else if (state.currentWallpaper === 'burgundy') {
         dom.bgWallpaper.style.backgroundImage = "url('images/burgundy.jpg')";
     } else if (state.currentWallpaper === 'nebula_wine') {
         dom.bgWallpaper.style.backgroundImage = "url('images/nebula_wine.jpg')";
@@ -2458,7 +3014,6 @@ function plotFunction(funcName) {
     };
     if (label) label.innerHTML = `Функція: <strong>${names[funcName] || funcName}</strong>`;
 
-    // Сітка
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.lineWidth = 1;
     for (let x = 0; x <= w; x += 30) {
@@ -2906,7 +3461,7 @@ function exportHistoryFormat(format) {
         mimeType = 'application/json;charset=utf-8';
         fileExt = 'json';
         content = JSON.stringify({
-            application: "Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux",
+            application: "Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged",
             exportedAt: new Date().toISOString(),
             author: "MaxNT Official, 2026",
             totalRecords: state.history.length,
@@ -2914,7 +3469,7 @@ function exportHistoryFormat(format) {
         }, null, 2);
     } else {
         content = `====================================================\n`;
-        content += `  КАЛЬКУЛЯТОР PRO v1.8.1 (Build 180) Redstone 3.1 Bordeaux - ІСТОРІЯ\n`;
+        content += `  КАЛЬКУЛЯТОР PRO v1.8.3 (Build 184) Redstone 3.3 Bordeaux - ІСТОРІЯ\n`;
         content += `  Дата експорту: ${new Date().toLocaleString('uk-UA')}\n`;
         content += `  Автор: MaxNT Official, 2026\n`;
         content += `====================================================\n\n`;
@@ -2929,7 +3484,7 @@ function exportHistoryFormat(format) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Calculator_History_v1.8.1_${dateStr}.${fileExt}`;
+    a.download = `Calculator_History_v1.8.3_${dateStr}.${fileExt}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2971,6 +3526,23 @@ function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
+        if (modalId === 'formula-solver-modal') {
+            solvePhysicsFormula('ek');
+            solvePhysicsFormula('ohm');
+            solvePhysicsFormula('fall');
+            solvePhysicsFormula('rho');
+            solvePhysicsFormula('grav');
+            solvePhysicsFormula('gas');
+        }
+        if (modalId === 'triangle-solver-modal') {
+            solveTriangleGeometry();
+        }
+        if (modalId === 'loan-calc-modal') {
+            calculateLoanAmortization();
+        }
+        if (modalId === 'bookmarks-modal') {
+            renderBookmarks();
+        }
         if (modalId === 'history-modal') {
             if (dom.historySearch) dom.historySearch.value = '';
             renderHistory();
@@ -3235,6 +3807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDisplay();
     renderHistory();
     renderTapeRoll();
+    renderBookmarks();
     updateMemorySlotsUI();
 
     // Запуск фонових частинок Canvas
@@ -3242,7 +3815,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticlesCanvas();
     }
 
-    console.log('%c 🍷 Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux Loaded %c', 
-        'background: linear-gradient(90deg, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
+    console.log('%c 🍷 Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged Loaded %c', 
+        'background: linear-gradient(90deg, #c026d3, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
         '');
 });

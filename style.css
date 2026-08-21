@@ -588,6 +588,98 @@ body[data-theme="glass"] {
     --badge-border: rgba(255, 255, 255, 0.3);
 }
 
+/* 25. Amethyst Crimson Royal */
+body[data-theme="amethyst_crimson"] {
+    --bg-body: #0d010e;
+    --bg-card: rgba(28, 4, 30, 0.88);
+    --bg-display: rgba(16, 2, 18, 0.94);
+    --bg-sidebar: rgba(22, 3, 24, 0.82);
+    --bg-btn: rgba(58, 8, 64, 0.88);
+    --bg-btn-hover: rgba(90, 14, 100, 0.95);
+    --text-primary: #fdf4ff;
+    --text-muted: #e879f9;
+    --accent-operator: #c026d3;
+    --accent-equals: #e11d48;
+    --accent-sci: #581c87;
+    --accent-sci-text: #fae8ff;
+    --accent-action: #3b0764;
+    --accent-clear: #be123c;
+    --accent-memory: #a21caf;
+    --border-color: rgba(192, 38, 211, 0.32);
+    --shadow-color: rgba(192, 38, 211, 0.4);
+    --badge-bg: rgba(192, 38, 211, 0.18);
+    --badge-border: rgba(192, 38, 211, 0.45);
+}
+
+/* 26. Cyber Ruby Neon */
+body[data-theme="cyber_ruby"] {
+    --bg-body: #050002;
+    --bg-card: rgba(20, 1, 9, 0.92);
+    --bg-display: rgba(10, 0, 4, 0.96);
+    --bg-sidebar: rgba(15, 1, 7, 0.85);
+    --bg-btn: rgba(45, 2, 20, 0.9);
+    --bg-btn-hover: rgba(80, 4, 35, 0.98);
+    --text-primary: #fff0f5;
+    --text-muted: #ff2a6d;
+    --accent-operator: #ff0055;
+    --accent-equals: #ff00a0;
+    --accent-sci: #4a0421;
+    --accent-sci-text: #ffccdd;
+    --accent-action: #2b0214;
+    --accent-clear: #ff0033;
+    --accent-memory: #d90429;
+    --border-color: rgba(255, 0, 85, 0.38);
+    --shadow-color: rgba(255, 0, 85, 0.45);
+    --badge-bg: rgba(255, 0, 85, 0.2);
+    --badge-border: rgba(255, 0, 85, 0.5);
+}
+
+/* 27. Golden Bordeaux Imperial */
+body[data-theme="golden_bordeaux"] {
+    --bg-body: #0c0205;
+    --bg-card: rgba(28, 5, 12, 0.9);
+    --bg-display: rgba(15, 2, 6, 0.95);
+    --bg-sidebar: rgba(22, 4, 10, 0.84);
+    --bg-btn: rgba(56, 10, 24, 0.88);
+    --bg-btn-hover: rgba(88, 16, 38, 0.96);
+    --text-primary: #fffbeb;
+    --text-muted: #fcd34d;
+    --accent-operator: #d97706;
+    --accent-equals: #fbbf24;
+    --accent-sci: #881337;
+    --accent-sci-text: #fef3c7;
+    --accent-action: #4c0519;
+    --accent-clear: #b91c1c;
+    --accent-memory: #b45309;
+    --border-color: rgba(217, 119, 6, 0.35);
+    --shadow-color: rgba(217, 119, 6, 0.4);
+    --badge-bg: rgba(217, 119, 6, 0.18);
+    --badge-border: rgba(217, 119, 6, 0.48);
+}
+
+/* 28. Midnight Sapphire Velvet */
+body[data-theme="midnight_sapphire"] {
+    --bg-body: #020617;
+    --bg-card: rgba(15, 23, 42, 0.88);
+    --bg-display: rgba(8, 12, 28, 0.95);
+    --bg-sidebar: rgba(12, 18, 36, 0.8);
+    --bg-btn: rgba(30, 41, 59, 0.88);
+    --bg-btn-hover: rgba(51, 65, 85, 0.96);
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-operator: #38bdf8;
+    --accent-equals: #f43f5e;
+    --accent-sci: #1e3a8a;
+    --accent-sci-text: #e0f2fe;
+    --accent-action: #0f172a;
+    --accent-clear: #ef4444;
+    --accent-memory: #0284c7;
+    --border-color: rgba(56, 189, 248, 0.3);
+    --shadow-color: rgba(56, 189, 248, 0.35);
+    --badge-bg: rgba(56, 189, 248, 0.15);
+    --badge-border: rgba(56, 189, 248, 0.4);
+}
+
 /* --------------------------------------------------------------------------
    3. Базове Скидання та Головний Каркас
    -------------------------------------------------------------------------- */
@@ -2960,9 +3052,402 @@ body {
     animation: toastSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes toastSlideIn {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+/* --------------------------------------------------------------------------
+   18. НОВЕ v1.8.3: Анімації Кліків та Світіння Дисплея (Dynamic Animations)
+   -------------------------------------------------------------------------- */
+.buttons button {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 75%);
+    transform: scale(0);
+    animation: buttonRippleAnim 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+}
+
+@keyframes buttonRippleAnim {
+    to {
+        transform: scale(3.5);
+        opacity: 0;
+    }
+}
+
+.display-result-glow {
+    animation: resultGlowPulse 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes resultGlowPulse {
+    0% {
+        text-shadow: 0 0 30px var(--accent-equals), 0 0 50px var(--accent-operator);
+        transform: scale(1.03);
+    }
+    100% {
+        text-shadow: none;
+        transform: scale(1);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   19. НОВЕ v1.8.3: Фізико-Математичний Формулатор (Formula Solver)
+   -------------------------------------------------------------------------- */
+.formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.formula-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.formula-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-operator);
+}
+
+.formula-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formula-card-title {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+}
+
+.formula-math-preview {
+    background: var(--bg-display);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--accent-equals);
+    text-align: center;
+    border: 1px dashed var(--border-color);
+}
+
+.formula-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.formula-input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.formula-input-item label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.formula-input-item input {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.formula-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+.formula-res-val {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent-operator);
+}
+
+/* --------------------------------------------------------------------------
+   20. НОВЕ v1.8.3: Геометричний Розв'язувач Трикутників (Triangle Solver)
+   -------------------------------------------------------------------------- */
+.triangle-sections-wrapper {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.triangle-canvas-box {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+}
+
+.triangle-data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.triangle-stat-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.triangle-stat-card small {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.triangle-stat-card strong {
+    font-size: 0.95rem;
+    color: var(--accent-operator);
+}
+
+.triangle-badge-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-equals);
+    margin-top: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   21. НОВЕ v1.8.3: Іпотечний та Кредитний Калькулятор (Loan Amortization)
+   -------------------------------------------------------------------------- */
+.loan-calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.loan-inputs-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.loan-summary-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.loan-summary-card {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+}
+
+.loan-summary-card.highlight {
+    border-color: var(--accent-equals);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.loan-summary-card small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.loan-summary-card strong {
+    font-size: 1.1rem;
+    color: var(--accent-operator);
+}
+
+.loan-table-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.loan-amort-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    text-align: right;
+}
+
+.loan-amort-table th, .loan-amort-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.loan-amort-table th {
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--text-muted);
+    position: sticky;
+    top: 0;
+}
+
+/* --------------------------------------------------------------------------
+   22. НОВЕ v1.8.3: Блокнот Обраних Виразів (Calculation Bookmarks)
+   -------------------------------------------------------------------------- */
+.bookmarks-list-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding-right: 4px;
+}
+
+.bookmark-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s ease;
+}
+
+.bookmark-card:hover {
+    transform: translateX(4px);
+    border-color: var(--accent-operator);
+}
+
+.bookmark-tag-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    color: var(--accent-equals);
+    margin-bottom: 4px;
+}
+
+.bookmark-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   23. НОВЕ v1.8.3: Розширений 3-Канальний Color Studio Mixer
+   -------------------------------------------------------------------------- */
+.color-mixer-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.color-channel-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.color-channel-row label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 140px;
+}
+
+.color-channel-slider {
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.harmony-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.harmony-btn {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.harmony-btn:hover {
+    transform: scale(1.04);
+    border-color: var(--accent-equals);
+}
+
+/* Налаштування швидкості частинок */
+.particle-presets-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.particle-preset-btn {
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.particle-preset-btn.active {
+    border-color: var(--accent-operator);
+    background: var(--accent-operator);
+    color: #fff;
 }
 
 /* --------------------------------------------------------------------------
