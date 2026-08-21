@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux - Master Application Logic
+ * Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux - Master Application Logic
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -25,6 +25,7 @@ const state = {
     customWallpaperUrl: localStorage.getItem('calc_custom_wp') || '',
     particlesEnabled: localStorage.getItem('calc_particles') !== 'off',
     history: JSON.parse(localStorage.getItem('calc_history') || '[]'),
+    tapeEntries: JSON.parse(localStorage.getItem('calc_tape') || '[]'),
     operationsCount: 0,
     sessionSeconds: 0,
     bracketDepth: 0,
@@ -38,6 +39,9 @@ const state = {
     bitmaskValue: 42,
     quadRoots: { x1: '3', x2: '2' },
     statMeanVal: '0',
+    gcdVal: '12',
+    lcmVal: '720',
+    funcSingleRes: '36',
     currencyRates: {
         UAH: 1.0,
         USD: 41.5,
@@ -872,6 +876,7 @@ function handleTrigOrSecondary(func) {
         result = Math.round(result * 1000000000) / 1000000000;
         let formatted = formatResult(result);
         addToHistory(`${func}(${current}${unit})`, formatted);
+        addTapeEntry(`${func}(${current}${unit})`, formatted, 'Тригонометрія');
         state.currentInput = formatted;
     } else {
         if (func === 'sin') {
@@ -885,6 +890,7 @@ function handleTrigOrSecondary(func) {
             result = radiansToAngle(rad);
             let formatted = formatResult(result);
             addToHistory(`asin(${current})`, `${formatted}${unit}`);
+            addTapeEntry(`asin(${current})`, `${formatted}${unit}`, 'Арксинус');
             state.currentInput = formatted;
         } else if (func === 'cos') {
             if (current < -1 || current > 1) {
@@ -897,12 +903,14 @@ function handleTrigOrSecondary(func) {
             result = radiansToAngle(rad);
             let formatted = formatResult(result);
             addToHistory(`acos(${current})`, `${formatted}${unit}`);
+            addTapeEntry(`acos(${current})`, `${formatted}${unit}`, 'Арккосинус');
             state.currentInput = formatted;
         } else if (func === 'tan') {
             let rad = Math.atan(current);
             result = radiansToAngle(rad);
             let formatted = formatResult(result);
             addToHistory(`atan(${current})`, `${formatted}${unit}`);
+            addTapeEntry(`atan(${current})`, `${formatted}${unit}`, 'Арктангенс');
             state.currentInput = formatted;
         }
     }
@@ -1183,6 +1191,398 @@ function clearAllMemorySlots() {
     updateMemorySlotsUI();
     updateDisplay();
     showToast('Всі слоти M1-M4 очищено', '🧹');
+}
+
+// ==========================================================================
+// 1. НОВЕ v1.8.1: Розрахункова Стрічка з Нотатками (Paper Tape Roll)
+// ==========================================================================
+function addTapeEntry(equation, result, note = '') {
+    const entry = {
+        id: Date.now() + Math.random(),
+        equation,
+        result,
+        note,
+        time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })
+    };
+    state.tapeEntries.unshift(entry);
+    if (state.tapeEntries.length > 50) state.tapeEntries.pop();
+    localStorage.setItem('calc_tape', JSON.stringify(state.tapeEntries));
+    renderTapeRoll();
+}
+
+function renderTapeRoll() {
+    const container = document.getElementById('tape-lines-list');
+    const totalEl = document.getElementById('tape-grand-total');
+    if (!container) return;
+
+    if (state.tapeEntries.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:#9ca3af; padding:16px;">Стрічка чиста. Виконайте розрахунки.</div>';
+        if (totalEl) totalEl.innerText = '0.00';
+        return;
+    }
+
+    container.innerHTML = '';
+    let grandSum = 0;
+
+    state.tapeEntries.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'tape-line-item';
+        const parsed = parseFloat(item.result) || 0;
+        grandSum += parsed;
+
+        row.innerHTML = `
+            <div style="flex-grow:1;">
+                <div class="tape-line-eq">${item.equation} = <strong>${item.result}</strong></div>
+                <small style="color:#6b7280; font-size:0.72rem;">[${item.time}]</small>
+            </div>
+            <input type="text" class="tape-line-note-input" placeholder="Додати нотатку..." value="${item.note || ''}" onchange="updateTapeNote(${idx}, this.value)">
+            <button class="btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="insertTapeValToCalc('${item.result}')" title="Вставити в калькулятор">📥</button>
+        `;
+        container.appendChild(row);
+    });
+
+    if (totalEl) totalEl.innerText = grandSum.toFixed(2);
+}
+
+function updateTapeNote(idx, val) {
+    if (state.tapeEntries[idx]) {
+        state.tapeEntries[idx].note = val;
+        localStorage.setItem('calc_tape', JSON.stringify(state.tapeEntries));
+    }
+}
+
+function insertTapeValToCalc(val) {
+    audio.playAction();
+    state.currentInput = val.toString();
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('tape-modal');
+    showToast(`Значення ${val} вставлено`, '📥');
+}
+
+function addCustomTapeEntry() {
+    audio.playAction();
+    const val = state.currentInput || '0';
+    addTapeEntry(`Введення`, val, 'Ручний запис');
+    showToast('Рядок додано до стрічки', '📜');
+}
+
+function printTapeRoll() {
+    audio.playAction();
+    window.print();
+}
+
+function copyTapeAsText() {
+    audio.playAction();
+    let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.1 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
+    let sum = 0;
+    state.tapeEntries.forEach((it, i) => {
+        text += `${i+1}. ${it.equation} = ${it.result} ${it.note ? '(' + it.note + ')' : ''}\n`;
+        sum += parseFloat(it.result) || 0;
+    });
+    text += `------------------------------------\nЗАГАЛЬНИЙ ПІДСУМОК: ${sum.toFixed(2)}\n`;
+    navigator.clipboard.writeText(text);
+    showToast('Розрахунковий чек скопійовано', '📋');
+}
+
+function clearTapeRoll() {
+    audio.playAction();
+    state.tapeEntries = [];
+    localStorage.removeItem('calc_tape');
+    renderTapeRoll();
+    showToast('Розрахункову стрічку очищено', '🗑️');
+}
+
+// ==========================================================================
+// 2. НОВЕ v1.8.1: НСД, НСК та Прості Множники (Prime Factorization, GCD & LCM)
+// ==========================================================================
+function solvePrimeFactorization() {
+    const numInput = document.getElementById('prime-num-input');
+    if (!numInput) return;
+    let n = Math.abs(parseInt(numInput.value, 10)) || 0;
+
+    const factorResEl = document.getElementById('prime-factor-res');
+    const isPrimeBadge = document.getElementById('prime-is-prime-badge');
+    const countEl = document.getElementById('divisors-count');
+    const chipsList = document.getElementById('divisors-chips-list');
+
+    if (n <= 0) {
+        if (factorResEl) factorResEl.innerText = 'Введіть число > 0';
+        return;
+    }
+    if (n === 1) {
+        if (factorResEl) factorResEl.innerText = '1 (не є ні простим, ні складеним)';
+        if (isPrimeBadge) isPrimeBadge.innerText = 'Одиничне число';
+        if (countEl) countEl.innerText = '1';
+        if (chipsList) chipsList.innerHTML = '<span class="div-chip">1</span>';
+        return;
+    }
+
+    // Розклад на прості множники
+    let temp = n;
+    const factors = {};
+    for (let d = 2; d * d <= temp; d++) {
+        while (temp % d === 0) {
+            factors[d] = (factors[d] || 0) + 1;
+            temp /= d;
+        }
+    }
+    if (temp > 1) {
+        factors[temp] = (factors[temp] || 0) + 1;
+    }
+
+    const factorParts = [];
+    const supMap = { '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+    for (let prime in factors) {
+        const pwr = factors[prime];
+        if (pwr === 1) {
+            factorParts.push(prime);
+        } else {
+            const pwrStr = pwr.toString().split('').map(c => supMap[c] || c).join('');
+            factorParts.push(`${prime}${pwrStr}`);
+        }
+    }
+
+    if (factorResEl) factorResEl.innerText = factorParts.join(' × ');
+
+    const isPrime = Object.keys(factors).length === 1 && factors[Object.keys(factors)[0]] === 1;
+    if (isPrimeBadge) {
+        isPrimeBadge.innerText = isPrime ? '⭐ Просте число' : 'Складене число';
+        isPrimeBadge.style.color = isPrime ? 'var(--accent-equals)' : 'var(--accent-operator)';
+    }
+
+    // Пошук всіх дільників
+    const divisors = [];
+    for (let i = 1; i * i <= n; i++) {
+        if (n % i === 0) {
+            divisors.push(i);
+            if (i * i !== n) divisors.push(n / i);
+        }
+    }
+    divisors.sort((a, b) => a - b);
+
+    if (countEl) countEl.innerText = divisors.length;
+    if (chipsList) {
+        chipsList.innerHTML = '';
+        divisors.forEach(d => {
+            const chip = document.createElement('span');
+            chip.className = 'div-chip';
+            chip.innerText = d;
+            chip.title = 'Клікніть, щоб вставити в калькулятор';
+            chip.onclick = () => {
+                insertTapeValToCalc(d);
+                closeModal('prime-gcd-modal');
+            };
+            chipsList.appendChild(chip);
+        });
+    }
+}
+
+function setPrimeFromCalc() {
+    audio.playAction();
+    const num = Math.abs(parseInt(state.currentInput, 10)) || 100;
+    const inp = document.getElementById('prime-num-input');
+    if (inp) {
+        inp.value = num;
+        solvePrimeFactorization();
+    }
+}
+
+function solveGcdLcm() {
+    let a = Math.abs(parseInt(document.getElementById('gcd-num-a').value, 10)) || 0;
+    let b = Math.abs(parseInt(document.getElementById('gcd-num-b').value, 10)) || 0;
+
+    const gcdEl = document.getElementById('gcd-val-res');
+    const lcmEl = document.getElementById('lcm-val-res');
+    const stepsEl = document.getElementById('euclid-steps-count');
+
+    if (a === 0 || b === 0) {
+        const gcd = a || b;
+        state.gcdVal = gcd.toString();
+        state.lcmVal = '0';
+        if (gcdEl) gcdEl.innerText = gcd;
+        if (lcmEl) lcmEl.innerText = '0';
+        if (stepsEl) stepsEl.innerText = '1 крок';
+        return;
+    }
+
+    let origA = a, origB = b;
+    let steps = 0;
+    while (b !== 0) {
+        steps++;
+        let t = b;
+        b = a % b;
+        a = t;
+    }
+    const gcd = a;
+    const lcm = (origA * origB) / gcd;
+
+    state.gcdVal = gcd.toString();
+    state.lcmVal = lcm.toString();
+
+    if (gcdEl) gcdEl.innerText = gcd;
+    if (lcmEl) lcmEl.innerText = lcm;
+    if (stepsEl) stepsEl.innerText = `${steps} кроки за алгоритмом Евкліда`;
+}
+
+function insertGcdToCalc() {
+    audio.playAction();
+    state.currentInput = state.gcdVal;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('prime-gcd-modal');
+    showToast(`НСД = ${state.gcdVal} вставлено`, '🔢');
+}
+
+function insertLcmToCalc() {
+    audio.playAction();
+    state.currentInput = state.lcmVal;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('prime-gcd-modal');
+    showToast(`НСК = ${state.lcmVal} вставлено`, '🔢');
+}
+
+// ==========================================================================
+// 3. НОВЕ v1.8.1: Порівняння Цін за Одиницю (Unit Price Deal Comparator)
+// ==========================================================================
+function calculateUnitDeal() {
+    const pA = parseFloat(document.getElementById('deal-a-price').value) || 0;
+    const qA = parseFloat(document.getElementById('deal-a-qty').value) || 1;
+    const uA = document.getElementById('deal-a-unit').value;
+
+    const pB = parseFloat(document.getElementById('deal-b-price').value) || 0;
+    const qB = parseFloat(document.getElementById('deal-b-qty').value) || 1;
+    const uB = document.getElementById('deal-b-unit').value;
+
+    // Нормалізація до базової одиниці (кг, л, шт)
+    const factorMap = { g: 0.001, kg: 1.0, ml: 0.001, l: 1.0, pcs: 1.0 };
+    const normA = qA * (factorMap[uA] || 1.0);
+    const normB = qB * (factorMap[uB] || 1.0);
+
+    const unitPriceA = normA > 0 ? (pA / normA) : 0;
+    const unitPriceB = normB > 0 ? (pB / normB) : 0;
+
+    const resAEl = document.getElementById('deal-a-unit-price');
+    const resBEl = document.getElementById('deal-b-unit-price');
+    const cardA = document.getElementById('deal-card-a');
+    const cardB = document.getElementById('deal-card-b');
+    const winText = document.getElementById('deal-winner-text');
+    const saveDetail = document.getElementById('deal-savings-detail');
+
+    if (resAEl) resAEl.innerText = `${unitPriceA.toFixed(2)} ₴`;
+    if (resBEl) resBEl.innerText = `${unitPriceB.toFixed(2)} ₴`;
+
+    if (cardA) cardA.classList.remove('winner');
+    if (cardB) cardB.classList.remove('winner');
+
+    if (unitPriceA <= 0 || unitPriceB <= 0) {
+        if (winText) winText.innerText = 'Введіть коректні ціни та об\'єми';
+        return;
+    }
+
+    if (Math.abs(unitPriceA - unitPriceB) < 0.01) {
+        if (winText) winText.innerText = 'Обидва варіанти однаково вигідні!';
+        if (saveDetail) saveDetail.innerText = 'Ціна за 1 одиницю повністю ідентична.';
+    } else if (unitPriceA < unitPriceB) {
+        if (cardA) cardA.classList.add('winner');
+        const diff = unitPriceB - unitPriceA;
+        const pct = ((unitPriceB - unitPriceA) / unitPriceB) * 100;
+        if (winText) winText.innerText = `Товар А вигідніший на ${pct.toFixed(2)}%!`;
+        if (saveDetail) saveDetail.innerText = `Економія становить ${diff.toFixed(2)} ₴ на кожній базовій одиниці (1 кг/л/од).`;
+    } else {
+        if (cardB) cardB.classList.add('winner');
+        const diff = unitPriceA - unitPriceB;
+        const pct = ((unitPriceA - unitPriceB) / unitPriceA) * 100;
+        if (winText) winText.innerText = `Товар B вигідніший на ${pct.toFixed(2)}%!`;
+        if (saveDetail) saveDetail.innerText = `Економія становить ${diff.toFixed(2)} ₴ на кожній базовій одиниці (1 кг/л/од).`;
+    }
+}
+
+// ==========================================================================
+// 4. НОВЕ v1.8.1: Обчислювач Функцій f(x) та Таблиці Значень
+// ==========================================================================
+function parseAndEvalFormula(expr, xVal) {
+    try {
+        let clean = expr.toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/\^/g, '**')
+            .replace(/sin/g, 'Math.sin')
+            .replace(/cos/g, 'Math.cos')
+            .replace(/tan/g, 'Math.tan')
+            .replace(/sqrt/g, 'Math.sqrt')
+            .replace(/abs/g, 'Math.abs')
+            .replace(/ln/g, 'Math.log')
+            .replace(/pi/g, 'Math.PI')
+            .replace(/e/g, 'Math.E');
+
+        // Безпечна заміна x на число
+        clean = clean.replace(/\bx\b/g, `(${xVal})`);
+        // Вставка множення при 2(x) або 2x
+        clean = clean.replace(/(\d)\(/g, '$1*(');
+
+        const res = Function(`'use strict'; return (${clean})`)();
+        return isNaN(res) || !isFinite(res) ? 'Помилка' : res;
+    } catch (e) {
+        return 'Помилка';
+    }
+}
+
+function evaluateCustomFunc() {
+    const expr = document.getElementById('func-expr-input').value;
+    const xVal = parseFloat(document.getElementById('func-single-x').value) || 0;
+    const resEl = document.getElementById('func-single-res');
+
+    const res = parseAndEvalFormula(expr, xVal);
+    state.funcSingleRes = typeof res === 'number' ? formatResult(res) : 'Помилка';
+    if (resEl) resEl.innerText = state.funcSingleRes;
+
+    buildFuncTable();
+}
+
+function buildFuncTable() {
+    const expr = document.getElementById('func-expr-input').value;
+    const start = parseFloat(document.getElementById('func-range-start').value) || -3;
+    const end = parseFloat(document.getElementById('func-range-end').value) || 3;
+    const step = parseFloat(document.getElementById('func-range-step').value) || 1;
+    const tbody = document.getElementById('func-table-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    const safeStep = Math.max(0.01, Math.abs(step));
+    const safeEnd = Math.min(start + (safeStep * 50), end); // максимум 50 рядків
+
+    for (let x = start; x <= safeEnd + 0.0001; x += safeStep) {
+        const val = parseAndEvalFormula(expr, x);
+        const tr = document.createElement('tr');
+        const formattedVal = typeof val === 'number' ? formatResult(val) : val;
+        tr.innerHTML = `
+            <td><strong>${parseFloat(x.toFixed(4))}</strong></td>
+            <td style="color:var(--accent-operator); font-weight:700;">${formattedVal}</td>
+            <td><button class="btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="insertTableValToCalc('${formattedVal}')">Вставити</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+}
+
+function insertFuncResToCalc() {
+    audio.playAction();
+    state.currentInput = state.funcSingleRes;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('func-eval-modal');
+    showToast(`Значення f(x) = ${state.funcSingleRes} вставлено`, '📐');
+}
+
+function insertTableValToCalc(val) {
+    if (val !== 'Помилка') {
+        audio.playAction();
+        state.currentInput = val.toString();
+        state.shouldResetDisplay = true;
+        updateDisplay();
+        closeModal('func-eval-modal');
+        showToast(`Значення ${val} вставлено`, '📥');
+    }
 }
 
 // ==========================================================================
@@ -1505,7 +1905,9 @@ function calculate(saveToHistory = true) {
         let opSymbol = state.operator;
         if (opSymbol === '*') opSymbol = '×';
         if (opSymbol === '/') opSymbol = '÷';
-        addToHistory(`${prev} ${opSymbol} ${current}`, resultStr);
+        const eqStr = `${prev} ${opSymbol} ${current}`;
+        addToHistory(eqStr, resultStr);
+        addTapeEntry(eqStr, resultStr, 'Розрахунок');
     }
 
     state.operationsCount++;
@@ -2504,7 +2906,7 @@ function exportHistoryFormat(format) {
         mimeType = 'application/json;charset=utf-8';
         fileExt = 'json';
         content = JSON.stringify({
-            application: "Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux",
+            application: "Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux",
             exportedAt: new Date().toISOString(),
             author: "MaxNT Official, 2026",
             totalRecords: state.history.length,
@@ -2512,7 +2914,7 @@ function exportHistoryFormat(format) {
         }, null, 2);
     } else {
         content = `====================================================\n`;
-        content += `  КАЛЬКУЛЯТОР PRO v1.8 (Build 179) Redstone 3 Bordeaux - ІСТОРІЯ\n`;
+        content += `  КАЛЬКУЛЯТОР PRO v1.8.1 (Build 180) Redstone 3.1 Bordeaux - ІСТОРІЯ\n`;
         content += `  Дата експорту: ${new Date().toLocaleString('uk-UA')}\n`;
         content += `  Автор: MaxNT Official, 2026\n`;
         content += `====================================================\n\n`;
@@ -2527,7 +2929,7 @@ function exportHistoryFormat(format) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Calculator_History_v1.8_${dateStr}.${fileExt}`;
+    a.download = `Calculator_History_v1.8.1_${dateStr}.${fileExt}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2572,6 +2974,19 @@ function openModal(modalId) {
         if (modalId === 'history-modal') {
             if (dom.historySearch) dom.historySearch.value = '';
             renderHistory();
+        }
+        if (modalId === 'tape-modal') {
+            renderTapeRoll();
+        }
+        if (modalId === 'prime-gcd-modal') {
+            solvePrimeFactorization();
+            solveGcdLcm();
+        }
+        if (modalId === 'deal-calc-modal') {
+            calculateUnitDeal();
+        }
+        if (modalId === 'func-eval-modal') {
+            evaluateCustomFunc();
         }
         if (modalId === 'converter-modal') {
             switchConverterCategory(currentConvCat);
@@ -2819,6 +3234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Оновлення дисплею
     updateDisplay();
     renderHistory();
+    renderTapeRoll();
     updateMemorySlotsUI();
 
     // Запуск фонових частинок Canvas
@@ -2826,7 +3242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticlesCanvas();
     }
 
-    console.log('%c 🍷 Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux Edition Loaded Successfully %c', 
+    console.log('%c 🍷 Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux Loaded %c', 
         'background: linear-gradient(90deg, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
         '');
 });
