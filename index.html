@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор v1.7 (Build 148) Redstone 2</title>
-    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro версії 1.7 build 148 Redstone 2 з підтримкою 20 тем, повного кастомізатора кольорів, 8 шрифтів, розв'язувача квадратних рівнянь, статистичного модуля, калькулятора дат, центру налаштувань та розумного математичного порадника.">
+    <title>Калькулятор v1.8 (Build 179) Redstone 3 Bordeaux</title>
+    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro версії 1.8 build 179 Redstone 3 у розкішному бордовому кольорі з 24 темами, новими шпалерами, матричним калькулятором, бітовим інспектором, розширеними відсотками, конвертером валют та центром налаштувань.">
     <!-- Google Fonts: 8 сучасних гарнітур -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body data-theme="redstone2" class="font-inter">
+<body data-theme="bordeaux_luxury" class="font-inter">
 
     <!-- Фоновий шар шпалер та атмосферного світла -->
     <div class="bg-wallpaper-layer" id="bg-wallpaper"></div>
+    <canvas id="bg-particles-canvas" class="bg-particles-layer"></canvas>
     <div class="bg-overlay-layer" id="bg-overlay"></div>
 
     <div class="main-wrapper">
@@ -22,10 +23,10 @@
             <!-- Бічне меню керування (Sidebar) -->
             <aside class="sidebar">
                 <div class="sidebar-header">
-                    <span class="app-icon">🧮</span>
+                    <span class="app-icon">🍷</span>
                     <div class="sidebar-title-group">
                         <h2>Calculator Pro</h2>
-                        <span class="version-tag">v1.7 b148 Redstone 2</span>
+                        <span class="version-tag">v1.8 b179 Redstone 3</span>
                     </div>
                 </div>
 
@@ -36,11 +37,23 @@
                     <button onclick="openModal('settings-modal')" title="Центр налаштувань калькулятора" id="btn-nav-settings">
                         <span class="btn-icon">⚙️</span> Налаштування
                     </button>
+                    <button onclick="openModal('matrix-modal')" title="Матричний калькулятор (2x2 та 3x3, Det, Транспонування)" id="btn-nav-matrix">
+                        <span class="btn-icon">🧮</span> Матриці 2x2/3x3 <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('bitmask-modal')" title="Інтерактивний бітовий інспектор 8/16/32/64-bit" id="btn-nav-bitmask">
+                        <span class="btn-icon">👾</span> Бітовий інспектор <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('percent-modal')" title="Розширений калькулятор відсотків та маржі" id="btn-nav-percent">
+                        <span class="btn-icon">📈</span> Відсотки Pro <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('currency-modal')" title="Конвертер валют та криптовалют (UAH, USD, EUR, BTC)" id="btn-nav-currency">
+                        <span class="btn-icon">💱</span> Валюти & Крипта <span class="nav-chip">NEW</span>
+                    </button>
                     <button onclick="openModal('history-modal')" title="Переглянути історію" id="btn-nav-history">
                         <span class="btn-icon">🕒</span> Історія
                     </button>
-                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (20 тем + Палітра)" id="btn-nav-themes">
-                        <span class="btn-icon">🎨</span> Теми & Стилі <span class="nav-chip">20</span>
+                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (24 теми + Палітра)" id="btn-nav-themes">
+                        <span class="btn-icon">🎨</span> Теми & Стилі <span class="nav-chip">24</span>
                     </button>
                     <button onclick="openModal('color-studio-modal')" title="Кастомізатор кольорів інтерфейсу в реальному часі" id="btn-nav-colors">
                         <span class="btn-icon">🌈</span> Кастомізатор кольорів
@@ -194,15 +207,18 @@
             </main>
         </div>
 
-        <!-- Преміальний фірмовий футер v1.7 Redstone 2 -->
+        <!-- Преміальний фірмовий футер v1.8 Redstone 3 Bordeaux Edition -->
         <footer class="footer">
             <div class="footer-left">
-                <span class="footer-badge" title="Calculator Pro v1.7 Redstone 2 Edition">
+                <span class="footer-badge" title="Calculator Pro v1.8 Redstone 3 Bordeaux Edition">
                     <span class="pulse-dot"></span>
-                    v1.7 (Build 148) Redstone 2
+                    v1.8 (Build 179) Redstone 3
                 </span>
-                <span class="footer-stat" id="footer-stat-ops" title="Кількість виконаних обчислень за поточну сесію">
+                <span class="footer-stat" id="footer-stat-ops" title="Кількість операцій">
                     🧮 Сесія: <strong id="ops-counter">0</strong> оп.
+                </span>
+                <span class="footer-timer" id="session-timer" title="Час роботи поточної сесії">
+                    ⏱️ <strong id="timer-val">00:00</strong>
                 </span>
             </div>
             
@@ -212,25 +228,28 @@
                     <span class="dot-separator">•</span>
                     <span class="rights-tag">Всі права захищені</span>
                     <span class="dot-separator">•</span>
-                    <span class="edition-tag">Calculator Pro™ Redstone 2 Master Edition</span>
+                    <span class="edition-tag">Calculator Pro™ Bordeaux Master Edition</span>
                 </div>
             </div>
 
             <div class="footer-right">
+                <button class="footer-btn" onclick="openModal('matrix-modal')" title="Матричний калькулятор">
+                    <span>🧮</span> [A] Матриці
+                </button>
+                <button class="footer-btn" onclick="openModal('bitmask-modal')" title="Бітовий інспектор">
+                    <span>👾</span> 0101 Біти
+                </button>
+                <button class="footer-btn" onclick="openModal('percent-modal')" title="Відсотки Pro">
+                    <span>%</span> Відсотки
+                </button>
+                <button class="footer-btn" onclick="openModal('currency-modal')" title="Валюти та крипта">
+                    <span>💱</span> ₴ / $
+                </button>
                 <button class="footer-btn" onclick="openModal('settings-modal')" title="Центр налаштувань">
                     <span>⚙️</span> Опції
                 </button>
                 <button class="footer-btn" onclick="openModal('color-studio-modal')" title="Палітра та колір інтерфейсу">
                     <span>🌈</span> Кольори
-                </button>
-                <button class="footer-btn" onclick="openModal('quadratic-modal')" title="Квадратні рівняння">
-                    <span>📐</span> ax²+bx+c
-                </button>
-                <button class="footer-btn" onclick="openModal('stats-modal')" title="Статистичний модуль">
-                    <span>📊</span> Статистика
-                </button>
-                <button class="footer-btn" onclick="openModal('date-modal')" title="Калькулятор дат">
-                    <span>📅</span> Дати
                 </button>
                 <button class="footer-btn" onclick="speakCurrentResult()" title="Озвучити результат">
                     <span>🗣️</span> Голос
@@ -249,7 +268,204 @@
          Модальні вікна (Modals)
          ========================================================================== -->
     
-    <!-- Центр Налаштувань Калькулятора (НОВЕ v1.7 Settings Center) -->
+    <!-- Матричний Калькулятор (НОВЕ v1.8 Matrix Calculator) -->
+    <div class="modal-overlay" id="matrix-modal">
+        <div class="modal-content matrix-modal-content">
+            <h3>🧮 Матричний Калькулятор (2x2 та 3x3)</h3>
+            <div class="matrix-size-selector">
+                <button class="conv-tab active" data-msize="2" onclick="setMatrixSize(2)">Матриця 2×2</button>
+                <button class="conv-tab" data-msize="3" onclick="setMatrixSize(3)">Матриця 3×3</button>
+            </div>
+
+            <div class="matrix-inputs-wrapper">
+                <div class="matrix-box">
+                    <span class="matrix-label">Матриця A:</span>
+                    <div id="matrix-a-grid" class="matrix-grid matrix-2x2">
+                        <input type="number" id="m_a_00" value="3" oninput="solveMatrixMath()">
+                        <input type="number" id="m_a_01" value="2" oninput="solveMatrixMath()">
+                        <input type="number" id="m_a_10" value="1" oninput="solveMatrixMath()">
+                        <input type="number" id="m_a_11" value="4" oninput="solveMatrixMath()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="matrix-results-box">
+                <div class="matrix-res-item">
+                    <span>Визначник (det A):</span>
+                    <strong id="mat-det-val">10</strong>
+                </div>
+                <div class="matrix-res-item">
+                    <span>Слід матриці (tr A):</span>
+                    <strong id="mat-trace-val">7</strong>
+                </div>
+                <div class="matrix-res-full">
+                    <span>Транспонована матриця (Aᵀ):</span>
+                    <div id="mat-transpose-val" class="matrix-grid-mini"></div>
+                </div>
+                <div class="matrix-res-full">
+                    <span>Обернена матриця (A⁻¹):</span>
+                    <div id="mat-inverse-val" class="matrix-grid-mini"></div>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:12px;">
+                <button class="btn-secondary" onclick="insertMatrixDetToCalc()">📥 Вставити det(A) в калькулятор</button>
+                <button class="btn-secondary" onclick="resetMatrixInputs()">Скинути до одиничної (I)</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('matrix-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Інтерактивний Бітовий Інспектор (НОВЕ v1.8 Bitmask Visualizer) -->
+    <div class="modal-overlay" id="bitmask-modal">
+        <div class="modal-content bitmask-modal-content">
+            <h3>👾 Інтерактивний Бітовий Інспектор (64-Bit Visualizer)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:10px;">
+                Клікайте на окремі біти (0 або 1) для миттєвого бітового моделювання:
+            </p>
+
+            <div class="bitmask-number-inputs">
+                <div class="bit-num-row">
+                    <label>DEC:</label>
+                    <input type="number" id="bit-dec-input" value="42" oninput="syncFromDecInput(this.value)">
+                </div>
+                <div class="bit-num-row">
+                    <label>HEX:</label>
+                    <input type="text" id="bit-hex-input" value="0x2A" oninput="syncFromHexInput(this.value)">
+                </div>
+            </div>
+
+            <div class="bit-grid-container">
+                <span class="bit-section-title">Біти (від 31 до 0):</span>
+                <div class="bits-matrix-grid" id="bits-interactive-grid"></div>
+            </div>
+
+            <div class="bitmask-actions-row">
+                <button class="btn-secondary" onclick="bitwiseMaskOp('invert')">NOT (~)</button>
+                <button class="btn-secondary" onclick="bitwiseMaskOp('shl')">&lt;&lt; 1 Зсув</button>
+                <button class="btn-secondary" onclick="bitwiseMaskOp('shr')">&gt;&gt; 1 Зсув</button>
+                <button class="btn-secondary btn-danger" onclick="bitwiseMaskOp('clear')">Всі 0</button>
+                <button class="btn-secondary" onclick="bitwiseMaskOp('fill')">Всі 1</button>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:12px;">
+                <button class="btn-secondary" onclick="insertBitmaskToCalc()">📥 Вставити DEC у калькулятор</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('bitmask-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Розширені Відсотки Pro (НОВЕ v1.8 Percentage & Markup Tool) -->
+    <div class="modal-overlay" id="percent-modal">
+        <div class="modal-content percent-modal-content">
+            <h3>📈 Розширений Калькулятор Відсотків Pro</h3>
+
+            <div class="percent-calc-cards">
+                <!-- Картка 1: Скільки % від числа -->
+                <div class="percent-card">
+                    <div class="p-card-header">1. Скільки становить відсоток від числа?</div>
+                    <div class="p-inputs-row">
+                        <input type="number" id="p1-percent" value="25" oninput="calcPercent1()">
+                        <span>% від числа</span>
+                        <input type="number" id="p1-base" value="400" oninput="calcPercent1()">
+                        <span>=</span>
+                        <strong id="p1-res" class="p-result">100</strong>
+                    </div>
+                </div>
+
+                <!-- Картка 2: На скільки % одне число більше/менше за інше (Δ %) -->
+                <div class="percent-card">
+                    <div class="p-card-header">2. Відсоткова зміна (Δ %) між двома числами:</div>
+                    <div class="p-inputs-row">
+                        <span>Від</span>
+                        <input type="number" id="p2-val1" value="100" oninput="calcPercent2()">
+                        <span>до</span>
+                        <input type="number" id="p2-val2" value="150" oninput="calcPercent2()">
+                        <span>=</span>
+                        <strong id="p2-res" class="p-result">+50%</strong>
+                    </div>
+                </div>
+
+                <!-- Картка 3: Збільшити / Зменшити на % -->
+                <div class="percent-card">
+                    <div class="p-card-header">3. Збільшити чи зменшити число на % (Маржа):</div>
+                    <div class="p-inputs-row">
+                        <input type="number" id="p3-base" value="200" oninput="calcPercent3()">
+                        <select id="p3-op" onchange="calcPercent3()">
+                            <option value="add">+ Збільшити на</option>
+                            <option value="sub">- Зменшити на</option>
+                        </select>
+                        <input type="number" id="p3-percent" value="15" oninput="calcPercent3()">
+                        <span>% =</span>
+                        <strong id="p3-res" class="p-result">230</strong>
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('percent-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Конвертер Валют та Криптовалют (НОВЕ v1.8 Currency & Crypto Converter) -->
+    <div class="modal-overlay" id="currency-modal">
+        <div class="modal-content currency-modal-content">
+            <h3>💱 Конвертер Валют та Криптовалют</h3>
+            <div class="currency-converter-body">
+                <div class="converter-input-block">
+                    <label>Сума та вихідна валюта:</label>
+                    <div class="conv-input-row">
+                        <input type="number" id="curr-from-val" value="100" oninput="runCurrencyConversion('from')">
+                        <select id="curr-from-unit" onchange="runCurrencyConversion('from')">
+                            <option value="USD">USD ($ - Долар США)</option>
+                            <option value="UAH" selected>UAH (₴ - Гривня)</option>
+                            <option value="EUR">EUR (€ - Євро)</option>
+                            <option value="GBP">GBP (£ - Фунт)</option>
+                            <option value="PLN">PLN (zł - Злотий)</option>
+                            <option value="BTC">BTC (₿ - Bitcoin)</option>
+                            <option value="ETH">ETH (Ξ - Ethereum)</option>
+                            <option value="SOL">SOL (◎ - Solana)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="converter-swap-btn" onclick="swapCurrencyUnits()" title="Поміняти місцями">
+                    <span>⇅</span>
+                </div>
+
+                <div class="converter-input-block">
+                    <label>Отримана сума у цільовій валюті:</label>
+                    <div class="conv-input-row">
+                        <input type="number" id="curr-to-val" oninput="runCurrencyConversion('to')">
+                        <select id="curr-to-unit" onchange="runCurrencyConversion('from')">
+                            <option value="USD" selected>USD ($ - Долар США)</option>
+                            <option value="UAH">UAH (₴ - Гривня)</option>
+                            <option value="EUR">EUR (€ - Євро)</option>
+                            <option value="GBP">GBP (£ - Фунт)</option>
+                            <option value="PLN">PLN (zł - Злотий)</option>
+                            <option value="BTC">BTC (₿ - Bitcoin)</option>
+                            <option value="ETH">ETH (Ξ - Ethereum)</option>
+                            <option value="SOL">SOL (◎ - Solana)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="currency-rates-info">
+                    <small>Базові орієнтовні курси: 1 USD ≈ 41.50 ₴ | 1 EUR ≈ 44.80 ₴ | 1 BTC ≈ $95,000</small>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:12px;">
+                <button class="btn-secondary" onclick="insertCurrencyToCalc()">📥 Вставити результат у калькулятор</button>
+                <button class="btn-secondary" onclick="copyCurrencyVal()">📋 Скопіювати</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('currency-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Центр Налаштувань Калькулятора -->
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-content settings-modal-content">
             <h3>⚙️ Центр Налаштувань Калькулятора</h3>
@@ -288,7 +504,7 @@
                     <div class="settings-row">
                         <label>Точність округлення:</label>
                         <select id="setting-precision" onchange="setSettingsPrecision(this.value)">
-                            <option value="auto">Автоматична (до 10 знаків)</option>
+                            <option value="auto">Автоматична (до 12 знаків)</option>
                             <option value="0">0 знаків (Цілі числа)</option>
                             <option value="2">2 знаки (0.01)</option>
                             <option value="4">4 знаки (0.0001)</option>
@@ -310,7 +526,7 @@
 
                 <!-- 3. Візуальні ефекти -->
                 <div class="settings-group">
-                    <h4>🪟 Візуальні Ефекти Скла (Glassmorphism)</h4>
+                    <h4>🪟 Візуальні Ефекти Скла & Анімації</h4>
                     <div class="settings-row">
                         <label>Інтенсивність скла:</label>
                         <select id="setting-glass" onchange="setSettingsGlassIntensity(this.value)">
@@ -318,6 +534,13 @@
                             <option value="ultra">Ultra Glass (Максимальна прозорість)</option>
                             <option value="subtle">Легке скло (Subtle)</option>
                             <option value="solid">Суцільний непрозорий колір</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label>Фонові частинки Canvas:</label>
+                        <select id="setting-particles" onchange="toggleParticlesSetting(this.value)">
+                            <option value="on">Увімкнено (Живі частинки)</option>
+                            <option value="off">Вимкнено (Статичний фон)</option>
                         </select>
                     </div>
                 </div>
@@ -330,7 +553,7 @@
         </div>
     </div>
 
-    <!-- Кастомізатор Кольорів Інтерфейсу (НОВЕ v1.7 Real-Time Color Customizer) -->
+    <!-- Кастомізатор Кольорів Інтерфейсу -->
     <div class="modal-overlay" id="color-studio-modal">
         <div class="modal-content color-studio-content">
             <h3>🌈 Кастомізатор Кольорів Інтерфейсу</h3>
@@ -342,24 +565,26 @@
                 <div class="color-control-item">
                     <label>Головний акцентний колір (Оператори & Кнопки):</label>
                     <div class="picker-input-group">
-                        <input type="color" id="picker-accent-color" value="#ef4444" oninput="applyRealtimeColor('accent', this.value)">
-                        <input type="text" id="hex-accent-color" value="#ef4444" onchange="applyRealtimeColor('accent', this.value)">
+                        <input type="color" id="picker-accent-color" value="#8b1538" oninput="applyRealtimeColor('accent', this.value)">
+                        <input type="text" id="hex-accent-color" value="#8b1538" onchange="applyRealtimeColor('accent', this.value)">
                     </div>
                 </div>
 
                 <div class="color-control-item">
                     <label>Фоновий відтінок картки (Background Tint):</label>
                     <div class="picker-input-group">
-                        <input type="color" id="picker-bg-color" value="#140507" oninput="applyRealtimeColor('bg', this.value)">
-                        <input type="text" id="hex-bg-color" value="#140507" onchange="applyRealtimeColor('bg', this.value)">
+                        <input type="color" id="picker-bg-color" value="#2a050c" oninput="applyRealtimeColor('bg', this.value)">
+                        <input type="text" id="hex-bg-color" value="#2a050c" onchange="applyRealtimeColor('bg', this.value)">
                     </div>
                 </div>
             </div>
 
-            <h4 style="font-size:0.88rem; margin:12px 0 8px;">✨ Готові неонові та пастельні акценти:</h4>
+            <h4 style="font-size:0.88rem; margin:12px 0 8px;">✨ Бордові, неонові та пастельні акценти:</h4>
             <div class="accent-swatches-grid">
-                <button class="accent-swatch redstone2-swatch" onclick="setCustomAccent('#ff2a5f', 'Redstone 2 Quantum')" title="Redstone 2 Quantum"></button>
-                <button class="accent-swatch redstone-swatch" onclick="setCustomAccent('#ef4444', 'Redstone Crimson')" title="Redstone Crimson"></button>
+                <button class="accent-swatch bordeaux-swatch" onclick="setCustomAccent('#8b1538', 'Bordeaux Imperial Wine')" title="Bordeaux Imperial Wine"></button>
+                <button class="accent-swatch velvet-swatch" onclick="setCustomAccent('#6b0f24', 'Velvet Burgundy')" title="Velvet Burgundy"></button>
+                <button class="accent-swatch magma-swatch" onclick="setCustomAccent('#b91c1c', 'Volcanic Crimson')" title="Volcanic Crimson"></button>
+                <button class="accent-swatch redstone2-swatch" onclick="setCustomAccent('#ff2a5f', 'Redstone Quantum')" title="Redstone Quantum"></button>
                 <button class="accent-swatch cyan-swatch" onclick="setCustomAccent('#2dd4bf', 'Teal Neon')" title="Teal Neon"></button>
                 <button class="accent-swatch amber-swatch" onclick="setCustomAccent('#f59e0b', 'Amber Gold')" title="Amber Gold"></button>
                 <button class="accent-swatch emerald-swatch" onclick="setCustomAccent('#10b981', 'Emerald Jade')" title="Emerald Jade"></button>
@@ -368,8 +593,6 @@
                 <button class="accent-swatch amethyst-swatch" onclick="setCustomAccent('#9333ea', 'Royal Amethyst')" title="Royal Amethyst"></button>
                 <button class="accent-swatch pink-swatch" onclick="setCustomAccent('#f472b6', 'Sakura Pink')" title="Sakura Pink"></button>
                 <button class="accent-swatch blue-swatch" onclick="setCustomAccent('#38bdf8', 'Arctic Sky')" title="Arctic Sky"></button>
-                <button class="accent-swatch deepblue-swatch" onclick="setCustomAccent('#6366f1', 'Deep Indigo')" title="Deep Indigo"></button>
-                <button class="accent-swatch orange-swatch" onclick="setCustomAccent('#fb923c', 'Solar Orange')" title="Solar Orange"></button>
             </div>
 
             <div class="modal-actions" style="margin-top:16px;">
@@ -379,7 +602,7 @@
         </div>
     </div>
 
-    <!-- Розв'язувач Квадратних Рівнянь (НОВЕ v1.7 Quadratic Solver) -->
+    <!-- Розв'язувач Квадратних Рівнянь -->
     <div class="modal-overlay" id="quadratic-modal">
         <div class="modal-content quadratic-modal-content">
             <h3>📐 Розв'язувач Квадратних Рівнянь</h3>
@@ -431,7 +654,7 @@
         </div>
     </div>
 
-    <!-- Статистичний Модуль (НОВЕ v1.7 Statistics Module) -->
+    <!-- Статистичний Модуль -->
     <div class="modal-overlay" id="stats-modal">
         <div class="modal-content stats-modal-content">
             <h3>📊 Статистичний Аналізатор Даних</h3>
@@ -485,7 +708,7 @@
         </div>
     </div>
 
-    <!-- Калькулятор Дат та Часу (НОВЕ v1.7 Date & Time Tool) -->
+    <!-- Калькулятор Дат та Часу -->
     <div class="modal-overlay" id="date-modal">
         <div class="modal-content date-modal-content">
             <h3>📅 Калькулятор Дат та Різниці Часу</h3>
@@ -531,7 +754,7 @@
         </div>
     </div>
 
-    <!-- Матриця Пам'яті M1-M4 (НОВЕ v1.7 Multi-Memory Matrix) -->
+    <!-- Матриця Пам'яті M1-M4 -->
     <div class="modal-overlay" id="memory-modal">
         <div class="modal-content memory-matrix-content">
             <h3>🗄️ Матриця Пам'яті (Слоти M1, M2, M3, M4)</h3>
@@ -645,7 +868,7 @@
                     </div>
                     <div class="advisor-item-body">
                         <p><strong>Зауваження:</strong> У множині дійсних чисел <code>ℝ</code> квадрат будь-якого числа завжди невід'ємний: <code>x² ≥ 0</code>. Тому не існує дійсного числа, квадрат якого дорівнює <code>-9</code>.</p>
-                        <p><strong>💡 Як виправити:</strong> Для обчислення в дійсних числах візьміть модуль <code>|x|</code> перед добуванням кореня. Для вищої математики переходьте у площину комплексних чисел через уявну одиницю <code>i = √(-1)</code>: наприклад, <code>√(-25) = 5i</code>.</p>
+                        <p><strong>💡 Як виправити:</strong> Для обчислення в дійсних числах візьміть модуль <code>|x|</code> перед добуванням кореня. Для вищої математики переходьте у площину комплексних чисел через уявну одиницю <code>i = √(-1)</code>.</p>
                     </div>
                 </div>
 
@@ -698,7 +921,7 @@
         </div>
     </div>
 
-    <!-- Студія Шрифтів (8 Шрифтів v1.7) -->
+    <!-- Студія Шрифтів -->
     <div class="modal-overlay" id="font-modal">
         <div class="modal-content font-modal-content">
             <h3>🔤 Студія Шрифтів та Типографіки (8 Шрифтів)</h3>
@@ -897,17 +1120,45 @@
         </div>
     </div>
 
-    <!-- 20 Преміум Тем (v1.7) -->
+    <!-- 24 Преміум Теми Redstone 3 -->
     <div class="modal-overlay" id="theme-modal">
         <div class="modal-content theme-modal-content">
-            <h3>🎨 20 Авторських Тем та Стилів Redstone 2</h3>
+            <h3>🍷 24 Авторські Теми та Стилі Redstone 3 Bordeaux</h3>
             
             <div class="theme-grid">
+                <button class="theme-card active" data-theme="bordeaux_luxury" onclick="setTheme('bordeaux_luxury')">
+                    <div class="theme-preview bordeaux-prev"></div>
+                    <div class="theme-info">
+                        <strong>🍷 Bordeaux Imperial</strong>
+                        <small>Королівський бордовий оксамит</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="velvet_burgundy" onclick="setTheme('velvet_burgundy')">
+                    <div class="theme-preview velvet-prev"></div>
+                    <div class="theme-info">
+                        <strong>🍇 Velvet Burgundy Noir</strong>
+                        <small>Глибокий винний нуар</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="autumn_crimson" onclick="setTheme('autumn_crimson')">
+                    <div class="theme-preview autumn-prev"></div>
+                    <div class="theme-info">
+                        <strong>🍁 Autumn Crimson</strong>
+                        <small>Осінній багрянець та рубін</small>
+                    </div>
+                </button>
+                <button class="theme-card" data-theme="volcanic_magma" onclick="setTheme('volcanic_magma')">
+                    <div class="theme-preview magma-prev"></div>
+                    <div class="theme-info">
+                        <strong>🌋 Volcanic Magma</strong>
+                        <small>Вулканічна бордова лава</small>
+                    </div>
+                </button>
                 <button class="theme-card" data-theme="redstone2" onclick="setTheme('redstone2')">
                     <div class="theme-preview redstone2-prev"></div>
                     <div class="theme-info">
                         <strong>🔴 Redstone 2 Pulse</strong>
-                        <small>Фірмова тема Redstone 2</small>
+                        <small>Неоновий рубіновий</small>
                     </div>
                 </button>
                 <button class="theme-card" data-theme="deep_space" onclick="setTheme('deep_space')">
@@ -1048,13 +1299,25 @@
         </div>
     </div>
 
-    <!-- Wallpaper Studio -->
+    <!-- Wallpaper Studio (З новими шпалерами Redstone 3) -->
     <div class="modal-overlay" id="wallpaper-modal">
         <div class="modal-content wallpaper-modal-content">
-            <h3>🖼️ Шпалери & Фонове оформлення</h3>
+            <h3>🖼️ Шпалери & Фонове оформлення Redstone 3</h3>
             
             <div class="wallpaper-presets-grid">
-                <div class="wallpaper-card active" data-wp="default" onclick="setWallpaper('default')">
+                <div class="wallpaper-card active" data-wp="burgundy" onclick="setWallpaper('burgundy')">
+                    <div class="wp-thumb wp-thumb-burgundy"></div>
+                    <span>🍷 Bordeaux Velvet</span>
+                </div>
+                <div class="wallpaper-card" data-wp="nebula_wine" onclick="setWallpaper('nebula_wine')">
+                    <div class="wp-thumb wp-thumb-nebula-wine"></div>
+                    <span>🌌 Wine Nebula Space</span>
+                </div>
+                <div class="wallpaper-card" data-wp="cyber_redstone3" onclick="setWallpaper('cyber_redstone3')">
+                    <div class="wp-thumb wp-thumb-cyber-redstone3"></div>
+                    <span>⚡ Redstone 3 Cybernet</span>
+                </div>
+                <div class="wallpaper-card" data-wp="default" onclick="setWallpaper('default')">
                     <div class="wp-thumb wp-thumb-default"></div>
                     <span>Динамічний градієнт</span>
                 </div>
@@ -1299,28 +1562,27 @@
         <div class="modal-content" style="text-align: center;">
             <h3>👋 Ласкаво просимо!</h3>
             <p>Калькулятор скинуто до початкового стану <strong>Головної сторінки</strong>.</p>
-            <p><strong>Calculator Pro v1.7 Redstone 2</strong> готовий до нових надточних розрахунків!</p>
+            <p><strong>Calculator Pro v1.8 Redstone 3 Bordeaux</strong> готовий до нових розрахунків!</p>
             <button class="close-btn" onclick="closeModal('home-modal')" style="background-color: var(--accent-operator); color: var(--bg-card);">Почати роботу</button>
         </div>
     </div>
 
-    <!-- Про застосунок v1.7 Redstone 2 -->
+    <!-- Про застосунок v1.8 Redstone 3 -->
     <div class="modal-overlay" id="about-modal">
         <div class="modal-content">
             <h3>ℹ️ Про застосунок</h3>
-            <p><strong>Calculator Pro™ Redstone 2 Master Edition</strong> — провідний багатофункціональний інженерний калькулятор.</p>
-            <p>Версія релізу: <strong>v1.7 (Build 148) Redstone 2</strong></p>
+            <p><strong>Calculator Pro™ Redstone 3 Bordeaux Master Edition</strong> — ультрасучасний багатофункціональний інженерний калькулятор.</p>
+            <p>Версія релізу: <strong>v1.8 (Build 179) Redstone 3</strong></p>
             <p>Розробник & Автор: <strong>MaxNT Official, 2026(с)</strong></p>
-            <p><strong>Головні нововведення версії 1.7 Redstone 2:</strong></p>
+            <p><strong>Головні нововведення версії 1.8 Redstone 3:</strong></p>
             <ul style="padding-left: 20px; font-size: 0.9rem; margin-bottom: 12px;">
-                <li>⚙️ <strong>Центр Налаштувань:</strong> Гучність, розділювачі тисяч, точність до 12 знаків, GRAD градіани, скляні ефекти.</li>
-                <li>🌈 <strong>Кастомізатор Кольорів:</strong> Вибір будь-якого акценту та фону через Color Wheel.</li>
-                <li>📐 <strong>Квадратні Рівняння:</strong> Розв'язання <code>ax²+bx+c=0</code> з дискримінантом та комплексними коренями.</li>
-                <li>📊 <strong>Статистичний Модуль:</strong> Розрахунок середнього <code>x̄</code>, медіани, <code>σ</code>, дисперсії.</li>
-                <li>📅 <strong>Калькулятор Дат:</strong> Різниця днів між датами та додавання термінів.</li>
-                <li>🗄️ <strong>Матриця Пам'яті:</strong> 4 незалежні слоти M1–M4.</li>
-                <li>🔤 <strong>8 Гарнітур Шрифтів:</strong> Rajdhani, Space Grotesk, Silkscreen 8-bit тощо.</li>
-                <li>🎨 <strong>20 Авторських Тем:</strong> Redstone 2 Pulse, Deep Space, Cyber Lime, Royal Amethyst.</li>
+                <li>🍷 <strong>Бордовий фірмовий стиль:</strong> флагманська тема Bordeaux Imperial Wine та оксамитові шпалери.</li>
+                <li>🧮 <strong>Матричний Калькулятор:</strong> матриці 2×2 та 3×3, детермінант `det(A)`, слід, транспонування `Aᵀ`, обернена матриця `A⁻¹`.</li>
+                <li>👾 <strong>Бітовий Інспектор:</strong> інтерактивна 64-бітна сітка бітів з миттєвим розрахунком DEC/HEX.</li>
+                <li>📈 <strong>Відсотки Pro:</strong> % від числа, дельта зміни (Δ %), розрахунок маржі та націнки.</li>
+                <li>💱 <strong>Валюти & Криптовалюти:</strong> швидкий конвертер UAH, USD, EUR, GBP, PLN, BTC, ETH, SOL.</li>
+                <li>🖼️ <strong>Нові шпалери:</strong> Bordeaux Velvet, Wine Nebula Space, Redstone 3 Cybernet та живі частинки Canvas.</li>
+                <li>⏱️ <strong>Покращений Master Footer:</strong> таймер сесії та панель швидкого доступу.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
         </div>
@@ -1329,11 +1591,11 @@
     <!-- Довідка -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-content">
-            <h3>❓ Довідка (v1.7 Build 148 Redstone 2)</h3>
+            <h3>❓ Довідка (v1.8 Build 179 Redstone 3)</h3>
             <ul style="padding-left: 20px; font-size: 0.92rem; margin-bottom: 15px; line-height:1.6;">
-                <li><strong>DEG / RAD / GRAD:</strong> 3 кутових режими для тригонометрії (100 GRAD = 90° = π/2 рад).</li>
-                <li><strong>Розділювачі тисяч:</strong> Перемикайте відображення великих чисел (пробіл або кома) кліком на індикатор внизу дисплея або в Налаштуваннях.</li>
-                <li><strong>Пам'ять M1-M4:</strong> Клікніть на значок <code>M</code> у шапці дисплея для відкриття всіх 4 слотів.</li>
+                <li><strong>Матриці:</strong> відкрийте `[A] Матриці` для розрахунку визначника та обернених матриць.</li>
+                <li><strong>Бітовий інспектор:</strong> клікайте по бітах `0/1` для швидкого аналізу байтів та прапорців.</li>
+                <li><strong>Шпалери:</strong> обирайте Bordeaux Velvet або Wine Nebula у меню `🖼️ Шпалери`.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>

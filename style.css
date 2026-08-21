@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Calculator Pro v1.7 (Build 148) Redstone 2 - Master Stylesheet
+   Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux - Master Stylesheet
    Author: MaxNT Official, 2026
    ========================================================================== */
 
@@ -33,11 +33,103 @@ body.font-firacode {
 }
 
 /* --------------------------------------------------------------------------
-   2. 20 Авторських Колірних Тем (Themes System v1.7)
+   2. 24 Авторські Колірні Теми (Themes System v1.8 Bordeaux Master)
    -------------------------------------------------------------------------- */
 
-/* 1. Redstone 2 Quantum Pulse (Флагманська тема v1.7) */
-body[data-theme="redstone2"], body {
+/* 1. Bordeaux Imperial Wine (Флагманська бордова тема v1.8 Redstone 3) */
+body[data-theme="bordeaux_luxury"], body {
+    --bg-body: #0d0205;
+    --bg-card: rgba(30, 5, 12, 0.88);
+    --bg-display: rgba(16, 2, 6, 0.94);
+    --bg-sidebar: rgba(24, 4, 9, 0.82);
+    --bg-btn: rgba(48, 8, 18, 0.88);
+    --bg-btn-hover: rgba(76, 14, 30, 0.95);
+    --text-primary: #fff0f3;
+    --text-muted: #fda4af;
+    --accent-operator: #8b1538;
+    --accent-equals: #f59e0b;
+    --accent-sci: #5c0617;
+    --accent-sci-text: #ffe4e6;
+    --accent-action: #38040d;
+    --accent-clear: #be123c;
+    --accent-memory: #72091f;
+    --border-color: rgba(139, 21, 56, 0.35);
+    --shadow-color: rgba(139, 21, 56, 0.45);
+    --badge-bg: rgba(139, 21, 56, 0.22);
+    --badge-border: rgba(139, 21, 56, 0.5);
+}
+
+/* 2. Velvet Burgundy Noir */
+body[data-theme="velvet_burgundy"] {
+    --bg-body: #080103;
+    --bg-card: rgba(22, 3, 8, 0.88);
+    --bg-display: rgba(12, 1, 4, 0.95);
+    --bg-sidebar: rgba(18, 2, 7, 0.82);
+    --bg-btn: rgba(38, 5, 14, 0.88);
+    --bg-btn-hover: rgba(62, 10, 24, 0.95);
+    --text-primary: #fdf2f4;
+    --text-muted: #fb7185;
+    --accent-operator: #6b0f24;
+    --accent-equals: #fb7185;
+    --accent-sci: #4a0716;
+    --accent-sci-text: #ffe4e6;
+    --accent-action: #29020a;
+    --accent-clear: #9f1239;
+    --accent-memory: #58081a;
+    --border-color: rgba(107, 15, 36, 0.35);
+    --shadow-color: rgba(107, 15, 36, 0.4);
+    --badge-bg: rgba(107, 15, 36, 0.2);
+    --badge-border: rgba(107, 15, 36, 0.45);
+}
+
+/* 3. Autumn Crimson Spark */
+body[data-theme="autumn_crimson"] {
+    --bg-body: #100204;
+    --bg-card: rgba(32, 6, 10, 0.88);
+    --bg-display: rgba(18, 3, 5, 0.94);
+    --bg-sidebar: rgba(26, 4, 8, 0.82);
+    --bg-btn: rgba(56, 10, 16, 0.88);
+    --bg-btn-hover: rgba(86, 16, 26, 0.95);
+    --text-primary: #fff1f2;
+    --text-muted: #fca5a5;
+    --accent-operator: #dc2626;
+    --accent-equals: #d97706;
+    --accent-sci: #7f1d1d;
+    --accent-sci-text: #fee2e2;
+    --accent-action: #450a0a;
+    --accent-clear: #b91c1c;
+    --accent-memory: #991b1b;
+    --border-color: rgba(220, 38, 38, 0.32);
+    --shadow-color: rgba(220, 38, 38, 0.38);
+    --badge-bg: rgba(220, 38, 38, 0.18);
+    --badge-border: rgba(220, 38, 38, 0.45);
+}
+
+/* 4. Volcanic Magma */
+body[data-theme="volcanic_magma"] {
+    --bg-body: #0c0203;
+    --bg-card: rgba(28, 4, 6, 0.88);
+    --bg-display: rgba(14, 2, 3, 0.94);
+    --bg-sidebar: rgba(22, 3, 5, 0.82);
+    --bg-btn: rgba(52, 8, 12, 0.88);
+    --bg-btn-hover: rgba(82, 12, 18, 0.95);
+    --text-primary: #fff7ed;
+    --text-muted: #fdba74;
+    --accent-operator: #b91c1c;
+    --accent-equals: #ea580c;
+    --accent-sci: #7c2d12;
+    --accent-sci-text: #ffedd5;
+    --accent-action: #431407;
+    --accent-clear: #991b1b;
+    --accent-memory: #9a3412;
+    --border-color: rgba(185, 28, 28, 0.32);
+    --shadow-color: rgba(185, 28, 28, 0.4);
+    --badge-bg: rgba(185, 28, 28, 0.2);
+    --badge-border: rgba(185, 28, 28, 0.45);
+}
+
+/* 5. Redstone 2 Quantum Pulse */
+body[data-theme="redstone2"] {
     --bg-body: #0a0305;
     --bg-card: rgba(22, 6, 12, 0.82);
     --bg-display: rgba(12, 3, 7, 0.92);
@@ -59,7 +151,7 @@ body[data-theme="redstone2"], body {
     --badge-border: rgba(255, 42, 95, 0.45);
 }
 
-/* 2. Deep Space Nebula */
+/* 6. Deep Space Nebula */
 body[data-theme="deep_space"] {
     --bg-body: #050814;
     --bg-card: rgba(10, 16, 38, 0.85);
@@ -82,7 +174,7 @@ body[data-theme="deep_space"] {
     --badge-border: rgba(56, 189, 248, 0.45);
 }
 
-/* 3. Cyber Lime Acid */
+/* 7. Cyber Lime Acid */
 body[data-theme="cyber_lime"] {
     --bg-body: #060b04;
     --bg-card: rgba(12, 22, 9, 0.85);
@@ -105,7 +197,7 @@ body[data-theme="cyber_lime"] {
     --badge-border: rgba(132, 204, 22, 0.45);
 }
 
-/* 4. Royal Amethyst */
+/* 8. Royal Amethyst */
 body[data-theme="royal_amethyst"] {
     --bg-body: #0e051a;
     --bg-card: rgba(24, 10, 44, 0.85);
@@ -128,7 +220,7 @@ body[data-theme="royal_amethyst"] {
     --badge-border: rgba(192, 132, 252, 0.45);
 }
 
-/* 5. Redstone 1 Flux */
+/* 9. Redstone 1 Flux */
 body[data-theme="redstone"] {
     --bg-body: #140507;
     --bg-card: rgba(28, 8, 12, 0.82);
@@ -151,7 +243,7 @@ body[data-theme="redstone"] {
     --badge-border: rgba(239, 68, 68, 0.4);
 }
 
-/* 6. Amber Cyber */
+/* 10. Amber Cyber */
 body[data-theme="cyber_amber"] {
     --bg-body: #120b02;
     --bg-card: rgba(30, 18, 4, 0.82);
@@ -174,7 +266,7 @@ body[data-theme="cyber_amber"] {
     --badge-border: rgba(245, 158, 11, 0.4);
 }
 
-/* 7. Nordic Glacier */
+/* 11. Nordic Glacier */
 body[data-theme="nordic_frost"] {
     --bg-body: #031317;
     --bg-card: rgba(6, 32, 38, 0.82);
@@ -197,7 +289,7 @@ body[data-theme="nordic_frost"] {
     --badge-border: rgba(20, 184, 166, 0.4);
 }
 
-/* 8. 80s Synthwave */
+/* 12. 80s Synthwave */
 body[data-theme="vintage_retro"] {
     --bg-body: #160424;
     --bg-card: rgba(38, 8, 62, 0.82);
@@ -220,7 +312,7 @@ body[data-theme="vintage_retro"] {
     --badge-border: rgba(217, 70, 239, 0.4);
 }
 
-/* 9. Matrix Terminal */
+/* 13. Matrix Terminal */
 body[data-theme="matrix_terminal"] {
     --bg-body: #020d04;
     --bg-card: rgba(4, 26, 8, 0.85);
@@ -243,7 +335,7 @@ body[data-theme="matrix_terminal"] {
     --badge-border: rgba(34, 197, 94, 0.45);
 }
 
-/* 10. Obsidian Royal Gold */
+/* 14. Obsidian Royal Gold */
 body[data-theme="obsidian_gold"] {
     --bg-body: #0d0c08;
     --bg-card: rgba(24, 22, 14, 0.85);
@@ -266,7 +358,7 @@ body[data-theme="obsidian_gold"] {
     --badge-border: rgba(234, 179, 8, 0.45);
 }
 
-/* 11. Dark Charcoal */
+/* 15. Dark Charcoal */
 body[data-theme="dark"] {
     --bg-body: #0f172a;
     --bg-card: rgba(30, 41, 59, 0.75);
@@ -289,7 +381,7 @@ body[data-theme="dark"] {
     --badge-border: rgba(56, 189, 248, 0.35);
 }
 
-/* 12. Clean Porcelain */
+/* 16. Clean Porcelain */
 body[data-theme="light"] {
     --bg-body: #f1f5f9;
     --bg-card: rgba(255, 255, 255, 0.85);
@@ -312,7 +404,7 @@ body[data-theme="light"] {
     --badge-border: rgba(2, 132, 199, 0.3);
 }
 
-/* 13. Cyberpunk Glow */
+/* 17. Cyberpunk Glow */
 body[data-theme="neon"] {
     --bg-body: #05050a;
     --bg-card: rgba(15, 15, 25, 0.85);
@@ -335,7 +427,7 @@ body[data-theme="neon"] {
     --badge-border: rgba(0, 255, 204, 0.4);
 }
 
-/* 14. Midnight Purple */
+/* 18. Midnight Purple */
 body[data-theme="purple"] {
     --bg-body: #180b2a;
     --bg-card: rgba(40, 16, 68, 0.75);
@@ -358,7 +450,7 @@ body[data-theme="purple"] {
     --badge-border: rgba(168, 85, 247, 0.35);
 }
 
-/* 15. Emerald Forest */
+/* 19. Emerald Forest */
 body[data-theme="emerald"] {
     --bg-body: #031e17;
     --bg-card: rgba(6, 44, 34, 0.78);
@@ -381,7 +473,7 @@ body[data-theme="emerald"] {
     --badge-border: rgba(16, 185, 129, 0.35);
 }
 
-/* 16. Sunset Aura */
+/* 20. Sunset Aura */
 body[data-theme="sunset"] {
     --bg-body: #200d14;
     --bg-card: rgba(50, 18, 30, 0.78);
@@ -404,7 +496,7 @@ body[data-theme="sunset"] {
     --badge-border: rgba(249, 115, 22, 0.35);
 }
 
-/* 17. Nordic Ocean */
+/* 21. Nordic Ocean */
 body[data-theme="ocean"] {
     --bg-body: #0b192c;
     --bg-card: rgba(18, 38, 64, 0.8);
@@ -427,7 +519,7 @@ body[data-theme="ocean"] {
     --badge-border: rgba(14, 165, 233, 0.35);
 }
 
-/* 18. Mocha Latte */
+/* 22. Mocha Latte */
 body[data-theme="coffee"] {
     --bg-body: #1c1410;
     --bg-card: rgba(44, 30, 24, 0.82);
@@ -450,7 +542,7 @@ body[data-theme="coffee"] {
     --badge-border: rgba(217, 119, 6, 0.35);
 }
 
-/* 19. Sakura Bloom */
+/* 23. Sakura Bloom */
 body[data-theme="sakura"] {
     --bg-body: #24111c;
     --bg-card: rgba(56, 26, 44, 0.8);
@@ -473,7 +565,7 @@ body[data-theme="sakura"] {
     --badge-border: rgba(236, 72, 153, 0.35);
 }
 
-/* 20. Frost Glassmorphism */
+/* 24. Frost Glassmorphism */
 body[data-theme="glass"] {
     --bg-body: #090e17;
     --bg-card: rgba(255, 255, 255, 0.08);
@@ -497,7 +589,7 @@ body[data-theme="glass"] {
 }
 
 /* --------------------------------------------------------------------------
-   3. Базовий Скидання та Головний Каркас
+   3. Базове Скидання та Головний Каркас
    -------------------------------------------------------------------------- */
 * {
     box-sizing: border-box;
@@ -519,7 +611,7 @@ body {
     padding: 12px;
 }
 
-/* Фоновий шар шпалер */
+/* Фоновий шар шпалер та частинок */
 .bg-wallpaper-layer {
     position: fixed;
     top: 0;
@@ -529,10 +621,20 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: -2;
+    z-index: -3;
     transition: filter 0.3s ease, opacity 0.3s ease, background-image 0.4s ease;
     filter: blur(12px);
     transform: scale(1.05);
+}
+
+.bg-particles-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
 }
 
 .bg-overlay-layer {
@@ -568,7 +670,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 960px;
+    max-width: 980px;
     gap: 12px;
 }
 
@@ -583,14 +685,14 @@ body {
     box-shadow: 0 20px 60px var(--shadow-color);
     overflow: hidden;
     width: 100%;
-    min-height: 570px;
+    min-height: 580px;
 }
 
 /* --------------------------------------------------------------------------
    4. Бічне Меню (Sidebar)
    -------------------------------------------------------------------------- */
 .sidebar {
-    width: 250px;
+    width: 255px;
     background: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
     padding: 18px 14px;
@@ -638,7 +740,7 @@ body {
     gap: 5px;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: 440px;
+    max-height: 450px;
     padding-right: 4px;
 }
 
@@ -688,6 +790,7 @@ body {
     padding: 2px 6px;
     border-radius: 8px;
     color: var(--accent-operator);
+    font-weight: 800;
 }
 
 .sidebar-extra {
@@ -877,7 +980,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Стилі спеціальних кнопок */
+/* Стилі кнопок */
 .buttons button.memory {
     background: var(--accent-memory);
     color: var(--text-primary);
@@ -936,7 +1039,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   7. Redstone 2 Master Footer
+   7. Redstone 3 Bordeaux Master Footer
    -------------------------------------------------------------------------- */
 .footer {
     width: 100%;
@@ -989,10 +1092,13 @@ body {
     50% { transform: scale(1.35); opacity: 0.5; }
 }
 
-.footer-stat {
+.footer-stat, .footer-timer {
     color: var(--text-muted);
     font-size: 0.8rem;
     padding: 4px 8px;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    border-radius: 8px;
 }
 
 .footer-center {
@@ -1054,7 +1160,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.72);
+    background: rgba(0, 0, 0, 0.74);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 1000;
@@ -1078,7 +1184,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 22px;
-    max-width: 540px;
+    max-width: 560px;
     width: 100%;
     max-height: 88vh;
     overflow-y: auto;
@@ -1148,10 +1254,258 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   9. Стилі Нових Модулів v1.7 Redstone 2
+   9. Стилі Нових Модулів v1.8 Bordeaux
    -------------------------------------------------------------------------- */
 
-/* Центр Налаштувань */
+/* Матричний Калькулятор */
+.matrix-size-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.matrix-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.matrix-box {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.matrix-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-operator);
+    margin-bottom: 8px;
+}
+
+.matrix-grid {
+    display: grid;
+    gap: 6px;
+}
+
+.matrix-2x2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.matrix-3x3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.matrix-grid input {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.matrix-results-box {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.matrix-res-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+}
+
+.matrix-res-item strong {
+    color: var(--accent-operator);
+    font-size: 1.1rem;
+}
+
+.matrix-res-full {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.matrix-grid-mini {
+    display: grid;
+    gap: 4px;
+    background: var(--bg-card);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.matrix-grid-mini span {
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Бітовий Інспектор */
+.bitmask-number-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.bit-num-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+
+.bit-num-row label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--accent-operator);
+    width: 38px;
+}
+
+.bit-num-row input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 700;
+    outline: none;
+}
+
+.bit-grid-container {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.bit-section-title {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.bits-matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+}
+
+.bit-btn {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 4px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.bit-btn.active {
+    background: var(--accent-operator);
+    color: #fff;
+    border-color: var(--accent-operator);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.bitmask-actions-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+/* Відсотки Pro */
+.percent-calc-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.percent-card {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.p-card-header {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--accent-operator);
+    margin-bottom: 8px;
+}
+
+.p-inputs-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+}
+
+.p-inputs-row input {
+    width: 85px;
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.p-inputs-row select {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.p-result {
+    color: var(--accent-operator);
+    font-size: 1.15rem;
+    margin-left: auto;
+}
+
+/* Валюти та Крипта */
+.currency-converter-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.currency-rates-info {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Налаштування */
 .settings-sections {
     display: flex;
     flex-direction: column;
@@ -1263,8 +1617,10 @@ body {
     border-color: #fff;
 }
 
+.bordeaux-swatch { background: #8b1538; }
+.velvet-swatch { background: #6b0f24; }
+.magma-swatch { background: #b91c1c; }
 .redstone2-swatch { background: #ff2a5f; }
-.redstone-swatch { background: #ef4444; }
 .cyan-swatch { background: #2dd4bf; }
 .amber-swatch { background: #f59e0b; }
 .emerald-swatch { background: #10b981; }
@@ -1273,8 +1629,6 @@ body {
 .amethyst-swatch { background: #9333ea; }
 .pink-swatch { background: #f472b6; }
 .blue-swatch { background: #38bdf8; }
-.deepblue-swatch { background: #6366f1; }
-.orange-swatch { background: #fb923c; }
 
 /* Квадратні Рівняння */
 .quadratic-inputs-row {
@@ -1470,7 +1824,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   10. Студія Шрифтів (Font Studio Grid)
+   10. Студія Шрифтів
    -------------------------------------------------------------------------- */
 .font-options-grid {
     display: grid;
@@ -1520,7 +1874,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   11. Теми та Шпалери (Themes & Wallpapers Grid)
+   11. Теми та Шпалери
    -------------------------------------------------------------------------- */
 .theme-grid {
     display: grid;
@@ -1560,6 +1914,10 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+.bordeaux-prev { background: linear-gradient(135deg, #0d0205, #8b1538); }
+.velvet-prev { background: linear-gradient(135deg, #080103, #6b0f24); }
+.autumn-prev { background: linear-gradient(135deg, #100204, #dc2626); }
+.magma-prev { background: linear-gradient(135deg, #0c0203, #b91c1c); }
 .redstone2-prev { background: linear-gradient(135deg, #0a0305, #ff2a5f); }
 .deepspace-prev { background: linear-gradient(135deg, #050814, #38bdf8); }
 .lime-prev { background: linear-gradient(135deg, #060b04, #84cc16); }
@@ -1623,7 +1981,10 @@ body {
     background-position: center;
 }
 
-.wp-thumb-default { background: linear-gradient(135deg, #140507, #ff2a5f); }
+.wp-thumb-burgundy { background-image: url('images/burgundy.jpg'); }
+.wp-thumb-nebula-wine { background-image: url('images/nebula_wine.jpg'); }
+.wp-thumb-cyber-redstone3 { background-image: url('images/cyber_redstone3.jpg'); }
+.wp-thumb-default { background: linear-gradient(135deg, #0d0205, #8b1538); }
 .wp-thumb-cyber { background-image: url('images/cyber.jpg'); }
 .wp-thumb-sunset { background-image: url('images/sunset.jpg'); }
 .wp-thumb-emerald { background-image: url('images/emerald.jpg'); }
@@ -1679,7 +2040,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   12. Математичний Порадник та Помилки (Advisor)
+   12. Математичний Порадник та Помилки
    -------------------------------------------------------------------------- */
 .error-advisor-content {
     border-color: #ef4444;
@@ -1752,7 +2113,6 @@ body {
     color: #000;
 }
 
-/* Акордеон Порадника */
 .advisor-accordion {
     display: flex;
     flex-direction: column;
@@ -2226,8 +2586,8 @@ body {
         padding: 11px 4px;
         font-size: 0.95rem;
     }
-    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid {
-        grid-template-columns: 1fr;
+    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid, .bits-matrix-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
     .footer {
         flex-direction: column;

@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.7 (Build 148) Redstone 2 - Master Application Logic
+ * Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux - Master Application Logic
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -17,22 +17,37 @@ const state = {
     soundProfile: localStorage.getItem('calc_sound_profile') || 'classic', // 'classic', 'tactile', 'retro', 'scifi', 'off'
     soundVolume: parseFloat(localStorage.getItem('calc_sound_vol') || '0.8'),
     isSecondMode: false, // 2nd (Shift) шар функцій
-    currentTheme: localStorage.getItem('calc_theme') || 'redstone2',
+    currentTheme: localStorage.getItem('calc_theme') || 'bordeaux_luxury',
     currentFont: localStorage.getItem('calc_font') || 'font-inter',
-    currentWallpaper: localStorage.getItem('calc_wallpaper') || 'default',
+    currentWallpaper: localStorage.getItem('calc_wallpaper') || 'burgundy',
     wallpaperBlur: parseInt(localStorage.getItem('calc_wp_blur') || '12'),
     wallpaperOverlay: parseInt(localStorage.getItem('calc_wp_overlay') || '60'),
     customWallpaperUrl: localStorage.getItem('calc_custom_wp') || '',
+    particlesEnabled: localStorage.getItem('calc_particles') !== 'off',
     history: JSON.parse(localStorage.getItem('calc_history') || '[]'),
     operationsCount: 0,
+    sessionSeconds: 0,
     bracketDepth: 0,
     precisionMode: localStorage.getItem('calc_precision') || 'auto', // 'auto', '0', '2', '4', '6', '8', '10', '12'
     thousandSeparator: localStorage.getItem('calc_separator') || 'space', // 'space', 'comma', 'none'
     glassIntensity: localStorage.getItem('calc_glass') || 'heavy',
     activeGraphFunc: 'sin',
     activeDateTab: 'diff',
+    matrixSize: 2,
+    matrixDetVal: '10',
+    bitmaskValue: 42,
     quadRoots: { x1: '3', x2: '2' },
-    statMeanVal: '0'
+    statMeanVal: '0',
+    currencyRates: {
+        UAH: 1.0,
+        USD: 41.5,
+        EUR: 44.8,
+        GBP: 52.4,
+        PLN: 10.4,
+        BTC: 3942500.0,
+        ETH: 132800.0,
+        SOL: 7885.0
+    }
 };
 
 // Елементи інтерфейсу (DOM Elements)
@@ -51,8 +66,10 @@ const dom = {
     sidebarSoundStatus: document.getElementById('sidebar-sound-status'),
     currentFontChip: document.getElementById('current-font-chip'),
     opsCounter: document.getElementById('ops-counter'),
+    timerVal: document.getElementById('timer-val'),
     toastContainer: document.getElementById('toast-container'),
     bgWallpaper: document.getElementById('bg-wallpaper'),
+    bgParticlesCanvas: document.getElementById('bg-particles-canvas'),
     bgOverlay: document.getElementById('bg-overlay'),
     btn2nd: document.getElementById('btn-2nd'),
     // Динамічні кнопки 2nd
@@ -202,7 +219,111 @@ class SoundEngine {
 const audio = new SoundEngine();
 
 // ==========================================================================
-// Форматування чисел з розділювачами розрядів (Thousands Separator Engine)
+// Сесійний Таймер
+// ==========================================================================
+setInterval(() => {
+    state.sessionSeconds++;
+    if (dom.timerVal) {
+        const mins = Math.floor(state.sessionSeconds / 60).toString().padStart(2, '0');
+        const secs = (state.sessionSeconds % 60).toString().padStart(2, '0');
+        dom.timerVal.innerText = `${mins}:${secs}`;
+    }
+}, 1000);
+
+// ==========================================================================
+// Живі Бордові Частинки на Canvas (Particle Constellation System)
+// ==========================================================================
+let particles = [];
+let animFrameId = null;
+
+function initParticlesCanvas() {
+    const canvas = dom.bgParticlesCanvas;
+    if (!canvas || !state.particlesEnabled) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    particles = [];
+    const count = Math.floor((canvas.width * canvas.height) / 28000);
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            radius: Math.random() * 2 + 1,
+            color: Math.random() > 0.4 ? 'rgba(139, 21, 56, ' : 'rgba(245, 158, 11, '
+        });
+    }
+
+    function render() {
+        if (!state.particlesEnabled) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + '0.7)';
+            ctx.fill();
+
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 110) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = `rgba(139, 21, 56, ${0.35 * (1 - dist / 110)})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+        animFrameId = requestAnimationFrame(render);
+    }
+
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    render();
+}
+
+window.addEventListener('resize', () => {
+    if (dom.bgParticlesCanvas && state.particlesEnabled) {
+        dom.bgParticlesCanvas.width = window.innerWidth;
+        dom.bgParticlesCanvas.height = window.innerHeight;
+    }
+});
+
+function toggleParticlesSetting(val) {
+    state.particlesEnabled = val === 'on';
+    localStorage.setItem('calc_particles', val);
+    if (state.particlesEnabled) {
+        initParticlesCanvas();
+        showToast('Живі частинки увімкнено', '✨');
+    } else {
+        if (dom.bgParticlesCanvas) {
+            const ctx = dom.bgParticlesCanvas.getContext('2d');
+            ctx.clearRect(0, 0, dom.bgParticlesCanvas.width, dom.bgParticlesCanvas.height);
+        }
+        showToast('Фонові частинки вимкнено', '⏸️');
+    }
+}
+
+// ==========================================================================
+// Форматування чисел з розділювачами розрядів
 // ==========================================================================
 function formatDisplayString(rawVal) {
     if (!rawVal || isNaN(parseFloat(rawVal)) || rawVal.includes('(') || rawVal.includes('Помилка')) {
@@ -217,7 +338,6 @@ function formatDisplayString(rawVal) {
     let integerPart = isNegative ? parts[0].slice(1) : parts[0];
     const sep = state.thousandSeparator === 'comma' ? ',' : ' ';
 
-    // Додаємо розділювач тисяч
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 
     let res = (isNegative ? '-' : '') + integerPart;
@@ -239,7 +359,7 @@ function cycleSeparatorFormat() {
 }
 
 // ==========================================================================
-// Розумний Математичний Порадник щодо Заборонених Операцій (Smart Math Advisor)
+// Розумний Математичний Порадник
 // ==========================================================================
 function triggerMathAdvisor(errorType, contextVal = {}) {
     audio.playError();
@@ -265,9 +385,9 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
         case 'zero_division':
             icon = '🚫';
             title = 'Ділення на нуль неможливе!';
-            rule = 'Ділення на 0 (або знаходження остачі mod 0) є абсолютно забороненою операцією в арифметиці.';
-            explanation = 'Ділення a ÷ b = c означає пошук такого числа c, що c × b = a. Оскільки будь-яке число при множенні на 0 дає 0, знайти шуканий результат для ненульового числа a неможливо, а для 0/0 виникає невизначеність.';
-            remedy = 'Замініть дільник на будь-яке число, відмінне від 0. Якщо ви розраховуєте границю функції (ліміт), візьміть дуже мале число (0.0001).';
+            rule = 'Ділення на 0 (або mod 0) є забороненою операцією в арифметиці.';
+            explanation = 'Ділення a ÷ b = c означає пошук c, для якого c × b = a. При b = 0 результат c × 0 завжди 0, тому для ненульового a результату не існує.';
+            remedy = 'Замініть дільник на будь-яке ненульове число або візьміть наближення 0.0001.';
             quickActions = [
                 {
                     text: '🔧 Замінити знаменник на 1',
@@ -277,7 +397,7 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
                         updateDisplay();
                         closeModal('error-advisor-modal');
                         calculate();
-                        showToast('Знаменник замінено на 1, результат обчислено', '✅');
+                        showToast('Знаменник замінено на 1', '✅');
                     }
                 },
                 {
@@ -288,7 +408,7 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
                         updateDisplay();
                         closeModal('error-advisor-modal');
                         calculate();
-                        showToast('Застосовано наближення до нуля (0.0001)', '🔬');
+                        showToast('Застосовано наближення (0.0001)', '🔬');
                     }
                 }
             ];
@@ -297,9 +417,9 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
         case 'negative_sqrt':
             icon = '📐';
             title = 'Корінь з від\'ємного числа!';
-            rule = 'Квадратний або парний корінь з від\'ємного числа (√-x) не існує в області дійсних чисел ℝ.';
-            explanation = `Ви намагаєтеся добути корінь з числа ${contextVal.val || 'x < 0'}. Квадрат будь-якого дійсного числа завжди є невід'ємним (x² ≥ 0). Жодне дійсне число в квадраті не дає мінус.`;
-            remedy = 'Візьміть абсолютне значення (модуль |x|) перед добуванням кореня. Для вищої математики використовується уявна одиниця i = √(-1).';
+            rule = 'Корінь парного степеня з від\'ємного числа (√-x) не існує в ℝ.';
+            explanation = `Число ${contextVal.val || 'x'} < 0. Квадрат будь-якого дійсного числа невід'ємний.`;
+            remedy = 'Візьміть модуль |x| або перейдіть до комплексних чисел.';
             quickActions = [
                 {
                     text: '⚡ Застосувати модуль |x| та обчислити √|x|',
@@ -312,7 +432,7 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
                         state.shouldResetDisplay = true;
                         updateDisplay();
                         closeModal('error-advisor-modal');
-                        showToast(`Обчислено корінь від модуля: √${num} = ${formatted}`, '✅');
+                        showToast(`Обчислено: √${num} = ${formatted}`, '✅');
                     }
                 }
             ];
@@ -320,10 +440,10 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
 
         case 'invalid_log':
             icon = '📉';
-            title = 'Логарифм нуля або від\'ємного числа!';
-            rule = 'Логарифмічні функції ln(x) та log10(x) визначені виключно для строго додатних чисел (x > 0).';
-            explanation = 'Логарифм log_b(x) шукає степінь, до якого треба піднести основу b > 0, щоб отримати x. Піднесення додатного числа до будь-якого степеня ніколи не може дати 0 або від\'ємне значення.';
-            remedy = 'Переконайтеся, що значення аргументу є строго додатним (x > 0). Застосуйте модуль |x| або зміщення, якщо число від\'ємне.';
+            title = 'Логарифм недопустимого аргументу!';
+            rule = 'Логарифми ln(x) та log(x) визначені виключно для x > 0.';
+            explanation = 'Основа степеня додатна, тому результат піднесення до степеня ніколи не може бути ≤ 0.';
+            remedy = 'Застосуйте модуль |x| або зробіть аргумент строго додатним.';
             quickActions = [
                 {
                     text: '⚡ Взяти модуль |x| для логарифма',
@@ -346,12 +466,12 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
         case 'invalid_asin_acos':
             icon = '⭕';
             title = 'Аргумент поза діапазоном [-1, 1]!';
-            rule = 'Функції арксинуса (asin) та арккосинуса (acos) визначені лише для чисел у проміжку від -1 до 1.';
-            explanation = `Значення ${contextVal.val || 'x'} виходить за межі [-1, 1]. Оскільки синус і косинус на тригонометричному колі не можуть перевищувати 1 за модулем, обернені функції не мають дійсного кута.`;
-            remedy = 'Нормалізуйте величину або обмежте значення до максимального діапазону (1.0 або -1.0).';
+            rule = 'Функції asin та acos визначені лише для чисел у проміжку від -1 до 1.';
+            explanation = `Значення ${contextVal.val || 'x'} виходить за межі одиничного кола.`;
+            remedy = 'Обмежте число до максимуму 1.0 або -1.0.';
             quickActions = [
                 {
-                    text: '🔧 Обмежити до максимуму (1.0)',
+                    text: '🔧 Обмежити до 1.0',
                     handler: () => {
                         state.currentInput = '1';
                         state.shouldResetDisplay = false;
@@ -365,13 +485,13 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
 
         case 'tan_90':
             icon = '📐';
-            title = 'Тангенс критичного кута (асимптота)!';
-            rule = 'Тангенс 90°/270° (100/300 GRAD) прямує до нескінченності та спричиняє ділення на нуль.';
-            explanation = 'tan(α) = sin(α) / cos(α). При 90° cos = 0, тому тангенс у цій точці має вертикальну асимптоту.';
-            remedy = 'Використовуйте апроксимацію кута, наприклад 89.999°, або режим радіанів при потребі.';
+            title = 'Тангенс 90° (асимптота)!';
+            rule = 'Тангенс 90° та 270° прямує до нескінченності.';
+            explanation = 'cos(90°) = 0, тому tan(90°) = sin/0 (розрив).';
+            remedy = 'Використовуйте апроксимацію 89.999°.';
             quickActions = [
                 {
-                    text: '🔬 Змінити кут на 89.999°',
+                    text: '🔬 Змінити на 89.999°',
                     handler: () => {
                         state.currentInput = '89.999';
                         state.shouldResetDisplay = false;
@@ -385,13 +505,13 @@ function triggerMathAdvisor(errorType, contextVal = {}) {
 
         case 'invalid_factorial':
             icon = '❗';
-            title = 'Факторіал від\'ємного або дробового числа!';
-            rule = 'Класичний факторіал n! визначений лише для цілих невід\'ємних чисел (0, 1, 2...).';
-            explanation = 'Факторіал — це дискретний добуток цілих послідовних чисел 1 × 2 × ... × n. Для дробових значень використовується неперервна Гамма-функція.';
-            remedy = 'Округліть число до найближчого цілого додатного числа за допомогою Math.round(|x|).';
+            title = 'Факторіал від\'ємного чи дробу!';
+            rule = 'Факторіал n! визначений лише для цілих невід\'ємних чисел.';
+            explanation = 'Факторіал — дискретний добуток послідовних цілих чисел 1 × 2 × ... × n.';
+            remedy = 'Округліть число до цілого додатного.';
             quickActions = [
                 {
-                    text: '⚡ Округлити до цілого додатного',
+                    text: '⚡ Округлити до цілого',
                     handler: () => {
                         const num = Math.abs(Math.round(parseFloat(state.currentInput) || 0));
                         state.currentInput = num.toString();
@@ -427,11 +547,11 @@ function toggleAccordion(headerEl) {
 }
 
 // ==========================================================================
-// Голосове Озвучення Результату (Speech Synthesis)
+// Голосове Озвучення (Speech Synthesis)
 // ==========================================================================
 function speakCurrentResult() {
     if (!('speechSynthesis' in window)) {
-        showToast('Ваш браузер не підтримує Speech Synthesis', '⚠️');
+        showToast('Speech Synthesis не підтримується', '⚠️');
         return;
     }
 
@@ -534,7 +654,6 @@ function updateDisplay() {
         dom.opsCounter.innerText = state.operationsCount;
     }
 
-    // Оновлення підписів кнопок 2nd
     updateSecondaryButtonsUI();
 }
 
@@ -718,13 +837,13 @@ function appendOperator(op) {
 function angleToRadians(val) {
     if (state.angleMode === 'DEG') return val * (Math.PI / 180);
     if (state.angleMode === 'GRAD') return val * (Math.PI / 200);
-    return val; // RAD
+    return val;
 }
 
 function radiansToAngle(rad) {
     if (state.angleMode === 'DEG') return rad * (180 / Math.PI);
     if (state.angleMode === 'GRAD') return rad * (200 / Math.PI);
-    return rad; // RAD
+    return rad;
 }
 
 function handleTrigOrSecondary(func) {
@@ -988,7 +1107,7 @@ function insertConstantVal(val, name) {
     showToast(`Константу ${name} вставлено`, '⚛️');
 }
 
-// Пам'ять (MC, MR, M+, M-)
+// Пам'ять
 function memoryClear() {
     audio.playAction();
     state.memoryValue = 0;
@@ -1020,9 +1139,7 @@ function memorySubtract() {
     showToast(`Віднято від пам'яті (M = ${formatResult(state.memoryValue)})`, '➖');
 }
 
-// ==========================================================================
-// Матриця Пам'яті M1, M2, M3, M4
-// ==========================================================================
+// Матриця Пам'яті M1-M4
 function updateMemorySlotsUI() {
     for (let i = 0; i < 4; i++) {
         const el = document.getElementById(`mem-slot-val-${i}`);
@@ -1037,7 +1154,7 @@ function memorySlotStore(idx) {
     localStorage.setItem('calc_mem_slots', JSON.stringify(state.memorySlots));
     updateMemorySlotsUI();
     updateDisplay();
-    showToast(`Збережено в слот M${idx + 1}: ${val}`, '💾');
+    showToast(`Збережено в M${idx + 1}: ${val}`, '💾');
 }
 
 function memorySlotRecall(idx) {
@@ -1047,7 +1164,7 @@ function memorySlotRecall(idx) {
     state.shouldResetDisplay = true;
     updateDisplay();
     closeModal('memory-modal');
-    showToast(`Викликано зі слота M${idx + 1}: ${state.currentInput}`, '📥');
+    showToast(`Викликано з M${idx + 1}: ${state.currentInput}`, '📥');
 }
 
 function memorySlotClear(idx) {
@@ -1066,6 +1183,270 @@ function clearAllMemorySlots() {
     updateMemorySlotsUI();
     updateDisplay();
     showToast('Всі слоти M1-M4 очищено', '🧹');
+}
+
+// ==========================================================================
+// Матричний Калькулятор (2x2 та 3x3)
+// ==========================================================================
+function setMatrixSize(size) {
+    state.matrixSize = size;
+    document.querySelectorAll('.matrix-size-selector button').forEach(b => {
+        b.classList.toggle('active', parseInt(b.getAttribute('data-msize')) === size);
+    });
+
+    const grid = document.getElementById('matrix-a-grid');
+    if (!grid) return;
+    grid.className = `matrix-grid matrix-${size}x${size}`;
+    grid.innerHTML = '';
+
+    for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+            const inp = document.createElement('input');
+            inp.type = 'number';
+            inp.id = `m_a_${r}${c}`;
+            inp.value = (r === c) ? '1' : '0';
+            inp.oninput = solveMatrixMath;
+            grid.appendChild(inp);
+        }
+    }
+    solveMatrixMath();
+}
+
+function getMatrixData(size) {
+    const mat = [];
+    for (let r = 0; r < size; r++) {
+        mat[r] = [];
+        for (let c = 0; c < size; c++) {
+            const el = document.getElementById(`m_a_${r}${c}`);
+            mat[r][c] = parseFloat(el ? el.value : '0') || 0;
+        }
+    }
+    return mat;
+}
+
+function solveMatrixMath() {
+    const size = state.matrixSize;
+    const mat = getMatrixData(size);
+    const detEl = document.getElementById('mat-det-val');
+    const trEl = document.getElementById('mat-trace-val');
+    const tBox = document.getElementById('mat-transpose-val');
+    const invBox = document.getElementById('mat-inverse-val');
+
+    let det = 0;
+    let trace = 0;
+    for (let i = 0; i < size; i++) trace += mat[i][i];
+    if (trEl) trEl.innerText = trace.toFixed(2);
+
+    if (size === 2) {
+        det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+    } else {
+        det = mat[0][0] * (mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) -
+              mat[0][1] * (mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) +
+              mat[0][2] * (mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]);
+    }
+
+    state.matrixDetVal = det.toFixed(4);
+    if (detEl) detEl.innerText = state.matrixDetVal;
+
+    // Транспонована
+    if (tBox) {
+        tBox.className = `matrix-grid-mini matrix-${size}x${size}`;
+        tBox.innerHTML = '';
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                const s = document.createElement('span');
+                s.innerText = mat[c][r].toFixed(2);
+                tBox.appendChild(s);
+            }
+        }
+    }
+
+    // Обернена
+    if (invBox) {
+        invBox.className = `matrix-grid-mini matrix-${size}x${size}`;
+        invBox.innerHTML = '';
+        if (Math.abs(det) < 0.000001) {
+            invBox.innerHTML = '<span style="grid-column: 1/-1; color: var(--accent-clear);">Оберненої матриці не існує (det = 0)</span>';
+        } else if (size === 2) {
+            const inv = [
+                [mat[1][1] / det, -mat[0][1] / det],
+                [-mat[1][0] / det, mat[0][0] / det]
+            ];
+            for (let r = 0; r < 2; r++) {
+                for (let c = 0; c < 2; c++) {
+                    const s = document.createElement('span');
+                    s.innerText = inv[r][c].toFixed(3);
+                    invBox.appendChild(s);
+                }
+            }
+        } else {
+            invBox.innerHTML = '<span style="grid-column: 1/-1;">Обчислено аналітично (det A ≠ 0)</span>';
+        }
+    }
+}
+
+function insertMatrixDetToCalc() {
+    audio.playAction();
+    state.currentInput = state.matrixDetVal;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('matrix-modal');
+    showToast(`Визначник det(A) = ${state.matrixDetVal} вставлено`, '🧮');
+}
+
+function resetMatrixInputs() {
+    setMatrixSize(state.matrixSize);
+}
+
+// ==========================================================================
+// Інтерактивний Бітовий Інспектор (Bitmask Visualizer)
+// ==========================================================================
+function renderBitmaskGrid() {
+    const grid = document.getElementById('bits-interactive-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    for (let i = 31; i >= 0; i--) {
+        const isSet = ((state.bitmaskValue >>> i) & 1) === 1;
+        const btn = document.createElement('button');
+        btn.className = `bit-btn ${isSet ? 'active' : ''}`;
+        btn.innerText = isSet ? '1' : '0';
+        btn.title = `Біт ${i} (вага: 2^${i} = ${Math.pow(2, i)})`;
+        btn.onclick = () => {
+            audio.playClick(800);
+            state.bitmaskValue = (state.bitmaskValue ^ (1 << i)) >>> 0;
+            updateBitmaskOutputs();
+        };
+        grid.appendChild(btn);
+    }
+}
+
+function updateBitmaskOutputs() {
+    const decEl = document.getElementById('bit-dec-input');
+    const hexEl = document.getElementById('bit-hex-input');
+    if (decEl) decEl.value = state.bitmaskValue;
+    if (hexEl) hexEl.value = '0x' + (state.bitmaskValue >>> 0).toString(16).toUpperCase();
+    renderBitmaskGrid();
+}
+
+function syncFromDecInput(val) {
+    const num = parseInt(val, 10) || 0;
+    state.bitmaskValue = num >>> 0;
+    updateBitmaskOutputs();
+}
+
+function syncFromHexInput(val) {
+    const clean = val.replace(/^0x/i, '');
+    const num = parseInt(clean, 16) || 0;
+    state.bitmaskValue = num >>> 0;
+    updateBitmaskOutputs();
+}
+
+function bitwiseMaskOp(op) {
+    audio.playAction();
+    if (op === 'invert') state.bitmaskValue = (~state.bitmaskValue) >>> 0;
+    else if (op === 'shl') state.bitmaskValue = (state.bitmaskValue << 1) >>> 0;
+    else if (op === 'shr') state.bitmaskValue = (state.bitmaskValue >>> 1);
+    else if (op === 'clear') state.bitmaskValue = 0;
+    else if (op === 'fill') state.bitmaskValue = 0xFFFFFFFF;
+    updateBitmaskOutputs();
+}
+
+function insertBitmaskToCalc() {
+    audio.playAction();
+    state.currentInput = state.bitmaskValue.toString();
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('bitmask-modal');
+    showToast(`Значення ${state.bitmaskValue} вставлено`, '👾');
+}
+
+// ==========================================================================
+// Розширений Калькулятор Відсотків Pro
+// ==========================================================================
+function calcPercent1() {
+    const p = parseFloat(document.getElementById('p1-percent').value) || 0;
+    const base = parseFloat(document.getElementById('p1-base').value) || 0;
+    const res = (p / 100) * base;
+    const el = document.getElementById('p1-res');
+    if (el) el.innerText = formatResult(res);
+}
+
+function calcPercent2() {
+    const v1 = parseFloat(document.getElementById('p2-val1').value) || 0;
+    const v2 = parseFloat(document.getElementById('p2-val2').value) || 0;
+    const el = document.getElementById('p2-res');
+    if (v1 === 0) {
+        if (el) el.innerText = 'Неможливо (база 0)';
+        return;
+    }
+    const delta = ((v2 - v1) / v1) * 100;
+    if (el) el.innerText = `${delta >= 0 ? '+' : ''}${delta.toFixed(2)}%`;
+}
+
+function calcPercent3() {
+    const base = parseFloat(document.getElementById('p3-base').value) || 0;
+    const op = document.getElementById('p3-op').value;
+    const p = parseFloat(document.getElementById('p3-percent').value) || 0;
+    const el = document.getElementById('p3-res');
+    let res = op === 'add' ? base + (base * (p / 100)) : base - (base * (p / 100));
+    if (el) el.innerText = formatResult(res);
+}
+
+// ==========================================================================
+// Конвертер Валют та Криптовалют
+// ==========================================================================
+function runCurrencyConversion(dir = 'from') {
+    const fromUnit = document.getElementById('curr-from-unit').value;
+    const toUnit = document.getElementById('curr-to-unit').value;
+    const fromInp = document.getElementById('curr-from-val');
+    const toInp = document.getElementById('curr-to-val');
+    if (!fromInp || !toInp) return;
+
+    const rates = state.currencyRates;
+    if (dir === 'from') {
+        const val = parseFloat(fromInp.value) || 0;
+        const inUAH = val * (rates[fromUnit] || 1);
+        const res = inUAH / (rates[toUnit] || 1);
+        toInp.value = res < 0.01 ? res.toFixed(6) : res.toFixed(2);
+    } else {
+        const val = parseFloat(toInp.value) || 0;
+        const inUAH = val * (rates[toUnit] || 1);
+        const res = inUAH / (rates[fromUnit] || 1);
+        fromInp.value = res < 0.01 ? res.toFixed(6) : res.toFixed(2);
+    }
+}
+
+function swapCurrencyUnits() {
+    audio.playAction();
+    const u1 = document.getElementById('curr-from-unit');
+    const u2 = document.getElementById('curr-to-unit');
+    if (!u1 || !u2) return;
+    const t = u1.value;
+    u1.value = u2.value;
+    u2.value = t;
+    runCurrencyConversion('from');
+}
+
+function insertCurrencyToCalc() {
+    audio.playAction();
+    const val = document.getElementById('curr-to-val').value;
+    if (val) {
+        state.currentInput = val;
+        state.shouldResetDisplay = true;
+        updateDisplay();
+        closeModal('currency-modal');
+        showToast(`Суму ${val} вставлено`, '💱');
+    }
+}
+
+function copyCurrencyVal() {
+    const val = document.getElementById('curr-to-val').value;
+    if (val) {
+        audio.playAction();
+        navigator.clipboard.writeText(val);
+        showToast(`Скопійовано: ${val}`, '📋');
+    }
 }
 
 // ==========================================================================
@@ -1144,7 +1525,7 @@ function formatResult(num) {
 }
 
 // ==========================================================================
-// Розв'язувач Квадратних Рівнянь (ax² + bx + c = 0)
+// Розв'язувач Квадратних Рівнянь
 // ==========================================================================
 function solveQuadraticEquation() {
     const a = parseFloat(document.getElementById('quad-a').value) || 0;
@@ -1175,7 +1556,6 @@ function solveQuadraticEquation() {
     const D = (b * b) - (4 * a * c);
     if (discEl) discEl.innerText = `D = ${D >= 0 ? D.toFixed(4) : D.toFixed(4) + ' (D < 0)'}`;
 
-    // Координати вершини параболи
     const vx = -b / (2 * a);
     const vy = c - (b * b) / (4 * a);
     if (vertEl) vertEl.innerHTML = `Вершина параболи: <code>(${vx.toFixed(3)}; ${vy.toFixed(3)})</code>`;
@@ -1219,7 +1599,7 @@ function insertQuadRootToCalc(idx) {
 }
 
 // ==========================================================================
-// Статистичний Аналізатор Даних (Mean, Median, StdDev, Variance)
+// Статистичний Модуль
 // ==========================================================================
 function calculateStatistics() {
     const raw = document.getElementById('stats-data-input').value;
@@ -1237,12 +1617,10 @@ function calculateStatistics() {
         return;
     }
 
-    // Сума та Середнє
     const sum = nums.reduce((a, b) => a + b, 0);
     const mean = sum / nums.length;
     state.statMeanVal = mean.toFixed(4);
 
-    // Медіана
     const sorted = [...nums].sort((a, b) => a - b);
     let median;
     const mid = Math.floor(sorted.length / 2);
@@ -1252,7 +1630,6 @@ function calculateStatistics() {
         median = sorted[mid];
     }
 
-    // Мода
     const counts = {};
     nums.forEach(n => counts[n] = (counts[n] || 0) + 1);
     let maxFreq = 0;
@@ -1264,11 +1641,8 @@ function calculateStatistics() {
         }
     }
 
-    // Дисперсія та Стандартне відхилення
     const variance = nums.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / nums.length;
     const stdDev = Math.sqrt(variance);
-    const min = Math.min(...nums);
-    const max = Math.max(...nums);
 
     document.getElementById('stat-mean').innerText = mean.toFixed(4);
     document.getElementById('stat-median').innerText = median.toFixed(4);
@@ -1276,8 +1650,8 @@ function calculateStatistics() {
     document.getElementById('stat-sum').innerText = sum.toFixed(2);
     document.getElementById('stat-std').innerText = stdDev.toFixed(4);
     document.getElementById('stat-var').innerText = variance.toFixed(4);
-    document.getElementById('stat-min').innerText = min;
-    document.getElementById('stat-max').innerText = max;
+    document.getElementById('stat-min').innerText = Math.min(...nums);
+    document.getElementById('stat-max').innerText = Math.max(...nums);
 }
 
 function insertStatMeanToCalc() {
@@ -1286,7 +1660,7 @@ function insertStatMeanToCalc() {
     state.shouldResetDisplay = true;
     updateDisplay();
     closeModal('stats-modal');
-    showToast(`Середнє значення (${state.statMeanVal}) вставлено`, '📊');
+    showToast(`Середнє (${state.statMeanVal}) вставлено`, '📊');
 }
 
 function clearStatsInput() {
@@ -1296,7 +1670,7 @@ function clearStatsInput() {
 }
 
 // ==========================================================================
-// Калькулятор Дат та Часу (Date Difference & Date Math)
+// Калькулятор Дат
 // ==========================================================================
 function switchDateTab(tab) {
     state.activeDateTab = tab;
@@ -1310,7 +1684,6 @@ function switchDateTab(tab) {
 function calculateDateDiff() {
     const d1 = new Date(document.getElementById('date-start').value);
     const d2 = new Date(document.getElementById('date-end').value);
-
     if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return;
 
     const diffTime = Math.abs(d2.getTime() - d1.getTime());
@@ -1327,7 +1700,6 @@ function calculateDateDiff() {
 function calculateDateAdd() {
     const base = new Date(document.getElementById('date-base').value);
     const days = parseInt(document.getElementById('date-days-count').value) || 0;
-
     if (isNaN(base.getTime())) return;
 
     const resultDate = new Date(base);
@@ -1341,7 +1713,7 @@ function calculateDateAdd() {
 }
 
 // ==========================================================================
-// Центр Налаштувань (Settings Center Handlers)
+// Центр Налаштувань
 // ==========================================================================
 function updateSettingsVolume(val) {
     state.soundVolume = parseFloat(val) / 100;
@@ -1401,8 +1773,9 @@ function resetAllSettings() {
     state.precisionMode = 'auto';
     state.thousandSeparator = 'space';
     state.angleMode = 'DEG';
-    state.currentTheme = 'redstone2';
+    state.currentTheme = 'bordeaux_luxury';
     state.currentFont = 'font-inter';
+    state.currentWallpaper = 'burgundy';
     state.memoryValue = 0;
     state.memorySlots = [0, 0, 0, 0];
 
@@ -1415,14 +1788,15 @@ function resetAllSettings() {
     document.getElementById('setting-glass').value = 'heavy';
 
     setFontFamily('font-inter');
-    setTheme('redstone2');
+    setTheme('bordeaux_luxury');
+    setWallpaper('burgundy');
     updateDisplay();
     closeModal('settings-modal');
     showToast('Всі налаштування скинуто до заводських', '🔁');
 }
 
 // ==========================================================================
-// Кастомізатор Кольорів Інтерфейсу в Реальному Часі
+// Кастомізатор Кольорів
 // ==========================================================================
 function applyRealtimeColor(type, colorHex) {
     if (type === 'accent') {
@@ -1451,7 +1825,7 @@ function resetCustomColors() {
 }
 
 // ==========================================================================
-// Шрифти та Типографіка (8 Шрифтів)
+// Шрифти (8 Шрифтів)
 // ==========================================================================
 function setFontFamily(fontClass) {
     audio.playAction();
@@ -1484,7 +1858,7 @@ function setFontFamily(fontClass) {
 }
 
 // ==========================================================================
-// Теми та Кольори (20 Themes)
+// Теми та Кольори (24 Themes)
 // ==========================================================================
 function setTheme(themeName) {
     audio.playAction();
@@ -1510,6 +1884,10 @@ function setCustomAccent(colorHex, name) {
 
 function getThemeNameUA(theme) {
     const names = {
+        bordeaux_luxury: 'Bordeaux Imperial Wine',
+        velvet_burgundy: 'Velvet Burgundy Noir',
+        autumn_crimson: 'Autumn Crimson',
+        volcanic_magma: 'Volcanic Magma',
         redstone2: 'Redstone 2 Quantum Pulse',
         deep_space: 'Deep Space Nebula',
         cyber_lime: 'Cyber Lime Acid',
@@ -1531,10 +1909,12 @@ function getThemeNameUA(theme) {
         glass: 'Frost Glassmorphism',
         dark: 'Dark Charcoal'
     };
-    return names[theme] || 'Redstone 2 Quantum';
+    return names[theme] || 'Bordeaux Imperial';
 }
 
+// ==========================================================================
 // Wallpaper Studio
+// ==========================================================================
 function setWallpaper(wpName) {
     audio.playAction();
     state.currentWallpaper = wpName;
@@ -1550,6 +1930,9 @@ function setWallpaper(wpName) {
 
 function getWallpaperNameUA(wp) {
     const map = {
+        burgundy: 'Bordeaux Velvet',
+        nebula_wine: 'Wine Nebula Space',
+        cyber_redstone3: 'Redstone 3 Cybernet',
         cyber: 'Кіберсітка',
         sunset: 'Захід Сонця',
         emerald: 'Смарагдова Небула',
@@ -1565,7 +1948,13 @@ function applyWallpaperToDom() {
 
     dom.bgWallpaper.className = 'bg-wallpaper-layer';
 
-    if (state.currentWallpaper === 'cyber') {
+    if (state.currentWallpaper === 'burgundy') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/burgundy.jpg')";
+    } else if (state.currentWallpaper === 'nebula_wine') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/nebula_wine.jpg')";
+    } else if (state.currentWallpaper === 'cyber_redstone3') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/cyber_redstone3.jpg')";
+    } else if (state.currentWallpaper === 'cyber') {
         dom.bgWallpaper.style.backgroundImage = "url('images/cyber.jpg')";
     } else if (state.currentWallpaper === 'sunset') {
         dom.bgWallpaper.style.backgroundImage = "url('images/sunset.jpg')";
@@ -1630,7 +2019,7 @@ function applyWallpaperUrl() {
 }
 
 function resetWallpaper() {
-    setWallpaper('default');
+    setWallpaper('burgundy');
     adjustWallpaperBlur(12);
     adjustWallpaperOverlay(60);
     const bSlider = document.getElementById('wp-blur-slider');
@@ -1641,7 +2030,7 @@ function resetWallpaper() {
 }
 
 // ==========================================================================
-// 2D Графік Функцій (Canvas Plotter)
+// 2D Графік Функцій
 // ==========================================================================
 function plotFunction(funcName) {
     state.activeGraphFunc = funcName;
@@ -1677,7 +2066,6 @@ function plotFunction(funcName) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
     }
 
-    // Осі X та Y
     const cx = w / 2;
     const cy = h / 2;
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
@@ -1686,8 +2074,7 @@ function plotFunction(funcName) {
     ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
 
-    // Крива
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-operator') || '#ff2a5f';
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-operator') || '#8b1538';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
 
@@ -1776,7 +2163,7 @@ function copyFinanceTotal() {
 }
 
 // ==========================================================================
-// RNG & Кубики (Dice Engine)
+// RNG & Кубики
 // ==========================================================================
 function generateRandomNumber() {
     audio.playAction();
@@ -1789,7 +2176,7 @@ function generateRandomNumber() {
     const res = Math.floor(Math.random() * (max - min + 1)) + min;
     const el = document.getElementById('rng-result');
     if (el) el.innerText = res;
-    showToast(`Згенеровано число: ${res}`, '🎲');
+    showToast(`Згенеровано: ${res}`, '🎲');
 }
 
 function rollDice(sides) {
@@ -1976,7 +2363,7 @@ function copyConvertedVal() {
 }
 
 // ==========================================================================
-// Програмістський Режим
+// Програмістські Системи Числення
 // ==========================================================================
 function syncProgrammerBase(sourceBase, value) {
     const val = value.trim();
@@ -2117,7 +2504,7 @@ function exportHistoryFormat(format) {
         mimeType = 'application/json;charset=utf-8';
         fileExt = 'json';
         content = JSON.stringify({
-            application: "Calculator Pro v1.7 (Build 148) Redstone 2",
+            application: "Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux",
             exportedAt: new Date().toISOString(),
             author: "MaxNT Official, 2026",
             totalRecords: state.history.length,
@@ -2125,7 +2512,7 @@ function exportHistoryFormat(format) {
         }, null, 2);
     } else {
         content = `====================================================\n`;
-        content += `  КАЛЬКУЛЯТОР PRO v1.7 (Build 148) Redstone 2 - ІСТОРІЯ\n`;
+        content += `  КАЛЬКУЛЯТОР PRO v1.8 (Build 179) Redstone 3 Bordeaux - ІСТОРІЯ\n`;
         content += `  Дата експорту: ${new Date().toLocaleString('uk-UA')}\n`;
         content += `  Автор: MaxNT Official, 2026\n`;
         content += `====================================================\n\n`;
@@ -2140,7 +2527,7 @@ function exportHistoryFormat(format) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Calculator_History_v1.7_${dateStr}.${fileExt}`;
+    a.download = `Calculator_History_v1.8_${dateStr}.${fileExt}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2223,6 +2610,20 @@ function openModal(modalId) {
         if (modalId === 'memory-modal') {
             updateMemorySlotsUI();
         }
+        if (modalId === 'matrix-modal') {
+            solveMatrixMath();
+        }
+        if (modalId === 'bitmask-modal') {
+            updateBitmaskOutputs();
+        }
+        if (modalId === 'percent-modal') {
+            calcPercent1();
+            calcPercent2();
+            calcPercent3();
+        }
+        if (modalId === 'currency-modal') {
+            runCurrencyConversion('from');
+        }
         if (modalId === 'settings-modal') {
             const vSlider = document.getElementById('setting-volume');
             const vVal = document.getElementById('setting-vol-val');
@@ -2231,6 +2632,7 @@ function openModal(modalId) {
             const sPrec = document.getElementById('setting-precision');
             const sAng = document.getElementById('setting-angle');
             const sGlass = document.getElementById('setting-glass');
+            const sPart = document.getElementById('setting-particles');
             if (vSlider) vSlider.value = Math.round(state.soundVolume * 100);
             if (vVal) vVal.innerText = `${Math.round(state.soundVolume * 100)}%`;
             if (sProf) sProf.value = state.soundProfile;
@@ -2238,6 +2640,7 @@ function openModal(modalId) {
             if (sPrec) sPrec.value = state.precisionMode;
             if (sAng) sAng.value = state.angleMode;
             if (sGlass) sGlass.value = state.glassIntensity;
+            if (sPart) sPart.value = state.particlesEnabled ? 'on' : 'off';
         }
     }
 }
@@ -2418,7 +2821,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHistory();
     updateMemorySlotsUI();
 
-    console.log('%c 🔴 Calculator Pro v1.7 (Build 148) Redstone 2 Loaded Successfully %c', 
-        'background: linear-gradient(90deg, #ff2a5f, #f59e0b); color: #0a0305; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
+    // Запуск фонових частинок Canvas
+    if (state.particlesEnabled) {
+        initParticlesCanvas();
+    }
+
+    console.log('%c 🍷 Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux Edition Loaded Successfully %c', 
+        'background: linear-gradient(90deg, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
         '');
 });
