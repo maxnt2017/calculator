@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор v1.8.1 (Build 180) Redstone 3.1 Bordeaux</title>
     <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro v1.8.1 build 180 Redstone 3.1 у бордовому стилі: НСД/НСК, прості множники, розрахункова стрічка, порівняння цін за одиницю, обчислювач f(x), матриці 2x2/3x3, бітовий інспектор, 24 теми.">
-    <!-- SVG Favicon: Правильно орієнтована та чітка іконка калькулятора -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%238b1538'/%3E%3Crect x='5' y='5' width='22' height='7' rx='2.5' fill='%23120206' stroke='%23f59e0b' stroke-width='0.8'/%3E%3Ccircle cx='9' cy='17' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='17' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='17' r='2' fill='%23f59e0b'/%3E%3Ccircle cx='9' cy='23' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='23' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='23' r='2' fill='%23fb7185'/%3E%3Ccircle cx='9' cy='28' r='1.5' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='28' r='1.5' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='28' r='1.5' fill='%23f59e0b'/%3E%3C/svg%3E">
+    <!-- Favicon: icon_calc.png -->
+    <link rel="icon" type="image/png" href="icon_calc.png">
+    <link rel="apple-touch-icon" href="icon_calc.png">
     <!-- Google Fonts: 8 сучасних гарнітур -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,27 +26,9 @@
             <!-- Бічне меню керування (Sidebar) -->
             <aside class="sidebar">
                 <div class="sidebar-header">
-                    <!-- Правильно орієнтована векторна іконка калькулятора без перекосів -->
+                    <!-- Компактна та правильно орієнтована іконка калькулятора (icon_calc.png) -->
                     <div class="app-icon-badge" id="app-logo-badge" title="Calculator Pro v1.8.1">
-                        <svg class="app-logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="3" y="2" width="30" height="32" rx="7" fill="url(#calcGrad)" stroke="var(--accent-operator)" stroke-width="2"/>
-                            <rect x="7" y="6" width="22" height="7" rx="3" fill="rgba(0,0,0,0.5)" stroke="var(--accent-equals)" stroke-width="1"/>
-                            <circle cx="10" cy="18" r="2" fill="#fff"/>
-                            <circle cx="18" cy="18" r="2" fill="#fff"/>
-                            <circle cx="26" cy="18" r="2" fill="var(--accent-equals)"/>
-                            <circle cx="10" cy="24" r="2" fill="#fff"/>
-                            <circle cx="18" cy="24" r="2" fill="#fff"/>
-                            <circle cx="26" cy="24" r="2" fill="var(--accent-operator)"/>
-                            <circle cx="10" cy="29" r="1.8" fill="#fff"/>
-                            <circle cx="18" cy="29" r="1.8" fill="#fff"/>
-                            <circle cx="26" cy="29" r="1.8" fill="var(--accent-equals)"/>
-                            <defs>
-                                <linearGradient id="calcGrad" x1="3" y1="2" x2="33" y2="34" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#2a050d"/>
-                                    <stop offset="1" stop-color="#8b1538"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                        <img src="icon_calc.png" alt="Калькулятор" class="app-icon-img" id="app-logo-img">
                     </div>
                     <div class="sidebar-title-group">
                         <h2>Calculator Pro</h2>
