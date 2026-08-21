@@ -1,7 +1,11 @@
 /* ==========================================================================
-   Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux - Master Stylesheet
+   Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium - Master Stylesheet
    Author: MaxNT Official, 2026
    ========================================================================== */
+
+:root {
+    --font-scale: 1;
+}
 
 /* --------------------------------------------------------------------------
    1. Шрифтові гарнітури (8 Typography Engine Classes)
@@ -680,6 +684,98 @@ body[data-theme="midnight_sapphire"] {
     --badge-border: rgba(56, 189, 248, 0.4);
 }
 
+/* 29. Titanium Ruby Master */
+body[data-theme="titanium_ruby"] {
+    --bg-body: #0a0b0e;
+    --bg-card: rgba(18, 20, 26, 0.9);
+    --bg-display: rgba(10, 12, 16, 0.95);
+    --bg-sidebar: rgba(14, 16, 22, 0.84);
+    --bg-btn: rgba(30, 34, 44, 0.88);
+    --bg-btn-hover: rgba(45, 52, 68, 0.96);
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-operator: #e11d48;
+    --accent-equals: #f43f5e;
+    --accent-sci: #1e293b;
+    --accent-sci-text: #fda4af;
+    --accent-action: #0f172a;
+    --accent-clear: #be123c;
+    --accent-memory: #475569;
+    --border-color: rgba(225, 29, 72, 0.32);
+    --shadow-color: rgba(225, 29, 72, 0.35);
+    --badge-bg: rgba(225, 29, 72, 0.16);
+    --badge-border: rgba(225, 29, 72, 0.42);
+}
+
+/* 30. Crimson Supernova */
+body[data-theme="crimson_supernova"] {
+    --bg-body: #080003;
+    --bg-card: rgba(28, 2, 8, 0.92);
+    --bg-display: rgba(16, 1, 5, 0.96);
+    --bg-sidebar: rgba(22, 1, 7, 0.86);
+    --bg-btn: rgba(54, 4, 16, 0.9);
+    --bg-btn-hover: rgba(90, 8, 28, 0.98);
+    --text-primary: #fff1f2;
+    --text-muted: #fda4af;
+    --accent-operator: #ff1e56;
+    --accent-equals: #ffac41;
+    --accent-sci: #4c0519;
+    --accent-sci-text: #ffe4e6;
+    --accent-action: #2e020d;
+    --accent-clear: #e11d48;
+    --accent-memory: #9f1239;
+    --border-color: rgba(255, 30, 86, 0.38);
+    --shadow-color: rgba(255, 30, 86, 0.45);
+    --badge-bg: rgba(255, 30, 86, 0.18);
+    --badge-border: rgba(255, 30, 86, 0.48);
+}
+
+/* 31. Cyberpunk Neon Bordeaux */
+body[data-theme="cyberpunk_neon"] {
+    --bg-body: #040810;
+    --bg-card: rgba(12, 20, 36, 0.9);
+    --bg-display: rgba(6, 12, 24, 0.96);
+    --bg-sidebar: rgba(10, 16, 30, 0.85);
+    --bg-btn: rgba(24, 38, 68, 0.9);
+    --bg-btn-hover: rgba(38, 60, 105, 0.98);
+    --text-primary: #f0fdfa;
+    --text-muted: #2dd4bf;
+    --accent-operator: #d946ef;
+    --accent-equals: #06b6d4;
+    --accent-sci: #1e1b4b;
+    --accent-sci-text: #fdf4ff;
+    --accent-action: #0f172a;
+    --accent-clear: #f43f5e;
+    --accent-memory: #0d9488;
+    --border-color: rgba(6, 182, 212, 0.35);
+    --shadow-color: rgba(217, 70, 239, 0.4);
+    --badge-bg: rgba(6, 182, 212, 0.16);
+    --badge-border: rgba(6, 182, 212, 0.45);
+}
+
+/* 32. Emerald Platinum */
+body[data-theme="emerald_platinum"] {
+    --bg-body: #020c08;
+    --bg-card: rgba(8, 26, 18, 0.88);
+    --bg-display: rgba(4, 16, 10, 0.95);
+    --bg-sidebar: rgba(6, 20, 14, 0.82);
+    --bg-btn: rgba(18, 50, 35, 0.88);
+    --bg-btn-hover: rgba(28, 78, 54, 0.96);
+    --text-primary: #f0fdf4;
+    --text-muted: #86efac;
+    --accent-operator: #10b981;
+    --accent-equals: #e2e8f0;
+    --accent-sci: #064e3b;
+    --accent-sci-text: #dcfce7;
+    --accent-action: #022c22;
+    --accent-clear: #ef4444;
+    --accent-memory: #059669;
+    --border-color: rgba(16, 185, 129, 0.32);
+    --shadow-color: rgba(16, 185, 129, 0.35);
+    --badge-bg: rgba(16, 185, 129, 0.16);
+    --badge-border: rgba(16, 185, 129, 0.45);
+}
+
 /* --------------------------------------------------------------------------
    3. Базове Скидання та Головний Каркас
    -------------------------------------------------------------------------- */
@@ -1027,7 +1123,7 @@ body {
 }
 
 .history-line {
-    font-size: 0.78rem;
+    font-size: calc(0.78rem * var(--font-scale, 1));
     color: var(--text-muted);
     min-height: 14px;
     text-align: right;
@@ -1036,7 +1132,7 @@ body {
 }
 
 .current-line {
-    font-size: 1.75rem;
+    font-size: calc(1.75rem * var(--font-scale, 1));
     font-weight: 800;
     text-align: right;
     color: var(--text-primary);
@@ -1051,7 +1147,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.64rem;
+    font-size: calc(0.64rem * var(--font-scale, 1));
     color: var(--text-muted);
 }
 
@@ -1092,7 +1188,7 @@ body {
 .buttons button {
     padding: 6px 2px;
     min-height: 29px;
-    font-size: 0.94rem;
+    font-size: calc(0.94rem * var(--font-scale, 1));
     font-weight: 700;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -1124,26 +1220,26 @@ body {
 .buttons button.memory {
     background: var(--accent-memory);
     color: var(--text-primary);
-    font-size: 0.78rem;
+    font-size: calc(0.78rem * var(--font-scale, 1));
     border-color: rgba(255, 255, 255, 0.12);
 }
 
 .buttons button.sci {
     background: var(--accent-sci);
     color: var(--accent-sci-text);
-    font-size: 0.84rem;
+    font-size: calc(0.84rem * var(--font-scale, 1));
     border-color: rgba(255, 255, 255, 0.1);
 }
 
 .buttons button.action {
     background: var(--accent-action);
-    font-size: 0.84rem;
+    font-size: calc(0.84rem * var(--font-scale, 1));
 }
 
 .buttons button.operator {
     background: var(--accent-operator);
     color: #fff;
-    font-size: 1.05rem;
+    font-size: calc(1.05rem * var(--font-scale, 1));
     border-color: var(--accent-operator);
     box-shadow: 0 2px 10px var(--shadow-color);
 }
@@ -1161,7 +1257,7 @@ body {
 .buttons button.equals {
     background: var(--accent-equals);
     color: #000;
-    font-size: 1.15rem;
+    font-size: calc(1.15rem * var(--font-scale, 1));
     font-weight: 900;
     border-color: var(--accent-equals);
     box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
@@ -2384,6 +2480,131 @@ body {
 .font-meta small {
     font-size: 0.72rem;
     color: var(--text-muted);
+}
+
+/* Font Scaling Controller & Studio Enhancements */
+.font-scale-control-box {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.font-scale-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.font-scale-header h4 {
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.font-scale-badge-val {
+    font-size: 0.88rem;
+    font-weight: 800;
+    background: var(--accent-operator);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.font-scale-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.font-scale-slider-row input[type="range"] {
+    flex-grow: 1;
+    accent-color: var(--accent-operator);
+    cursor: pointer;
+}
+
+.scale-label-min, .scale-label-max {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.font-scale-presets-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.font-scale-preset-btn {
+    flex: 1 1 auto;
+    padding: 6px 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: var(--bg-btn);
+    color: var(--text-primary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.font-scale-preset-btn:hover {
+    background: var(--bg-btn-hover);
+    border-color: var(--accent-operator);
+}
+
+.font-scale-preset-btn.active {
+    background: var(--accent-operator);
+    color: #fff;
+    border-color: var(--accent-operator);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.font-scale-live-preview {
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 4px;
+}
+
+.font-scale-live-preview span {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.font-scale-preview-text {
+    font-size: calc(1rem * var(--font-scale, 1));
+    font-weight: 700;
+    color: var(--accent-operator);
+    word-break: break-all;
+    transition: font-size 0.15s ease;
+}
+
+.font-scale-badge {
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 5px;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    color: var(--accent-operator);
+    cursor: pointer;
+    transition: all 0.12s ease;
+    user-select: none;
+}
+
+.font-scale-badge:hover {
+    background: var(--accent-operator);
+    color: var(--bg-body);
 }
 
 /* --------------------------------------------------------------------------
@@ -3642,47 +3863,315 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   17. Адаптивність (Responsive Design)
+   26. НОВЕ v1.8.5: 3D Векторний Калькулятор (3D Vector Math)
+   -------------------------------------------------------------------------- */
+.vector-calc-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.vector-pairs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.vector-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vector-box-title {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: var(--accent-operator);
+}
+
+.vector-coords-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+}
+
+.vector-coord-input {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.vector-coord-input label {
+    font-size: 0.70rem;
+    color: var(--text-muted);
+}
+
+.vector-coord-input input {
+    width: 100%;
+    padding: 5px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.vector-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px;
+}
+
+.vector-res-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vector-res-card small {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+.vector-res-card strong {
+    font-size: 0.95rem;
+    color: var(--accent-operator);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   27. НОВЕ v1.8.5: Комплексні Числа (Complex Numbers C)
+   -------------------------------------------------------------------------- */
+.complex-calc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.complex-pairs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.complex-input-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.complex-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.complex-input-row input {
+    width: 80px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 700;
+    text-align: center;
+}
+
+.complex-results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.complex-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.complex-card small {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+.complex-card strong {
+    font-size: 0.95rem;
+    color: var(--accent-equals);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   28. НОВЕ v1.8.5: Математичний Довідник (Interactive Formula Reference)
+   -------------------------------------------------------------------------- */
+.math-ref-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-top: 8px;
+}
+
+.math-ref-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.math-ref-item:hover {
+    transform: translateX(2px);
+    border-color: var(--accent-operator);
+}
+
+.math-ref-title {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.math-ref-formula {
+    font-size: 0.90rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-operator);
+    font-weight: 800;
+}
+
+/* Кнопка мобільного меню (Mobile Toggle Bar) */
+.mobile-header-bar {
+    display: none;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 4px;
+}
+
+.mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   17. Адаптивність (Responsive Design for Mobile Phones & Tablets)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
     body {
-        padding: 6px;
+        padding: 4px 6px 12px;
+        align-items: flex-start;
+    }
+    .mobile-header-bar {
+        display: flex;
+    }
+    .main-wrapper {
+        gap: 6px;
+        max-width: 100%;
     }
     .app-container {
         flex-direction: column;
         min-height: auto;
+        max-height: none;
+        border-radius: 14px;
     }
     .sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
-        padding: 12px;
+        padding: 10px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+    }
+    .sidebar.mobile-open {
+        max-height: 360px;
+        overflow-y: auto;
+        padding: 10px;
     }
     .sidebar-nav {
-        max-height: 160px;
+        max-height: 280px;
         display: grid;
         grid-template-columns: 1fr 1fr;
+        gap: 4px;
     }
     .calculator {
-        padding: 14px;
+        padding: 10px 10px 14px;
+        width: 100%;
+        min-width: 0;
+    }
+    .display {
+        min-height: 80px;
+        padding: 8px 10px;
     }
     .current-line {
-        font-size: 1.8rem;
+        font-size: 1.85rem;
+    }
+    .buttons {
+        gap: 5px;
     }
     .buttons button {
-        padding: 11px 4px;
-        font-size: 0.95rem;
+        padding: 10px 2px;
+        min-height: 38px;
+        font-size: 1.05rem;
+        border-radius: 10px;
     }
-    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid, .bits-matrix-grid, .deal-comparison-grid, .func-range-inputs {
+    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid, .bits-matrix-grid, .deal-comparison-grid, .func-range-inputs, .vector-pairs-row, .complex-pairs-row {
         grid-template-columns: 1fr;
     }
     .footer {
         flex-direction: column;
         text-align: center;
         gap: 8px;
+        padding: 10px 12px;
     }
     .footer-left, .footer-right, .copyright-line {
         justify-content: center;
+    }
+    .footer-right {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: 100%;
+        gap: 4px;
+    }
+    .footer-btn {
+        justify-content: center;
+        padding: 5px 2px;
+        font-size: 0.72rem;
     }
 }
 

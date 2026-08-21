@@ -1,2 +1,2 @@
-Калькулятор v1.8.4 (build 188) RTM, Redstone 3.4 Bordeaux Supercharged.
+Калькулятор v1.8.5 (build 190) RTM, Redstone 3.5 Bordeaux Titanium Edition.
 Автор: MaxNT Official (Максим) | 2026 Всі права захищені. Вміст захищений під авторським правом.

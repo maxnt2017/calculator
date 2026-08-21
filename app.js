@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged
+ * Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -19,6 +19,7 @@ const state = {
     isSecondMode: false, // 2nd (Shift) шар функцій
     currentTheme: localStorage.getItem('calc_theme') || 'bordeaux_luxury',
     currentFont: localStorage.getItem('calc_font') || 'font-inter',
+    fontScale: parseInt(localStorage.getItem('calc_font_scale') || '100'), // 85..150 (%)
     currentWallpaper: localStorage.getItem('calc_wallpaper') || 'burgundy',
     wallpaperBlur: parseInt(localStorage.getItem('calc_wp_blur') || '12'),
     wallpaperOverlay: parseInt(localStorage.getItem('calc_wp_overlay') || '60'),
@@ -38,7 +39,10 @@ const state = {
     activeDateTab: 'diff',
     activeTriangleMode: 'sss', // 'sss', 'sas', 'asa'
     activeConstantsCat: 'all',
+    activeMathRefTab: 'trig',
     trigAngleDeg: 45,
+    vectorResults: { dot: '26.00', cross: '(-18, 2, 5)', lenU: '7.000', lenV: '4.583', angle: '35.8° (0.62 rad)', dist: '4.243' },
+    complexResults: { add: '4 + 6i', sub: '2 + 2i', mul: '-5 + 10i', div: '2.2 - 0.4i', mod1: '5.000', arg1: '53.13° (0.93 rad)' },
     triangleResults: { area: '14.697', perim: '18.00' },
     loanResults: { monthly: '17205.12', total: '619384.32' },
     matrixSize: 2,
@@ -112,6 +116,58 @@ const EXTENDED_CONSTANTS = [
     { sym: 'ln(10)', name: 'Модуль десяткового переходу', val: '2.302585092994046', unit: '—', cat: 'math' },
     { sym: 'γ', name: 'Стала Ейлера-Маскероні', val: '0.577215664901532', unit: '—', cat: 'math' }
 ];
+
+// Інтерактивна база формул математичного довідника
+const MATH_REFERENCE_DATA = {
+    trig: [
+        { title: 'Основна тригонометрична тотожність', formula: 'sin²(x) + cos²(x) = 1' },
+        { title: 'Означення тангенса', formula: 'tan(x) = sin(x) / cos(x)' },
+        { title: 'Означення котангенса', formula: 'cot(x) = cos(x) / sin(x) = 1 / tan(x)' },
+        { title: 'Зв\'язок тангенса та косинуса', formula: '1 + tan²(x) = 1 / cos²(x)' },
+        { title: 'Синус подвійного кута', formula: 'sin(2x) = 2 · sin(x) · cos(x)' },
+        { title: 'Косинус подвійного кута', formula: 'cos(2x) = cos²(x) - sin²(x) = 2cos²(x) - 1' },
+        { title: 'Тангенс подвійного кута', formula: 'tan(2x) = 2tan(x) / (1 - tan²(x))' },
+        { title: 'Синус суми кутів', formula: 'sin(α ± β) = sin(α)cos(β) ± cos(α)sin(β)' },
+        { title: 'Косинус суми кутів', formula: 'cos(α ± β) = cos(α)cos(β) ∓ sin(α)sin(β)' },
+        { title: 'Формула Ейлера', formula: 'e^(i·x) = cos(x) + i · sin(x)' }
+    ],
+    algebra: [
+        { title: 'Квадрат суми', formula: '(a + b)² = a² + 2ab + b²' },
+        { title: 'Квадрат різниці', formula: '(a - b)² = a² - 2ab + b²' },
+        { title: 'Різниця квадратів', formula: 'a² - b² = (a - b)(a + b)' },
+        { title: 'Куб суми', formula: '(a + b)³ = a³ + 3a²b + 3ab² + b³' },
+        { title: 'Сума кубів', formula: 'a³ + b³ = (a + b)(a² - ab + b²)' },
+        { title: 'Різниця кубів', formula: 'a³ - b³ = (a - b)(a² + ab + b²)' },
+        { title: 'Добуток степенів', formula: 'aⁿ · aᵐ = a^(n + m)' },
+        { title: 'Частка степенів', formula: 'aⁿ / aᵐ = a^(n - m)' },
+        { title: 'Логарифм добутку', formula: 'log_a(x · y) = log_a(x) + log_a(y)' },
+        { title: 'Логарифм степеня', formula: 'log_a(x^k) = k · log_a(x)' }
+    ],
+    calculus: [
+        { title: 'Похідна степеневої функції', formula: '(xⁿ)\' = n · x^(n - 1)' },
+        { title: 'Похідна синуса', formula: '(sin x)\' = cos x' },
+        { title: 'Похідна косинуса', formula: '(cos x)\' = -sin x' },
+        { title: 'Похідна тангенса', formula: '(tan x)\' = 1 / cos²(x)' },
+        { title: 'Похідна експоненти eˣ', formula: '(eˣ)\' = eˣ' },
+        { title: 'Похідна ln(x)', formula: '(ln x)\' = 1 / x' },
+        { title: 'Похідна добутку (u · v)', formula: '(u · v)\' = u\'v + uv\'' },
+        { title: 'Похідна частки (u / v)', formula: '(u / v)\' = (u\'v - uv\') / v²' },
+        { title: 'Перша чудова границя', formula: 'lim(x→0) [sin(x) / x] = 1' },
+        { title: 'Друга чудова границя (e)', formula: 'lim(n→∞) (1 + 1/n)ⁿ = e ≈ 2.71828' }
+    ],
+    geometry: [
+        { title: 'Теорема Піфагора', formula: 'c² = a² + b² (c = √(a² + b²))' },
+        { title: 'Площа круга', formula: 'S = π · r²' },
+        { title: 'Довжина кола', formula: 'C = 2 · π · r = π · d' },
+        { title: 'Площа трикутника (Герон)', formula: 'S = √(p(p - a)(p - b)(p - c)), p = P/2' },
+        { title: 'Теорема косинусів', formula: 'c² = a² + b² - 2ab · cos(γ)' },
+        { title: 'Теорема синусів', formula: 'a / sin(α) = b / sin(β) = c / sin(γ) = 2R' },
+        { title: 'Об\'єм кулі (сфери)', formula: 'V = (4/3) · π · r³' },
+        { title: 'Площа поверхні сфери', formula: 'S = 4 · π · r²' },
+        { title: 'Об\'єм циліндра', formula: 'V = π · r² · h' },
+        { title: 'Об\'єм конуса', formula: 'V = (1/3) · π · r² · h' }
+    ]
+};
 
 // Елементи інтерфейсу (DOM Elements)
 const dom = {
@@ -2993,6 +3049,7 @@ function resetAllSettings() {
     state.angleMode = 'DEG';
     state.currentTheme = 'bordeaux_luxury';
     state.currentFont = 'font-inter';
+    state.fontScale = 100;
     state.currentWallpaper = 'burgundy';
     state.memoryValue = 0;
     state.memorySlots = [0, 0, 0, 0];
@@ -3004,7 +3061,10 @@ function resetAllSettings() {
     document.getElementById('setting-precision').value = 'auto';
     document.getElementById('setting-angle').value = 'DEG';
     document.getElementById('setting-glass').value = 'heavy';
+    const setFontScaleEl = document.getElementById('setting-font-scale');
+    if (setFontScaleEl) setFontScaleEl.value = '100';
 
+    setFontScale(100, true);
     setFontFamily('font-inter');
     setTheme('bordeaux_luxury');
     setWallpaper('burgundy');
@@ -3043,7 +3103,7 @@ function resetCustomColors() {
 }
 
 // ==========================================================================
-// Шрифти (8 Шрифтів)
+// Шрифти & Масштабування (Typography & Font Scale Controller)
 // ==========================================================================
 function setFontFamily(fontClass) {
     audio.playAction();
@@ -3071,8 +3131,60 @@ function setFontFamily(fontClass) {
         dom.currentFontChip.innerText = fontNames[fontClass] || 'Inter';
     }
 
-    closeModal('font-modal');
     showToast(`Встановлено шрифт: ${fontNames[fontClass]}`, '🔤');
+}
+
+function setFontScale(scale, isSilent = false) {
+    const s = parseInt(scale, 10) || 100;
+    state.fontScale = s;
+    localStorage.setItem('calc_font_scale', s);
+
+    // Встановлення глобальної CSS змінної масштабу
+    document.documentElement.style.setProperty('--font-scale', (s / 100).toString());
+
+    // Оновлення елементів інтерфейсу Студії Шрифтів
+    const slider = document.getElementById('font-scale-slider');
+    const displayVal = document.getElementById('font-scale-display-val');
+    const previewText = document.getElementById('font-scale-preview-text');
+    if (slider) slider.value = s;
+    if (displayVal) displayVal.innerText = `${s}%`;
+    if (previewText) previewText.style.fontSize = `calc(1rem * ${s / 100})`;
+
+    // Оновлення активного стану кнопок-пресетів
+    document.querySelectorAll('.font-scale-preset-btn').forEach(btn => {
+        const btnScale = parseInt(btn.getAttribute('data-scale'), 10);
+        btn.classList.toggle('active', btnScale === s);
+    });
+
+    // Оновлення бейджа на дисплеї калькулятора
+    const scaleBadge = document.getElementById('font-scale-badge');
+    if (scaleBadge) {
+        scaleBadge.innerText = `🔠 ${s}%`;
+        scaleBadge.title = `Масштаб шрифтів: ${s}% (клік для циклічної зміни: 90% → 100% → 115% → 130% → 145%)`;
+    }
+
+    // Оновлення селектора у Центрі Налаштувань
+    const settingSelect = document.getElementById('setting-font-scale');
+    if (settingSelect) settingSelect.value = s.toString();
+
+    if (!isSilent) {
+        audio.playClick(620);
+        showToast(`Масштаб шрифту встановлено: ${s}%`, '🔠');
+    }
+}
+
+function cycleFontScale() {
+    const presets = [90, 100, 115, 130, 145];
+    let currentIndex = presets.indexOf(state.fontScale);
+    let nextIndex = 0;
+    if (currentIndex !== -1 && currentIndex < presets.length - 1) {
+        nextIndex = currentIndex + 1;
+    } else if (currentIndex === -1) {
+        nextIndex = 1;
+    } else {
+        nextIndex = 0;
+    }
+    setFontScale(presets[nextIndex]);
 }
 
 // ==========================================================================
@@ -3102,6 +3214,10 @@ function setCustomAccent(colorHex, name) {
 
 function getThemeNameUA(theme) {
     const names = {
+        titanium_ruby: 'Titanium Ruby Master',
+        crimson_supernova: 'Crimson Supernova Cosmic',
+        cyberpunk_neon: 'Cyberpunk Neon Bordeaux',
+        emerald_platinum: 'Emerald Platinum',
         amethyst_crimson: 'Amethyst Crimson Royal',
         cyber_ruby: 'Cyber Ruby Neon',
         golden_bordeaux: 'Golden Bordeaux Imperial',
@@ -3135,7 +3251,7 @@ function getThemeNameUA(theme) {
 }
 
 // ==========================================================================
-// Wallpaper Studio (9 HD Шпалер)
+// Wallpaper Studio (12 HD Шпалер)
 // ==========================================================================
 function setWallpaper(wpName) {
     audio.playAction();
@@ -3152,6 +3268,9 @@ function setWallpaper(wpName) {
 
 function getWallpaperNameUA(wp) {
     const map = {
+        titanium_ruby: 'Titanium Ruby Laser',
+        crimson_supernova: 'Crimson Supernova Cosmic',
+        cyberpunk_bordeaux: 'Cyberpunk Bordeaux City',
         amethyst_crystal: 'Аметистовий Кристал',
         cyber_matrix_red: 'Бордова Кібер-Сітка',
         aurora_ruby: 'Рубінове Полярне Сяйво',
@@ -3173,7 +3292,13 @@ function applyWallpaperToDom() {
 
     dom.bgWallpaper.className = 'bg-wallpaper-layer';
 
-    if (state.currentWallpaper === 'amethyst_crystal') {
+    if (state.currentWallpaper === 'titanium_ruby') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/titanium_ruby.jpg')";
+    } else if (state.currentWallpaper === 'crimson_supernova') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/crimson_supernova.jpg')";
+    } else if (state.currentWallpaper === 'cyberpunk_bordeaux') {
+        dom.bgWallpaper.style.backgroundImage = "url('images/cyberpunk_bordeaux.jpg')";
+    } else if (state.currentWallpaper === 'amethyst_crystal') {
         dom.bgWallpaper.style.backgroundImage = "url('images/amethyst_crystal.jpg')";
     } else if (state.currentWallpaper === 'cyber_matrix_red') {
         dom.bgWallpaper.style.backgroundImage = "url('images/cyber_matrix_red.jpg')";
@@ -3205,6 +3330,209 @@ function applyWallpaperToDom() {
 
     dom.bgWallpaper.style.filter = `blur(${state.wallpaperBlur}px)`;
     dom.bgOverlay.style.backgroundColor = `rgba(0, 0, 0, ${state.wallpaperOverlay / 100})`;
+}
+
+// ==========================================================================
+// НОВЕ v1.8.5: 3D Векторний Калькулятор (3D Vector Math)
+// ==========================================================================
+function solveVectorMath() {
+    const ux = parseFloat(document.getElementById('vec-u-x')?.value) || 0;
+    const uy = parseFloat(document.getElementById('vec-u-y')?.value) || 0;
+    const uz = parseFloat(document.getElementById('vec-u-z')?.value) || 0;
+
+    const vx = parseFloat(document.getElementById('vec-v-x')?.value) || 0;
+    const vy = parseFloat(document.getElementById('vec-v-y')?.value) || 0;
+    const vz = parseFloat(document.getElementById('vec-v-z')?.value) || 0;
+
+    // 1. Скалярний добуток (Dot product)
+    const dot = (ux * vx) + (uy * vy) + (uz * vz);
+
+    // 2. Векторний добуток (Cross product)
+    const cx = (uy * vz) - (uz * vy);
+    const cy = (uz * vx) - (ux * vz);
+    const cz = (ux * vy) - (uy * vx);
+
+    // 3. Модулі (Довжини)
+    const lenU = Math.sqrt(ux * ux + uy * uy + uz * uz);
+    const lenV = Math.sqrt(vx * vx + vy * vy + vz * vz);
+
+    // 4. Кут між векторами
+    let angleDeg = 0;
+    let angleRad = 0;
+    if (lenU > 0 && lenV > 0) {
+        const cosTheta = Math.max(-1, Math.min(1, dot / (lenU * lenV)));
+        angleRad = Math.acos(cosTheta);
+        angleDeg = angleRad * (180 / Math.PI);
+    }
+
+    // 5. Евклідова відстань
+    const dist = Math.sqrt((vx - ux) ** 2 + (vy - uy) ** 2 + (vz - uz) ** 2);
+
+    state.vectorResults = {
+        dot: dot.toFixed(2),
+        cross: `(${cx.toFixed(1)}, ${cy.toFixed(1)}, ${cz.toFixed(1)})`,
+        lenU: lenU.toFixed(3),
+        lenV: lenV.toFixed(3),
+        angle: `${angleDeg.toFixed(1)}° (${angleRad.toFixed(2)} rad)`,
+        dist: dist.toFixed(3)
+    };
+
+    const dEl = document.getElementById('vec-res-dot');
+    const cEl = document.getElementById('vec-res-cross');
+    const uEl = document.getElementById('vec-res-len-u');
+    const vEl = document.getElementById('vec-res-len-v');
+    const aEl = document.getElementById('vec-res-angle');
+    const distEl = document.getElementById('vec-res-dist');
+
+    if (dEl) dEl.innerText = state.vectorResults.dot;
+    if (cEl) cEl.innerText = state.vectorResults.cross;
+    if (uEl) uEl.innerText = state.vectorResults.lenU;
+    if (vEl) vEl.innerText = state.vectorResults.lenV;
+    if (aEl) aEl.innerText = state.vectorResults.angle;
+    if (distEl) distEl.innerText = state.vectorResults.dist;
+}
+
+function insertVectorDotToCalc() {
+    audio.playAction();
+    state.currentInput = state.vectorResults.dot;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('vector-calc-modal');
+    showToast(`Скалярний добуток u·v = ${state.vectorResults.dot} вставлено`, '📐');
+}
+
+function insertVectorMagUToCalc() {
+    audio.playAction();
+    state.currentInput = state.vectorResults.lenU;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('vector-calc-modal');
+    showToast(`Модуль |u| = ${state.vectorResults.lenU} вставлено`, '📐');
+}
+
+// ==========================================================================
+// НОВЕ v1.8.5: Комплексні Числа ℂ (Complex Numbers)
+// ==========================================================================
+function solveComplexMath() {
+    const a = parseFloat(document.getElementById('cplx-a')?.value) || 0;
+    const b = parseFloat(document.getElementById('cplx-b')?.value) || 0;
+    const c = parseFloat(document.getElementById('cplx-c')?.value) || 0;
+    const d = parseFloat(document.getElementById('cplx-d')?.value) || 0;
+
+    // Сума (a+c) + (b+d)i
+    const sumR = a + c;
+    const sumI = b + d;
+
+    // Різниця (a-c) + (b-d)i
+    const diffR = a - c;
+    const diffI = b - d;
+
+    // Добуток (ac - bd) + (ad + bc)i
+    const mulR = (a * c) - (b * d);
+    const mulI = (a * d) + (b * c);
+
+    // Частка
+    const denom = (c * c) + (d * d);
+    let divR = 0, divI = 0;
+    if (denom !== 0) {
+        divR = ((a * c) + (b * d)) / denom;
+        divI = ((b * c) - (a * d)) / denom;
+    }
+
+    // Модуль |z1|
+    const mod1 = Math.sqrt(a * a + b * b);
+
+    // Аргумент arg(z1)
+    const arg1Rad = Math.atan2(b, a);
+    const arg1Deg = arg1Rad * (180 / Math.PI);
+
+    const fmtCplx = (r, i) => {
+        const sign = i >= 0 ? '+' : '-';
+        return `${r.toFixed(2)} ${sign} ${Math.abs(i).toFixed(2)}i`;
+    };
+
+    state.complexResults = {
+        add: fmtCplx(sumR, sumI),
+        sub: fmtCplx(diffR, diffI),
+        mul: fmtCplx(mulR, mulI),
+        div: denom !== 0 ? fmtCplx(divR, divI) : 'Ділення на 0',
+        mod1: mod1.toFixed(3),
+        arg1: `${arg1Deg.toFixed(1)}° (${arg1Rad.toFixed(2)} rad)`
+    };
+
+    const addEl = document.getElementById('cplx-res-add');
+    const subEl = document.getElementById('cplx-res-sub');
+    const mulEl = document.getElementById('cplx-res-mul');
+    const divEl = document.getElementById('cplx-res-div');
+    const modEl = document.getElementById('cplx-res-mod1');
+    const argEl = document.getElementById('cplx-res-arg1');
+
+    if (addEl) addEl.innerText = state.complexResults.add;
+    if (subEl) subEl.innerText = state.complexResults.sub;
+    if (mulEl) mulEl.innerText = state.complexResults.mul;
+    if (divEl) divEl.innerText = state.complexResults.div;
+    if (modEl) modEl.innerText = state.complexResults.mod1;
+    if (argEl) argEl.innerText = state.complexResults.arg1;
+}
+
+function insertComplexModToCalc() {
+    audio.playAction();
+    state.currentInput = state.complexResults.mod1;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('complex-calc-modal');
+    showToast(`Модуль |z₁| = ${state.complexResults.mod1} вставлено`, '⚛️');
+}
+
+// ==========================================================================
+// НОВЕ v1.8.5: Інтерактивний Математичний Довідник Формул
+// ==========================================================================
+function switchMathRefTab(tabKey) {
+    audio.playClick(600);
+    state.activeMathRefTab = tabKey;
+    document.querySelectorAll('[data-rtab]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-rtab') === tabKey);
+    });
+    renderMathRefList();
+}
+
+function renderMathRefList() {
+    const container = document.getElementById('math-ref-container');
+    if (!container) return;
+
+    const list = MATH_REFERENCE_DATA[state.activeMathRefTab] || [];
+    container.innerHTML = '';
+
+    list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'math-ref-item';
+        card.innerHTML = `
+            <div>
+                <div class="math-ref-title">${item.title}</div>
+                <div class="math-ref-formula">${item.formula}</div>
+            </div>
+            <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="copyFormulaText('${item.formula.replace(/'/g, "\\'")}')">📋 Копіювати</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function copyFormulaText(formula) {
+    audio.playAction();
+    navigator.clipboard.writeText(formula).then(() => {
+        showToast(`Формулу скопійовано: ${formula}`, '📋');
+    });
+}
+
+// ==========================================================================
+// НОВЕ v1.8.5: Мобільна навігація (Mobile Sidebar Drawer)
+// ==========================================================================
+function toggleMobileSidebar() {
+    audio.playClick(650);
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+    }
 }
 
 function adjustWallpaperBlur(val) {
@@ -3734,7 +4062,7 @@ function exportHistoryFormat(format) {
         mimeType = 'application/json;charset=utf-8';
         fileExt = 'json';
         content = JSON.stringify({
-            application: "Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged",
+            application: "Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition",
             exportedAt: new Date().toISOString(),
             author: "MaxNT Official, 2026",
             totalRecords: state.history.length,
@@ -3742,7 +4070,7 @@ function exportHistoryFormat(format) {
         }, null, 2);
     } else {
         content = `====================================================\n`;
-        content += `  КАЛЬКУЛЯТОР PRO v1.8.4 (Build 188) Redstone 3.4 Bordeaux - ІСТОРІЯ\n`;
+        content += `  КАЛЬКУЛЯТОР PRO v1.8.5 (Build 190) Redstone 3.5 Bordeaux - ІСТОРІЯ\n`;
         content += `  Дата експорту: ${new Date().toLocaleString('uk-UA')}\n`;
         content += `  Автор: MaxNT Official, 2026\n`;
         content += `====================================================\n\n`;
@@ -3757,7 +4085,7 @@ function exportHistoryFormat(format) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Calculator_History_v1.8.4_${dateStr}.${fileExt}`;
+    a.download = `Calculator_History_v1.8.5_${dateStr}.${fileExt}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3799,6 +4127,15 @@ function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
+        if (modalId === 'vector-calc-modal') {
+            solveVectorMath();
+        }
+        if (modalId === 'complex-calc-modal') {
+            solveComplexMath();
+        }
+        if (modalId === 'math-ref-modal') {
+            renderMathRefList();
+        }
         if (modalId === 'trig-circle-modal') {
             setTimeout(() => updateTrigCircle(state.trigAngleDeg), 50);
         }
@@ -3880,7 +4217,7 @@ function openModal(modalId) {
             solveMatrixMath();
         }
         if (modalId === 'bitmask-modal') {
-            updateBitmaskOutputs();
+            renderBitmaskGrid();
         }
         if (modalId === 'percent-modal') {
             calcPercent1();
@@ -3889,6 +4226,9 @@ function openModal(modalId) {
         }
         if (modalId === 'currency-modal') {
             runCurrencyConversion('from');
+        }
+        if (modalId === 'font-modal') {
+            setFontScale(state.fontScale, true);
         }
         if (modalId === 'settings-modal') {
             const vSlider = document.getElementById('setting-volume');
@@ -3899,6 +4239,7 @@ function openModal(modalId) {
             const sAng = document.getElementById('setting-angle');
             const sGlass = document.getElementById('setting-glass');
             const sPart = document.getElementById('setting-particles');
+            const sFScale = document.getElementById('setting-font-scale');
             if (vSlider) vSlider.value = Math.round(state.soundVolume * 100);
             if (vVal) vVal.innerText = `${Math.round(state.soundVolume * 100)}%`;
             if (sProf) sProf.value = state.soundProfile;
@@ -3907,6 +4248,7 @@ function openModal(modalId) {
             if (sAng) sAng.value = state.angleMode;
             if (sGlass) sGlass.value = state.glassIntensity;
             if (sPart) sPart.value = state.particlesEnabled ? 'on' : 'off';
+            if (sFScale) sFScale.value = state.fontScale.toString();
         }
     }
 }
@@ -4075,6 +4417,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.currentFontChip) dom.currentFontChip.innerText = fontNames[state.currentFont] || 'Inter';
     }
 
+    // Масштаб шрифту (Font Scale)
+    setFontScale(state.fontScale, true);
+
     // Застосування шпалер
     applyWallpaperToDom();
 
@@ -4100,7 +4445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticlesCanvas();
     }
 
-    console.log('%c 🍷 Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged Loaded %c', 
-        'background: linear-gradient(90deg, #c026d3, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
+    console.log('%c 🛡️ Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition Loaded %c', 
+        'background: linear-gradient(90deg, #e11d48, #8b1538, #f43f5e); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
         '');
 });
