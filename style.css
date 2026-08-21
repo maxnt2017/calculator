@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Calculator Pro v1.8 (Build 179) Redstone 3 Bordeaux - Master Stylesheet
+   Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux - Master Stylesheet
    Author: MaxNT Official, 2026
    ========================================================================== */
 
@@ -33,10 +33,10 @@ body.font-firacode {
 }
 
 /* --------------------------------------------------------------------------
-   2. 24 Авторські Колірні Теми (Themes System v1.8 Bordeaux Master)
+   2. 24 Авторські Колірні Теми (Themes System v1.8.1 Bordeaux Master)
    -------------------------------------------------------------------------- */
 
-/* 1. Bordeaux Imperial Wine (Флагманська бордова тема v1.8 Redstone 3) */
+/* 1. Bordeaux Imperial Wine (Флагманська бордова тема) */
 body[data-theme="bordeaux_luxury"], body {
     --bg-body: #0d0205;
     --bg-card: rgba(30, 5, 12, 0.88);
@@ -689,7 +689,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   4. Бічне Меню (Sidebar)
+   4. Бічне Меню (Sidebar) & Чітка Іконка Калькулятора
    -------------------------------------------------------------------------- */
 .sidebar {
     width: 255px;
@@ -705,14 +705,35 @@ body {
 .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border-color);
 }
 
-.app-icon {
-    font-size: 1.8rem;
-    filter: drop-shadow(0 2px 8px var(--accent-operator));
+/* Правильно орієнтована векторна іконка калькулятора */
+.app-icon-badge {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    border-radius: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px var(--shadow-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-icon-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px var(--shadow-color);
+}
+
+.app-logo-svg {
+    width: 28px;
+    height: 28px;
+    display: block;
 }
 
 .sidebar-title-group h2 {
@@ -720,6 +741,7 @@ body {
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.5px;
+    line-height: 1.2;
 }
 
 .version-tag {
@@ -864,7 +886,7 @@ body {
     flex-wrap: wrap;
 }
 
-.mode-badge, .secondary-badge, .memory-badge, .speech-badge, .advisor-badge, .settings-badge, .audio-badge {
+.mode-badge, .secondary-badge, .memory-badge, .speech-badge, .advisor-badge, .settings-badge, .audio-badge, .tape-badge, .prime-badge {
     font-size: 0.72rem;
     font-weight: 800;
     padding: 3px 8px;
@@ -876,7 +898,7 @@ body {
     transition: all 0.2s ease;
 }
 
-.mode-badge:hover, .secondary-badge:hover, .memory-badge:hover, .speech-badge:hover, .advisor-badge:hover, .settings-badge:hover, .audio-badge:hover {
+.mode-badge:hover, .secondary-badge:hover, .memory-badge:hover, .speech-badge:hover, .advisor-badge:hover, .settings-badge:hover, .audio-badge:hover, .tape-badge:hover, .prime-badge:hover {
     background: var(--accent-operator);
     color: var(--bg-body);
 }
@@ -980,7 +1002,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Стилі кнопок */
 .buttons button.memory {
     background: var(--accent-memory);
     color: var(--text-primary);
@@ -1039,7 +1060,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   7. Redstone 3 Bordeaux Master Footer
+   7. Redstone 3.1 Bordeaux Master Footer
    -------------------------------------------------------------------------- */
 .footer {
     width: 100%;
@@ -1254,10 +1275,382 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   9. Стилі Нових Модулів v1.8 Bordeaux
+   9. НОВІ МОДУЛІ v1.8.1 Redstone 3.1
    -------------------------------------------------------------------------- */
 
-/* Матричний Калькулятор */
+/* 1. Розрахункова Стрічка (Paper Tape Roll) */
+.tape-roll-box {
+    background: #fffdfa;
+    color: #1a1a1a;
+    border: 2px dashed rgba(139, 21, 56, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.15);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.tape-header-decor {
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #8b1538;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #d1d5db;
+    padding-bottom: 6px;
+}
+
+.tape-lines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tape-line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    border-bottom: 1px dotted #e5e7eb;
+    padding-bottom: 4px;
+}
+
+.tape-line-eq {
+    font-weight: 700;
+    color: #111827;
+}
+
+.tape-line-note-input {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 3px 6px;
+    font-size: 0.78rem;
+    color: #374151;
+    max-width: 140px;
+    outline: none;
+}
+
+.tape-subtotal-row {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 2px solid #8b1538;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #8b1538;
+}
+
+/* 2. НСД / НСК / Прості Множники */
+.prime-sections-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.prime-calc-block {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.prime-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.prime-input-row input {
+    flex-grow: 1;
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.prime-pair-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.prime-pair-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.prime-pair-col input {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.prime-res-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.prime-res-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.divisors-chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-height: 80px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+
+.div-chip {
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.div-chip:hover {
+    background: var(--accent-operator);
+    color: #fff;
+}
+
+/* 3. Порівняння Цін (Unit Deal Comparator) */
+.deal-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.deal-card {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.deal-card.winner {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.25);
+}
+
+.deal-card-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--accent-operator);
+}
+
+.deal-input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.deal-input-row label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.deal-input-row input {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.deal-input-row select {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.deal-res-badge {
+    margin-top: 4px;
+    padding: 8px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.deal-res-badge strong {
+    font-size: 1.15rem;
+    color: var(--accent-operator);
+}
+
+.deal-verdict-box {
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.deal-verdict-icon {
+    font-size: 2rem;
+}
+
+.deal-verdict-text strong {
+    display: block;
+    font-size: 1.05rem;
+    color: #22c55e;
+    margin-bottom: 2px;
+}
+
+.deal-verdict-text span {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* 4. Обчислювач f(x) */
+.func-formula-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    background: var(--bg-display);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.func-formula-input-row label {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent-operator);
+}
+
+.func-formula-input-row input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+    outline: none;
+}
+
+.func-eval-single-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: var(--bg-display);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 12px;
+}
+
+.func-eval-single-row input {
+    width: 70px;
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.func-table-section {
+    background: var(--bg-display);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.func-range-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.func-range-inputs div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.func-range-inputs input {
+    background: var(--bg-btn);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.func-table-container {
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.func-values-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+.func-values-table th {
+    background: var(--badge-bg);
+    color: var(--accent-operator);
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.func-values-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   10. Стилі Модулів (Матриці, Біти, Відсотки, Валюти)
+   -------------------------------------------------------------------------- */
 .matrix-size-selector {
     display: flex;
     gap: 8px;
@@ -1824,7 +2217,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   10. Студія Шрифтів
+   11. Студія Шрифтів
    -------------------------------------------------------------------------- */
 .font-options-grid {
     display: grid;
@@ -1874,7 +2267,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   11. Теми та Шпалери
+   12. Теми та Шпалери
    -------------------------------------------------------------------------- */
 .theme-grid {
     display: grid;
@@ -2040,7 +2433,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   12. Математичний Порадник та Помилки
+   13. Математичний Порадник та Помилки
    -------------------------------------------------------------------------- */
 .error-advisor-content {
     border-color: #ef4444;
@@ -2159,7 +2552,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   13. 2D Графік Функцій
+   14. 2D Графік Функцій
    -------------------------------------------------------------------------- */
 .graph-presets-row {
     display: flex;
@@ -2192,7 +2585,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   14. Фінанси, RNG, Конвертер
+   15. Фінанси, RNG, Конвертер
    -------------------------------------------------------------------------- */
 .finance-body, .rng-body {
     display: flex;
@@ -2340,6 +2733,7 @@ body {
 .converter-quick-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 /* Програміст */
@@ -2519,7 +2913,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   15. Сповіщення (Toasts)
+   16. Сповіщення (Toasts)
    -------------------------------------------------------------------------- */
 .toast-container {
     position: fixed;
@@ -2555,7 +2949,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   16. Адаптивність (Responsive Design)
+   17. Адаптивність (Responsive Design)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
     body {
@@ -2586,8 +2980,8 @@ body {
         padding: 11px 4px;
         font-size: 0.95rem;
     }
-    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid, .bits-matrix-grid {
-        grid-template-columns: repeat(4, 1fr);
+    .font-options-grid, .theme-grid, .constants-list, .stats-results-grid, .bits-matrix-grid, .deal-comparison-grid, .func-range-inputs {
+        grid-template-columns: 1fr;
     }
     .footer {
         flex-direction: column;

@@ -1,9 +1,12 @@
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор v1.8 (Build 179) Redstone 3 Bordeaux</title>
-    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro версії 1.8 build 179 Redstone 3 у розкішному бордовому кольорі з 24 темами, новими шпалерами, матричним калькулятором, бітовим інспектором, розширеними відсотками, конвертером валют та центром налаштувань.">
+    <title>Калькулятор v1.8.1 (Build 180) Redstone 3.1 Bordeaux</title>
+    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro v1.8.1 build 180 Redstone 3.1 у бордовому стилі: НСД/НСК, прості множники, розрахункова стрічка, порівняння цін за одиницю, обчислювач f(x), матриці 2x2/3x3, бітовий інспектор, 24 теми.">
+    <!-- SVG Favicon: Правильно орієнтована та чітка іконка калькулятора -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%238b1538'/%3E%3Crect x='5' y='5' width='22' height='7' rx='2.5' fill='%23120206' stroke='%23f59e0b' stroke-width='0.8'/%3E%3Ccircle cx='9' cy='17' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='17' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='17' r='2' fill='%23f59e0b'/%3E%3Ccircle cx='9' cy='23' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='23' r='2' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='23' r='2' fill='%23fb7185'/%3E%3Ccircle cx='9' cy='28' r='1.5' fill='%23fff0f3'/%3E%3Ccircle cx='16' cy='28' r='1.5' fill='%23fff0f3'/%3E%3Ccircle cx='23' cy='28' r='1.5' fill='%23f59e0b'/%3E%3C/svg%3E">
     <!-- Google Fonts: 8 сучасних гарнітур -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,12 +25,31 @@
             <!-- Бічне меню керування (Sidebar) -->
             <aside class="sidebar">
                 <div class="sidebar-header">
-                    <span class="app-icon">
-                        <img src="icon_calc.png" alt="Калькулятор 1.8">
-                                        </span>
+                    <!-- Правильно орієнтована векторна іконка калькулятора без перекосів -->
+                    <div class="app-icon-badge" id="app-logo-badge" title="Calculator Pro v1.8.1">
+                        <svg class="app-logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="2" width="30" height="32" rx="7" fill="url(#calcGrad)" stroke="var(--accent-operator)" stroke-width="2"/>
+                            <rect x="7" y="6" width="22" height="7" rx="3" fill="rgba(0,0,0,0.5)" stroke="var(--accent-equals)" stroke-width="1"/>
+                            <circle cx="10" cy="18" r="2" fill="#fff"/>
+                            <circle cx="18" cy="18" r="2" fill="#fff"/>
+                            <circle cx="26" cy="18" r="2" fill="var(--accent-equals)"/>
+                            <circle cx="10" cy="24" r="2" fill="#fff"/>
+                            <circle cx="18" cy="24" r="2" fill="#fff"/>
+                            <circle cx="26" cy="24" r="2" fill="var(--accent-operator)"/>
+                            <circle cx="10" cy="29" r="1.8" fill="#fff"/>
+                            <circle cx="18" cy="29" r="1.8" fill="#fff"/>
+                            <circle cx="26" cy="29" r="1.8" fill="var(--accent-equals)"/>
+                            <defs>
+                                <linearGradient id="calcGrad" x1="3" y1="2" x2="33" y2="34" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#2a050d"/>
+                                    <stop offset="1" stop-color="#8b1538"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
                     <div class="sidebar-title-group">
                         <h2>Calculator Pro</h2>
-                        <span class="version-tag">v1.8 b179 Redstone 3</span>
+                        <span class="version-tag">v1.8.1 b180 Redstone 3.1</span>
                     </div>
                 </div>
 
@@ -35,20 +57,32 @@
                     <button onclick="goHome()" title="Скинути стан калькулятора" id="btn-nav-home">
                         <span class="btn-icon">🏠</span> Головна
                     </button>
-                    <button onclick="openModal('settings-modal')" title="Центр налаштувань калькулятора" id="btn-nav-settings">
-                        <span class="btn-icon">⚙️</span> Налаштування
+                    <button onclick="openModal('tape-modal')" title="Розрахункова стрічка з нотатками та чеком" id="btn-nav-tape">
+                        <span class="btn-icon">📜</span> Стрічка нотаток <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('prime-gcd-modal')" title="НСД, НСК та розклад на прості множники" id="btn-nav-prime-gcd">
+                        <span class="btn-icon">🔢</span> НСД / НСК / Множники <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('deal-calc-modal')" title="Порівняння вигідності цін за одиницю ваги чи об'єму" id="btn-nav-deal">
+                        <span class="btn-icon">⚖️</span> Порівняння цін <span class="nav-chip">NEW</span>
+                    </button>
+                    <button onclick="openModal('func-eval-modal')" title="Обчислювач виразів та функцій f(x) з таблицею" id="btn-nav-func-eval">
+                        <span class="btn-icon">📐</span> Функція f(x) <span class="nav-chip">NEW</span>
                     </button>
                     <button onclick="openModal('matrix-modal')" title="Матричний калькулятор (2x2 та 3x3, Det, Транспонування)" id="btn-nav-matrix">
-                        <span class="btn-icon">🧮</span> Матриці 2x2/3x3 <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">🧮</span> Матриці 2x2/3x3
                     </button>
                     <button onclick="openModal('bitmask-modal')" title="Інтерактивний бітовий інспектор 8/16/32/64-bit" id="btn-nav-bitmask">
-                        <span class="btn-icon">👾</span> Бітовий інспектор <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">👾</span> Бітовий інспектор
                     </button>
                     <button onclick="openModal('percent-modal')" title="Розширений калькулятор відсотків та маржі" id="btn-nav-percent">
-                        <span class="btn-icon">📈</span> Відсотки Pro <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">📈</span> Відсотки Pro
                     </button>
                     <button onclick="openModal('currency-modal')" title="Конвертер валют та криптовалют (UAH, USD, EUR, BTC)" id="btn-nav-currency">
-                        <span class="btn-icon">💱</span> Валюти & Крипта <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">💱</span> Валюти & Крипта
+                    </button>
+                    <button onclick="openModal('settings-modal')" title="Центр налаштувань калькулятора" id="btn-nav-settings">
+                        <span class="btn-icon">⚙️</span> Налаштування
                     </button>
                     <button onclick="openModal('history-modal')" title="Переглянути історію" id="btn-nav-history">
                         <span class="btn-icon">🕒</span> Історія
@@ -126,6 +160,8 @@
                             <span class="mode-badge" id="mode-badge" onclick="event.stopPropagation(); toggleAngleMode();" title="Натисніть для зміни DEG / RAD / GRAD">DEG</span>
                             <span class="secondary-badge" id="secondary-badge" onclick="event.stopPropagation(); toggleSecondMode();" title="Режим додаткових функцій (2nd / Shift)">2nd</span>
                             <span class="memory-badge" id="memory-badge" onclick="event.stopPropagation(); openModal('memory-modal');" title="Матриця пам'яті M1-M4">M</span>
+                            <span class="tape-badge" id="tape-badge" onclick="event.stopPropagation(); openModal('tape-modal');" title="Відкрити розрахункову стрічку">📜 Стрічка</span>
+                            <span class="prime-badge" id="prime-badge" onclick="event.stopPropagation(); openModal('prime-gcd-modal');" title="НСД, НСК та прості множники">🔢 НСД/НСК</span>
                             <span class="speech-badge" id="speech-badge" onclick="event.stopPropagation(); speakCurrentResult();" title="Озвучити результат голосом">🗣️</span>
                             <span class="advisor-badge" id="advisor-badge" onclick="event.stopPropagation(); openModal('advisor-modal');" title="Математичний порадник">🧠</span>
                             <span class="settings-badge" id="settings-badge" onclick="event.stopPropagation(); openModal('settings-modal');" title="Налаштування калькулятора">⚙️</span>
@@ -208,12 +244,12 @@
             </main>
         </div>
 
-        <!-- Преміальний фірмовий футер v1.8 Redstone 3 Bordeaux Edition -->
+        <!-- Преміальний фірмовий футер v1.8.1 Redstone 3.1 Bordeaux Edition -->
         <footer class="footer">
             <div class="footer-left">
-                <span class="footer-badge" title="Calculator Pro v1.8 Redstone 3 Bordeaux Edition">
+                <span class="footer-badge" title="Calculator Pro v1.8.1 Redstone 3.1 Bordeaux Edition">
                     <span class="pulse-dot"></span>
-                    v1.8 (Build 179) Redstone 3
+                    v1.8.1 (Build 180) Redstone 3.1
                 </span>
                 <span class="footer-stat" id="footer-stat-ops" title="Кількість операцій">
                     🧮 Сесія: <strong id="ops-counter">0</strong> оп.
@@ -234,11 +270,20 @@
             </div>
 
             <div class="footer-right">
+                <button class="footer-btn" onclick="openModal('tape-modal')" title="Розрахункова стрічка">
+                    <span>📜</span> Стрічка
+                </button>
+                <button class="footer-btn" onclick="openModal('prime-gcd-modal')" title="НСД / НСК">
+                    <span>🔢</span> НСД/НСК
+                </button>
+                <button class="footer-btn" onclick="openModal('deal-calc-modal')" title="Порівняння цін">
+                    <span>⚖️</span> Порівняти
+                </button>
                 <button class="footer-btn" onclick="openModal('matrix-modal')" title="Матричний калькулятор">
-                    <span>🧮</span> [A] Матриці
+                    <span>🧮</span> Матриці
                 </button>
                 <button class="footer-btn" onclick="openModal('bitmask-modal')" title="Бітовий інспектор">
-                    <span>👾</span> 0101 Біти
+                    <span>👾</span> Біти
                 </button>
                 <button class="footer-btn" onclick="openModal('percent-modal')" title="Відсотки Pro">
                     <span>%</span> Відсотки
@@ -269,7 +314,221 @@
          Модальні вікна (Modals)
          ========================================================================== -->
     
-    <!-- Матричний Калькулятор (НОВЕ v1.8 Matrix Calculator) -->
+    <!-- 1. НОВЕ v1.8.1: Розрахункова Стрічка з Нотатками (Interactive Paper Tape Roll) -->
+    <div class="modal-overlay" id="tape-modal">
+        <div class="modal-content tape-modal-content">
+            <h3>📜 Розрахункова Стрічка (Paper Tape Roll)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:10px;">
+                Безперервна розрахункова стрічка з можливістю додавання власних приміток до кожного рядка:
+            </p>
+
+            <div class="tape-roll-box" id="tape-roll-container">
+                <div class="tape-header-decor">*** РОЗРАХУНКОВИЙ ЧЕК PRO ***</div>
+                <div class="tape-lines-list" id="tape-lines-list">
+                    <!-- Динамічні рядки стрічки -->
+                </div>
+                <div class="tape-subtotal-row">
+                    <span>ЗАГАЛЬНИЙ ПІДСУМОК:</span>
+                    <strong id="tape-grand-total">0</strong>
+                </div>
+            </div>
+
+            <div class="tape-actions-row" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn-secondary" onclick="addCustomTapeEntry()">➕ Додати рядок</button>
+                <button class="btn-secondary" onclick="printTapeRoll()">🖨️ Роздрукувати</button>
+                <button class="btn-secondary" onclick="copyTapeAsText()">📋 Скопіювати чек</button>
+                <button class="btn-secondary btn-danger" onclick="clearTapeRoll()">🗑️ Очистити стрічку</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('tape-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- 2. НОВЕ v1.8.1: НСД, НСК та Прості Множники (Prime Factorization, GCD & LCM) -->
+    <div class="modal-overlay" id="prime-gcd-modal">
+        <div class="modal-content prime-gcd-modal-content">
+            <h3>🔢 НСД, НСК та Розклад на Прості Множники</h3>
+            
+            <div class="prime-sections-wrapper">
+                <!-- Блок 1: Розклад числа на множники та дільники -->
+                <div class="prime-calc-block">
+                    <span class="matrix-label">1. Розклад числа n на прості множники:</span>
+                    <div class="prime-input-row">
+                        <label>Число n:</label>
+                        <input type="number" id="prime-num-input" value="360" min="1" oninput="solvePrimeFactorization()">
+                        <button class="btn-secondary" onclick="setPrimeFromCalc()">З дисплея</button>
+                    </div>
+                    <div class="prime-res-box">
+                        <div class="prime-res-line">
+                            <span>Канонічний розклад:</span>
+                            <strong id="prime-factor-res" style="color:var(--accent-operator);">2³ × 3² × 5</strong>
+                        </div>
+                        <div class="prime-res-line">
+                            <span>Статус числа:</span>
+                            <span id="prime-is-prime-badge" class="nav-chip">Складене число</span>
+                        </div>
+                        <div class="prime-res-line">
+                            <span>Всі дільники (кількість: <span id="divisors-count">24</span>):</span>
+                        </div>
+                        <div class="divisors-chips-list" id="divisors-chips-list">
+                            <!-- Дільники -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Блок 2: НСД та НСК двох чисел -->
+                <div class="prime-calc-block" style="margin-top:12px;">
+                    <span class="matrix-label">2. НСД (GCD) та НСК (LCM) для пари чисел:</span>
+                    <div class="prime-pair-inputs">
+                        <div class="prime-pair-col">
+                            <label>Число A:</label>
+                            <input type="number" id="gcd-num-a" value="48" oninput="solveGcdLcm()">
+                        </div>
+                        <div class="prime-pair-col">
+                            <label>Число B:</label>
+                            <input type="number" id="gcd-num-b" value="180" oninput="solveGcdLcm()">
+                        </div>
+                    </div>
+                    <div class="prime-res-box" style="margin-top:8px;">
+                        <div class="prime-res-line">
+                            <span>Найбільший спільний дільник (НСД / GCD):</span>
+                            <strong id="gcd-val-res" style="color:var(--accent-equals); font-size:1.2rem;">12</strong>
+                        </div>
+                        <div class="prime-res-line">
+                            <span>Найменше спільне кратне (НСК / LCM):</span>
+                            <strong id="lcm-val-res" style="color:var(--accent-operator); font-size:1.2rem;">720</strong>
+                        </div>
+                        <div class="prime-res-line" style="font-size:0.8rem; color:var(--text-muted);">
+                            <span>Кроки алгоритму Евкліда:</span>
+                            <span id="euclid-steps-count">4 кроки</span>
+                        </div>
+                    </div>
+                    <div class="converter-quick-actions" style="margin-top:8px;">
+                        <button class="btn-secondary" onclick="insertGcdToCalc()">📥 Вставити НСД в калькулятор</button>
+                        <button class="btn-secondary" onclick="insertLcmToCalc()">📥 Вставити НСК в калькулятор</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('prime-gcd-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- 3. НОВЕ v1.8.1: Порівняння Цін та Вигідності за Одиницю (Unit Price Deal Comparator) -->
+    <div class="modal-overlay" id="deal-calc-modal">
+        <div class="modal-content deal-modal-content">
+            <h3>⚖️ Порівняння Вигідності Цін за Одиницю (1 кг / 1 л / 1 шт)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:10px;">
+                Дізнайтеся, яка фасовка чи упаковка товару є насправді дешевшою:
+            </p>
+
+            <div class="deal-comparison-grid">
+                <!-- Товар A -->
+                <div class="deal-card" id="deal-card-a">
+                    <div class="deal-card-title">📦 Товар А</div>
+                    <div class="deal-input-row">
+                        <label>Ціна (₴):</label>
+                        <input type="number" id="deal-a-price" value="85" oninput="calculateUnitDeal()">
+                    </div>
+                    <div class="deal-input-row">
+                        <label>Кількість / Вага:</label>
+                        <input type="number" id="deal-a-qty" value="400" oninput="calculateUnitDeal()">
+                        <select id="deal-a-unit" onchange="calculateUnitDeal()">
+                            <option value="g">грами (г)</option>
+                            <option value="kg">кілограми (кг)</option>
+                            <option value="ml">мілілітри (мл)</option>
+                            <option value="l">літри (л)</option>
+                            <option value="pcs">штуки (од)</option>
+                        </select>
+                    </div>
+                    <div class="deal-res-badge">
+                        <span>Ціна за 1 кг/л/од:</span>
+                        <strong id="deal-a-unit-price">212.50 ₴</strong>
+                    </div>
+                </div>
+
+                <!-- Товар B -->
+                <div class="deal-card" id="deal-card-b">
+                    <div class="deal-card-title">🛍️ Товар B</div>
+                    <div class="deal-input-row">
+                        <label>Ціна (₴):</label>
+                        <input type="number" id="deal-b-price" value="180" oninput="calculateUnitDeal()">
+                    </div>
+                    <div class="deal-input-row">
+                        <label>Кількість / Вага:</label>
+                        <input type="number" id="deal-b-qty" value="1000" oninput="calculateUnitDeal()">
+                        <select id="deal-b-unit" onchange="calculateUnitDeal()">
+                            <option value="g">грами (г)</option>
+                            <option value="kg" selected>кілограми (кг)</option>
+                            <option value="ml">мілілітри (мл)</option>
+                            <option value="l">літри (л)</option>
+                            <option value="pcs">штуки (од)</option>
+                        </select>
+                    </div>
+                    <div class="deal-res-badge">
+                        <span>Ціна за 1 кг/л/од:</span>
+                        <strong id="deal-b-unit-price">180.00 ₴</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deal-verdict-box" id="deal-verdict-box">
+                <span class="deal-verdict-icon">🏆</span>
+                <div class="deal-verdict-text">
+                    <strong id="deal-winner-text">Товар B вигідніший на 15.29%!</strong>
+                    <span id="deal-savings-detail">Економія становить 32.50 ₴ на кожному кілограмі.</span>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('deal-calc-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- 4. НОВЕ v1.8.1: Обчислювач Функцій f(x) та Таблиці (Function Evaluator) -->
+    <div class="modal-overlay" id="func-eval-modal">
+        <div class="modal-content func-eval-content">
+            <h3>📐 Обчислювач Алгебраїчних Функцій f(x)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:10px;">
+                Введіть математичний вираз для функції f(x) та обчисліть значення або побудуйте таблицю:
+            </p>
+
+            <div class="func-formula-input-row">
+                <label>f(x) =</label>
+                <input type="text" id="func-expr-input" value="2*x^2 - 3*x + 1" oninput="evaluateCustomFunc()">
+            </div>
+
+            <div class="func-eval-single-row">
+                <label>Значення при x =</label>
+                <input type="number" id="func-single-x" value="5" oninput="evaluateCustomFunc()">
+                <span>➜ f(5) =</span>
+                <strong id="func-single-res" style="color:var(--accent-operator); font-size:1.2rem;">36</strong>
+                <button class="btn-secondary" onclick="insertFuncResToCalc()">📥 Вставити</button>
+            </div>
+
+            <div class="func-table-section">
+                <span class="matrix-label">Таблиця значень для діапазону x:</span>
+                <div class="func-range-inputs">
+                    <div><label>Від x:</label><input type="number" id="func-range-start" value="-3" oninput="buildFuncTable()"></div>
+                    <div><label>До x:</label><input type="number" id="func-range-end" value="3" oninput="buildFuncTable()"></div>
+                    <div><label>Крок Δx:</label><input type="number" id="func-range-step" value="1" min="0.1" oninput="buildFuncTable()"></div>
+                </div>
+                <div class="func-table-container">
+                    <table class="func-values-table">
+                        <thead>
+                            <tr><th>x</th><th>f(x)</th><th>Дія</th></tr>
+                        </thead>
+                        <tbody id="func-table-tbody">
+                            <!-- Рядки значень -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('func-eval-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Матричний Калькулятор -->
     <div class="modal-overlay" id="matrix-modal">
         <div class="modal-content matrix-modal-content">
             <h3>🧮 Матричний Калькулятор (2x2 та 3x3)</h3>
@@ -318,7 +577,7 @@
         </div>
     </div>
 
-    <!-- Інтерактивний Бітовий Інспектор (НОВЕ v1.8 Bitmask Visualizer) -->
+    <!-- Інтерактивний Бітовий Інспектор -->
     <div class="modal-overlay" id="bitmask-modal">
         <div class="modal-content bitmask-modal-content">
             <h3>👾 Інтерактивний Бітовий Інспектор (64-Bit Visualizer)</h3>
@@ -358,7 +617,7 @@
         </div>
     </div>
 
-    <!-- Розширені Відсотки Pro (НОВЕ v1.8 Percentage & Markup Tool) -->
+    <!-- Розширені Відсотки Pro -->
     <div class="modal-overlay" id="percent-modal">
         <div class="modal-content percent-modal-content">
             <h3>📈 Розширений Калькулятор Відсотків Pro</h3>
@@ -409,7 +668,7 @@
         </div>
     </div>
 
-    <!-- Конвертер Валют та Криптовалют (НОВЕ v1.8 Currency & Crypto Converter) -->
+    <!-- Конвертер Валют та Криптовалют -->
     <div class="modal-overlay" id="currency-modal">
         <div class="modal-content currency-modal-content">
             <h3>💱 Конвертер Валют та Криптовалют</h3>
@@ -701,25 +960,25 @@
             </div>
 
             <div class="converter-quick-actions" style="margin-top:12px;">
-                <button class="btn-secondary" onclick="insertStatMeanToCalc()">📥 Вставити середнє (x̄) в калькулятор</button>
-                <button class="btn-secondary" onclick="clearStatsInput()">🗑️ Очистити дані</button>
+                <button class="btn-secondary" onclick="insertStatMeanToCalc()">📥 Вставити середнє в калькулятор</button>
+                <button class="btn-secondary btn-danger" onclick="clearStatsInput()">Очистити дані</button>
             </div>
 
             <button class="close-btn" onclick="closeModal('stats-modal')">Закрити</button>
         </div>
     </div>
 
-    <!-- Калькулятор Дат та Часу -->
+    <!-- Калькулятор Дат -->
     <div class="modal-overlay" id="date-modal">
         <div class="modal-content date-modal-content">
-            <h3>📅 Калькулятор Дат та Різниці Часу</h3>
+            <h3>📅 Калькулятор Дат та Часу</h3>
             
             <div class="date-tabs">
                 <button class="conv-tab active" data-dtab="diff" onclick="switchDateTab('diff')">Різниця між датами</button>
-                <button class="conv-tab" data-dtab="add" onclick="switchDateTab('add')">Додати / Відняти дні</button>
+                <button class="conv-tab" data-dtab="add" onclick="switchDateTab('add')">Додати/відняти дні</button>
             </div>
 
-            <div id="date-section-diff" class="date-section">
+            <div class="date-section" id="date-section-diff">
                 <div class="date-input-row">
                     <label>Початкова дата:</label>
                     <input type="date" id="date-start" onchange="calculateDateDiff()">
@@ -728,26 +987,22 @@
                     <label>Кінцева дата:</label>
                     <input type="date" id="date-end" onchange="calculateDateDiff()">
                 </div>
-
                 <div class="date-result-box" id="date-diff-result">
-                    <span>Різниця:</span>
-                    <strong>0 днів</strong>
+                    <span>Різниця:</span> <strong>0 днів</strong>
                 </div>
             </div>
 
-            <div id="date-section-add" class="date-section" style="display:none;">
+            <div class="date-section" id="date-section-add" style="display:none;">
                 <div class="date-input-row">
                     <label>Базова дата:</label>
                     <input type="date" id="date-base" onchange="calculateDateAdd()">
                 </div>
                 <div class="date-input-row">
-                    <label>Кількість днів (+ або -):</label>
+                    <label>Кількість днів (+ додавання, - віднімання):</label>
                     <input type="number" id="date-days-count" value="30" oninput="calculateDateAdd()">
                 </div>
-
                 <div class="date-result-box" id="date-add-result">
-                    <span>Отримана дата:</span>
-                    <strong>--.--.----</strong>
+                    <span>Отримана дата:</span> <strong>—</strong>
                 </div>
             </div>
 
@@ -755,269 +1010,224 @@
         </div>
     </div>
 
-    <!-- Матриця Пам'яті M1-M4 -->
+    <!-- Матриця Пам'яті (M1 - M4) -->
     <div class="modal-overlay" id="memory-modal">
-        <div class="modal-content memory-matrix-content">
-            <h3>🗄️ Матриця Пам'яті (Слоти M1, M2, M3, M4)</h3>
-            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;">
-                Зберігайте до 4 різних значень одночасно з можливістю швидкого виклику:
+        <div class="modal-content memory-modal-content">
+            <h3>🗄️ Матриця Пам'яті (Слоти M1–M4)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:12px;">
+                Зберігайте до 4 окремих проміжних чисел у незалежних комірках:
             </p>
 
             <div class="memory-slots-list">
                 <div class="memory-slot-row">
                     <span class="slot-badge">M1</span>
-                    <strong class="slot-val" id="mem-slot-val-0">0</strong>
+                    <span class="slot-val" id="mem-slot-val-0">0</span>
                     <div class="slot-actions">
-                        <button class="btn-secondary" onclick="memorySlotStore(0)">Зберегти</button>
-                        <button class="btn-secondary" onclick="memorySlotRecall(0)">Викликати</button>
-                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(0)">C</button>
+                        <button class="btn-secondary" onclick="memorySlotStore(0)">MS</button>
+                        <button class="btn-secondary" onclick="memorySlotRecall(0)">MR</button>
+                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(0)">MC</button>
                     </div>
                 </div>
-
                 <div class="memory-slot-row">
                     <span class="slot-badge">M2</span>
-                    <strong class="slot-val" id="mem-slot-val-1">0</strong>
+                    <span class="slot-val" id="mem-slot-val-1">0</span>
                     <div class="slot-actions">
-                        <button class="btn-secondary" onclick="memorySlotStore(1)">Зберегти</button>
-                        <button class="btn-secondary" onclick="memorySlotRecall(1)">Викликати</button>
-                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(1)">C</button>
+                        <button class="btn-secondary" onclick="memorySlotStore(1)">MS</button>
+                        <button class="btn-secondary" onclick="memorySlotRecall(1)">MR</button>
+                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(1)">MC</button>
                     </div>
                 </div>
-
                 <div class="memory-slot-row">
                     <span class="slot-badge">M3</span>
-                    <strong class="slot-val" id="mem-slot-val-2">0</strong>
+                    <span class="slot-val" id="mem-slot-val-2">0</span>
                     <div class="slot-actions">
-                        <button class="btn-secondary" onclick="memorySlotStore(2)">Зберегти</button>
-                        <button class="btn-secondary" onclick="memorySlotRecall(2)">Викликати</button>
-                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(2)">C</button>
+                        <button class="btn-secondary" onclick="memorySlotStore(2)">MS</button>
+                        <button class="btn-secondary" onclick="memorySlotRecall(2)">MR</button>
+                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(2)">MC</button>
                     </div>
                 </div>
-
                 <div class="memory-slot-row">
                     <span class="slot-badge">M4</span>
-                    <strong class="slot-val" id="mem-slot-val-3">0</strong>
+                    <span class="slot-val" id="mem-slot-val-3">0</span>
                     <div class="slot-actions">
-                        <button class="btn-secondary" onclick="memorySlotStore(3)">Зберегти</button>
-                        <button class="btn-secondary" onclick="memorySlotRecall(3)">Викликати</button>
-                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(3)">C</button>
+                        <button class="btn-secondary" onclick="memorySlotStore(3)">MS</button>
+                        <button class="btn-secondary" onclick="memorySlotRecall(3)">MR</button>
+                        <button class="btn-secondary btn-danger" onclick="memorySlotClear(3)">MC</button>
                     </div>
                 </div>
             </div>
 
             <div class="modal-actions" style="margin-top:14px;">
-                <button class="btn-secondary btn-danger" onclick="clearAllMemorySlots()">Очистити всі слоти M1-M4</button>
+                <button class="btn-secondary btn-danger" onclick="clearAllMemorySlots()">Очистити всі M1–M4</button>
                 <button class="close-btn" style="margin-top:0;" onclick="closeModal('memory-modal')">Закрити</button>
             </div>
         </div>
     </div>
 
-    <!-- Інтерактивне вікно Діагностики та Порадника Помилок -->
+    <!-- Студія Шрифтів (8 Шрифтів) -->
+    <div class="modal-overlay" id="font-modal">
+        <div class="modal-content font-modal-content">
+            <h3>🔤 Студія Типографіки (8 Шрифтів)</h3>
+            
+            <div class="font-options-grid">
+                <div class="font-card active" data-font="font-inter" onclick="setFontFamily('font-inter')">
+                    <div class="font-sample">1234.56 + Inter</div>
+                    <div class="font-meta"><strong>Inter Pro</strong><small>Універсальний сучасний</small></div>
+                </div>
+                <div class="font-card" data-font="font-jetbrains" onclick="setFontFamily('font-jetbrains')">
+                    <div class="font-sample" style="font-family:'JetBrains Mono';">1234.56 + JetBrains</div>
+                    <div class="font-meta"><strong>JetBrains Mono</strong><small>Моноширинний розробника</small></div>
+                </div>
+                <div class="font-card" data-font="font-orbitron" onclick="setFontFamily('font-orbitron')">
+                    <div class="font-sample" style="font-family:'Orbitron';">1234.56 + Orbitron</div>
+                    <div class="font-meta"><strong>Orbitron Digital</strong><small>Футуристичний сай-фай</small></div>
+                </div>
+                <div class="font-card" data-font="font-rajdhani" onclick="setFontFamily('font-rajdhani')">
+                    <div class="font-sample" style="font-family:'Rajdhani';">1234.56 + Rajdhani</div>
+                    <div class="font-meta"><strong>Rajdhani Mecha</strong><small>Компактний інженерний</small></div>
+                </div>
+                <div class="font-card" data-font="font-spacegrotesk" onclick="setFontFamily('font-spacegrotesk')">
+                    <div class="font-sample" style="font-family:'Space Grotesk';">1234.56 + Space</div>
+                    <div class="font-meta"><strong>Space Grotesk</strong><small>Геометричний бруталізм</small></div>
+                </div>
+                <div class="font-card" data-font="font-silkscreen" onclick="setFontFamily('font-silkscreen')">
+                    <div class="font-sample" style="font-family:'Silkscreen';">1234.56 8-BIT</div>
+                    <div class="font-meta"><strong>Silkscreen Pixel</strong><small>Ретро піксельний 8-Bit</small></div>
+                </div>
+                <div class="font-card" data-font="font-outfit" onclick="setFontFamily('font-outfit')">
+                    <div class="font-sample" style="font-family:'Outfit';">1234.56 + Outfit</div>
+                    <div class="font-meta"><strong>Outfit Neo</strong><small>Елегантний мінімалізм</small></div>
+                </div>
+                <div class="font-card" data-font="font-firacode" onclick="setFontFamily('font-firacode')">
+                    <div class="font-sample" style="font-family:'Fira Code';">1234.56 + Fira</div>
+                    <div class="font-meta"><strong>Fira Code</strong><small>Технічний термінальний</small></div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('font-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Модальне вікно діагностики помилки та поради -->
     <div class="modal-overlay" id="error-advisor-modal">
         <div class="modal-content error-advisor-content">
             <div class="error-header">
                 <span class="error-icon" id="error-diag-icon">⚠️</span>
-                <h3 id="error-diag-title">Заборонена математична дія!</h3>
+                <h3 id="error-diag-title" style="margin-bottom:0;">Заборонена математична дія!</h3>
             </div>
-            
+
             <div class="error-body">
                 <div class="error-rule-box">
-                    <span class="rule-label">Математичне зауваження:</span>
-                    <p id="error-diag-rule">У математиці ця операція є забороненою або невизначеною.</p>
+                    <span class="rule-label">Математичне правило:</span>
+                    <p id="error-diag-rule">Ділення на нуль або взяття кореня з від'ємного числа не визначено в арифметиці дійсних чисел.</p>
                 </div>
 
                 <div class="error-explanation-box">
-                    <span class="rule-label">Чому так відбувається?</span>
-                    <p id="error-diag-explanation"></p>
+                    <span class="rule-label">Чому так відбувається:</span>
+                    <p id="error-diag-explanation">Операція призводить до математичної невизначеності або асимптоти.</p>
                 </div>
 
                 <div class="error-remedy-box">
-                    <span class="rule-label">💡 Порада: Як можна виправити та змінити?</span>
-                    <p id="error-diag-remedy"></p>
+                    <span class="rule-label">💡 Як виправити ситуацію:</span>
+                    <p id="error-diag-remedy">Замініть дільник на ненульове число або скористайтеся наближенням.</p>
                 </div>
             </div>
 
-            <div class="error-actions-grid" id="error-actions-container"></div>
-            <button class="close-btn" onclick="closeModal('error-advisor-modal')">Зрозуміло</button>
+            <div class="error-actions-grid" id="error-actions-container">
+                <!-- Кнопки швидкого виправлення помилки -->
+            </div>
+
+            <button class="close-btn" onclick="closeModal('error-advisor-modal')">Зрозуміло, повернутись</button>
         </div>
     </div>
 
-    <!-- Вікно Повного Математичного Порадника -->
+    <!-- Математичний довідник заборонених дій -->
     <div class="modal-overlay" id="advisor-modal">
-        <div class="modal-content advisor-guide-content">
-            <h3>🧠 Математичний Порадник: Заборонені Операції</h3>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
-                Ознайомтеся з правилами вищої та базової математики, чому певні операції заборонені та як їх коректно розв'язувати:
+        <div class="modal-content advisor-modal-content">
+            <h3>🧠 Математичний Порадник & Правила Обчислень</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;">
+                Ознайомтеся з фундаментальними математичними обмеженнями та способами їх розв'язання:
             </p>
 
             <div class="advisor-accordion">
                 <div class="advisor-item">
                     <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>1. 🚫 Ділення на нуль (x ÷ 0 або x mod 0)</span>
+                        <span>1. 🚫 Чому не можна ділити на нуль (a ÷ 0)?</span>
                         <em>▼</em>
                     </div>
                     <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> Ділення — це операція, обернена до множення. Вираз <code>a ÷ b = c</code> означає, що <code>c × b = a</code>. Якщо <code>b = 0</code>, то <code>c × 0 = 0</code> для будь-якого числа <code>c</code>, тому отримати ненульове число <code>a</code> неможливо. Якщо ж <code>a = 0</code>, виникає невизначеність <code>0/0</code>.</p>
-                        <p><strong>💡 Як виправити:</strong> Перевірте значення знаменника. Якщо ви шукаєте границю функції (ліміт), використовуйте прямування до нуля (наприклад, <code>0.00001</code>). В іншому випадку замініть дільник на число, відмінне від нуля.</p>
+                        <p><strong>Суть:</strong> Ділення <code>a / b = c</code> означає, що <code>c × b = a</code>. Якщо <code>b = 0</code>, то <code>c × 0 = 0</code> для будь-якого <code>c</code>. Якщо <code>a ≠ 0</code>, такого числа <code>c</code> не існує в природі. Якщо ж <code>a = 0</code> (0/0), результат невизначений.</p>
+                        <p><strong>Порада:</strong> Перевірте знаменник, використовуйте границі (ліміти) або наближення <code>0.00001</code>.</p>
                     </div>
                 </div>
 
                 <div class="advisor-item">
                     <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>2. 🚫 Квадратний корінь з від'ємного числа (√(-x))</span>
+                        <span>2. 📐 Чому корінь з від'ємного числа не існує у дійсних числах (√-x)?</span>
                         <em>▼</em>
                     </div>
                     <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> У множині дійсних чисел <code>ℝ</code> квадрат будь-якого числа завжди невід'ємний: <code>x² ≥ 0</code>. Тому не існує дійсного числа, квадрат якого дорівнює <code>-9</code>.</p>
-                        <p><strong>💡 Як виправити:</strong> Для обчислення в дійсних числах візьміть модуль <code>|x|</code> перед добуванням кореня. Для вищої математики переходьте у площину комплексних чисел через уявну одиницю <code>i = √(-1)</code>.</p>
+                        <p><strong>Суть:</strong> Квадрат будь-якого дійсного числа завжди є невід'ємним (наприклад, <code>(-3)² = +9</code> і <code>(+3)² = +9</code>). Немає дійсного числа, квадрат якого дасть від'ємне значення.</p>
+                        <p><strong>Порада:</strong> Застосуйте модуль <code>|x|</code> або перейдіть до поля комплексних чисел <code>i = √-1</code>.</p>
                     </div>
                 </div>
 
                 <div class="advisor-item">
                     <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>3. 🚫 Логарифм нуля та від'ємних чисел (ln(x), log(x) при x ≤ 0)</span>
+                        <span>3. 📉 Обмеження логарифмів ln(x) та log(x) при x ≤ 0</span>
                         <em>▼</em>
                     </div>
                     <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> Логарифм <code>log_b(x) = y</code> означає, що <code>bʸ = x</code>. Оскільки основа <code>b > 0</code>, піднесення додатного числа до будь-якого степеня завжди дає додатне число. <code>bʸ</code> ніколи не дорівнює нулю або від'ємному числу.</p>
-                        <p><strong>💡 Як виправити:</strong> Переконайтеся, що аргумент логарифма строго додатний (<code>x > 0</code>). Застосуйте модуль <code>|x|</code> або додайте зміщення (offset).</p>
+                        <p><strong>Суть:</strong> Логарифм <code>log_b(x)</code> — це показник степеня, до якого треба піднести основу <code>b > 0</code>, щоб отримати <code>x</code>. Оскільки основа додатна, результат завжди <code>> 0</code>. Логарифм нуля прямує до <code>-∞</code>, а для <code>x < 0</code> у дійсних числах не визначений.</p>
+                        <p><strong>Порада:</strong> Забезпечте строгу додатність аргументу (наприклад, <code>ln(|x|)</code>).</p>
                     </div>
                 </div>
 
                 <div class="advisor-item">
                     <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>4. 🚫 Арксинус та Арккосинус (asin(x), acos(x) при |x| > 1)</span>
+                        <span>4. ⭕ Арксинус та арккосинус (asin, acos) поза [-1; 1]</span>
                         <em>▼</em>
                     </div>
                     <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> Область значень функцій <code>sin(α)</code> та <code>cos(α)</code> обмежена відрізком <code>[-1, 1]</code>.</p>
-                        <p><strong>💡 Як виправити:</strong> Нормалізуйте величину або перевірте формулу амплітуди.</p>
+                        <p><strong>Суть:</strong> Функції <code>sin(α)</code> та <code>cos(α)</code> є проєкціями радіус-вектора на осі одиничного кола, тому їхні значення завжди знаходяться у проміжку від <code>-1</code> до <code>+1</code>. Обернені функції не можуть приймати числа <code>|x| > 1</code>.</p>
+                        <p><strong>Порада:</strong> Нормалізуйте величини до інтервалу <code>[-1; 1]</code>.</p>
                     </div>
                 </div>
 
                 <div class="advisor-item">
                     <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>5. 🚫 Тангенс 90° та 270° (tan 90°)</span>
+                        <span>5. ❗ Факторіал від'ємних та дробових чисел (x!)</span>
                         <em>▼</em>
                     </div>
                     <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> <code>tan(α) = sin(α) / cos(α)</code>. При куті <code>90°</code> <code>cos = 0</code>, що спричиняє ділення на нуль (асимптота).</p>
-                        <p><strong>💡 Як виправити:</strong> Використовуйте апроксимацію кута (наприклад, <code>89.999°</code>).</p>
-                    </div>
-                </div>
-
-                <div class="advisor-item">
-                    <div class="advisor-item-head" onclick="toggleAccordion(this)">
-                        <span>6. 🚫 Факторіал від'ємного або дробового числа</span>
-                        <em>▼</em>
-                    </div>
-                    <div class="advisor-item-body">
-                        <p><strong>Зауваження:</strong> Класичний факторіал визначений лише для невід'ємних цілих чисел.</p>
-                        <p><strong>💡 Як виправити:</strong> Округліть число до найближчого цілого додатного <code>Math.round(|x|)</code>.</p>
+                        <p><strong>Суть:</strong> Класичний факторіал <code>n!</code> визначений для цілих невід'ємних чисел (0! = 1, 1! = 1, 2! = 2...). Для дробових та комплексних чисел використовується Гамма-функція Ейлера <code>Γ(z)</code>.</p>
+                        <p><strong>Порада:</strong> Округліть число до найближчого цілого додатного.</p>
                     </div>
                 </div>
             </div>
 
-            <button class="close-btn" onclick="closeModal('advisor-modal')">Зрозуміло</button>
-        </div>
-    </div>
-
-    <!-- Студія Шрифтів -->
-    <div class="modal-overlay" id="font-modal">
-        <div class="modal-content font-modal-content">
-            <h3>🔤 Студія Шрифтів та Типографіки (8 Шрифтів)</h3>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
-                Оберіть гарнітуру шрифту для інтерфейсу та дисплею калькулятора:
-            </p>
-
-            <div class="font-options-grid">
-                <div class="font-card active" data-font="font-inter" onclick="setFontFamily('font-inter')">
-                    <span class="font-sample" style="font-family: 'Inter', sans-serif;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>Inter (Clean Modern)</strong>
-                        <small>Стандартний сучасний інтерфейсний шрифт</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-jetbrains" onclick="setFontFamily('font-jetbrains')">
-                    <span class="font-sample" style="font-family: 'JetBrains Mono', monospace;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>JetBrains Mono (Developer Tech)</strong>
-                        <small>Ідеальний моноширинний шрифт розробників</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-orbitron" onclick="setFontFamily('font-orbitron')">
-                    <span class="font-sample" style="font-family: 'Orbitron', sans-serif;">12345.67 ÷ SIN(45°)</span>
-                    <div class="font-meta">
-                        <strong>Orbitron (Sci-Fi Cyber Digital)</strong>
-                        <small>Футуристичний цифровий стиль дисплеїв</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-rajdhani" onclick="setFontFamily('font-rajdhani')">
-                    <span class="font-sample" style="font-family: 'Rajdhani', sans-serif; font-size:1.35rem;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>Rajdhani (Mecha Industrial Tech)</strong>
-                        <small>Індустріальний технологічний гротеск</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-spacegrotesk" onclick="setFontFamily('font-spacegrotesk')">
-                    <span class="font-sample" style="font-family: 'Space Grotesk', sans-serif;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>Space Grotesk (Modernist Quirky)</strong>
-                        <small>Модерністський виразний шрифт</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-silkscreen" onclick="setFontFamily('font-silkscreen')">
-                    <span class="font-sample" style="font-family: 'Silkscreen', cursive; font-size:1rem;">12345.67 / SIN(45)</span>
-                    <div class="font-meta">
-                        <strong>Silkscreen (Retro 8-Bit Pixel)</strong>
-                        <small>Ретро піксельний дисплей 80-х</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-outfit" onclick="setFontFamily('font-outfit')">
-                    <span class="font-sample" style="font-family: 'Outfit', sans-serif;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>Outfit (Geometric Minimalist)</strong>
-                        <small>Елегантний геометричний гротеск</small>
-                    </div>
-                </div>
-
-                <div class="font-card" data-font="font-firacode" onclick="setFontFamily('font-firacode')">
-                    <span class="font-sample" style="font-family: 'Fira Code', monospace;">12345.67 ÷ sin(45°)</span>
-                    <div class="font-meta">
-                        <strong>Fira Code (Terminal Ligatures)</strong>
-                        <small>Чіткий термінальний шрифт з лігатурами</small>
-                    </div>
-                </div>
-            </div>
-
-            <button class="close-btn" onclick="closeModal('font-modal')">Застосувати шрифт</button>
+            <button class="close-btn" onclick="closeModal('advisor-modal')">Закрити</button>
         </div>
     </div>
 
     <!-- 2D Графік Функцій -->
     <div class="modal-overlay" id="graph-modal">
         <div class="modal-content graph-modal-content">
-            <h3>📈 Інтерактивний 2D Графік Функцій</h3>
+            <h3>📈 2D Інтерактивний Графік Функцій</h3>
             
             <div class="graph-presets-row">
-                <button class="btn-secondary" onclick="plotFunction('sin')">sin(x)</button>
-                <button class="btn-secondary" onclick="plotFunction('cos')">cos(x)</button>
-                <button class="btn-secondary" onclick="plotFunction('tan')">tan(x)</button>
-                <button class="btn-secondary" onclick="plotFunction('sqr')">x²</button>
-                <button class="btn-secondary" onclick="plotFunction('cube')">x³</button>
-                <button class="btn-secondary" onclick="plotFunction('sqrt')">√x</button>
-                <button class="btn-secondary" onclick="plotFunction('ln')">ln(x)</button>
-                <button class="btn-secondary" onclick="plotFunction('inv')">1/x</button>
+                <button class="conv-tab active" onclick="plotFunction('sin')">sin(x)</button>
+                <button class="conv-tab" onclick="plotFunction('cos')">cos(x)</button>
+                <button class="conv-tab" onclick="plotFunction('tan')">tan(x)</button>
+                <button class="conv-tab" onclick="plotFunction('sqr')">x²</button>
+                <button class="conv-tab" onclick="plotFunction('cube')">x³</button>
+                <button class="conv-tab" onclick="plotFunction('sqrt')">√x</button>
+                <button class="conv-tab" onclick="plotFunction('ln')">ln(x)</button>
+                <button class="conv-tab" onclick="plotFunction('inv')">1/x</button>
             </div>
 
             <div class="canvas-wrapper">
-                <canvas id="function-canvas" width="460" height="260"></canvas>
+                <canvas id="function-canvas" width="480" height="260"></canvas>
             </div>
 
             <div class="graph-controls-row">
@@ -1025,286 +1235,18 @@
                 <button class="btn-secondary" onclick="resetGraphZoom()">Скинути масштаб</button>
             </div>
 
-            <button class="close-btn" onclick="closeModal('graph-modal')">Закрити графік</button>
+            <button class="close-btn" onclick="closeModal('graph-modal')">Закрити</button>
         </div>
     </div>
 
-    <!-- Фінансовий Калькулятор -->
-    <div class="modal-overlay" id="finance-modal">
-        <div class="modal-content finance-modal-content">
-            <h3>💰 Фінансовий Калькулятор: Знижки & Податки</h3>
-            
-            <div class="finance-body">
-                <div class="finance-input-row">
-                    <label>Початкова сума (Ціна):</label>
-                    <input type="number" id="fin-amount" value="1000" oninput="calculateFinance()">
-                </div>
-                <div class="finance-input-row">
-                    <label>Знижка (%):</label>
-                    <input type="number" id="fin-discount" value="15" oninput="calculateFinance()">
-                </div>
-                <div class="finance-input-row">
-                    <label>Податок / ПДВ (%):</label>
-                    <input type="number" id="fin-tax" value="20" oninput="calculateFinance()">
-                </div>
-                <div class="finance-input-row">
-                    <label>Чайові (%):</label>
-                    <input type="number" id="fin-tip" value="10" oninput="calculateFinance()">
-                </div>
-
-                <div class="finance-results-box">
-                    <div class="fin-res-line">
-                        <span>Сума зі знижкою:</span>
-                        <strong id="fin-discounted-val">850.00 ₴</strong>
-                    </div>
-                    <div class="fin-res-line">
-                        <span>Податок / ПДВ:</span>
-                        <strong id="fin-tax-val">+ 170.00 ₴</strong>
-                    </div>
-                    <div class="fin-res-line">
-                        <span>Чайові:</span>
-                        <strong id="fin-tip-val">+ 85.00 ₴</strong>
-                    </div>
-                    <div class="fin-res-line total-line">
-                        <span>Разом до сплати:</span>
-                        <strong id="fin-total-val">1105.00 ₴</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="converter-quick-actions">
-                <button class="btn-secondary" onclick="insertFinanceToCalc()">📥 Вставити суму в калькулятор</button>
-                <button class="btn-secondary" onclick="copyFinanceTotal()">📋 Скопіювати</button>
-            </div>
-
-            <button class="close-btn" onclick="closeModal('finance-modal')">Закрити</button>
-        </div>
-    </div>
-
-    <!-- RNG та Кубики -->
-    <div class="modal-overlay" id="rng-modal">
-        <div class="modal-content rng-modal-content">
-            <h3>🎲 Генератор Випадкових Чисел та Кубики</h3>
-            
-            <div class="rng-body">
-                <div class="rng-range-row">
-                    <div>
-                        <label>Від (Min):</label>
-                        <input type="number" id="rng-min" value="1">
-                    </div>
-                    <div>
-                        <label>До (Max):</label>
-                        <input type="number" id="rng-max" value="100">
-                    </div>
-                    <button class="btn-secondary rng-btn" onclick="generateRandomNumber()">Згенерувати</button>
-                </div>
-
-                <div class="rng-result-display" id="rng-result">42</div>
-
-                <h4 style="font-size:0.9rem; margin:14px 0 8px;">🎲 Кидок ігрових кубиків:</h4>
-                <div class="dice-grid">
-                    <button class="btn-secondary" onclick="rollDice(4)">d4</button>
-                    <button class="btn-secondary" onclick="rollDice(6)">d6</button>
-                    <button class="btn-secondary" onclick="rollDice(8)">d8</button>
-                    <button class="btn-secondary" onclick="rollDice(10)">d10</button>
-                    <button class="btn-secondary" onclick="rollDice(12)">d12</button>
-                    <button class="btn-secondary" onclick="rollDice(20)">d20</button>
-                    <button class="btn-secondary" onclick="rollDice(100)">d100</button>
-                    <button class="btn-secondary" onclick="flipCoin()">🪙 Монета</button>
-                </div>
-            </div>
-
-            <div class="converter-quick-actions" style="margin-top:14px;">
-                <button class="btn-secondary" onclick="insertRngToCalc()">📥 Вставити в калькулятор</button>
-                <button class="close-btn" style="margin-top:0;" onclick="closeModal('rng-modal')">Закрити</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 24 Преміум Теми Redstone 3 -->
-    <div class="modal-overlay" id="theme-modal">
-        <div class="modal-content theme-modal-content">
-            <h3>🍷 24 Авторські Теми та Стилі Redstone 3 Bordeaux</h3>
-            
-            <div class="theme-grid">
-                <button class="theme-card active" data-theme="bordeaux_luxury" onclick="setTheme('bordeaux_luxury')">
-                    <div class="theme-preview bordeaux-prev"></div>
-                    <div class="theme-info">
-                        <strong>🍷 Bordeaux Imperial</strong>
-                        <small>Королівський бордовий оксамит</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="velvet_burgundy" onclick="setTheme('velvet_burgundy')">
-                    <div class="theme-preview velvet-prev"></div>
-                    <div class="theme-info">
-                        <strong>🍇 Velvet Burgundy Noir</strong>
-                        <small>Глибокий винний нуар</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="autumn_crimson" onclick="setTheme('autumn_crimson')">
-                    <div class="theme-preview autumn-prev"></div>
-                    <div class="theme-info">
-                        <strong>🍁 Autumn Crimson</strong>
-                        <small>Осінній багрянець та рубін</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="volcanic_magma" onclick="setTheme('volcanic_magma')">
-                    <div class="theme-preview magma-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌋 Volcanic Magma</strong>
-                        <small>Вулканічна бордова лава</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="redstone2" onclick="setTheme('redstone2')">
-                    <div class="theme-preview redstone2-prev"></div>
-                    <div class="theme-info">
-                        <strong>🔴 Redstone 2 Pulse</strong>
-                        <small>Неоновий рубіновий</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="deep_space" onclick="setTheme('deep_space')">
-                    <div class="theme-preview deepspace-prev"></div>
-                    <div class="theme-info">
-                        <strong>🪐 Deep Space Nebula</strong>
-                        <small>Космічна глибина та зорі</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="cyber_lime" onclick="setTheme('cyber_lime')">
-                    <div class="theme-preview lime-prev"></div>
-                    <div class="theme-info">
-                        <strong>🍏 Cyber Lime Acid</strong>
-                        <small>Ультраяскравий лайм</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="royal_amethyst" onclick="setTheme('royal_amethyst')">
-                    <div class="theme-preview amethyst-prev"></div>
-                    <div class="theme-info">
-                        <strong>👑 Royal Amethyst</strong>
-                        <small>Імператорський аметист</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="redstone" onclick="setTheme('redstone')">
-                    <div class="theme-preview redstone-prev"></div>
-                    <div class="theme-info">
-                        <strong>🔴 Redstone 1 Flux</strong>
-                        <small>Класичний рубіновий</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="cyber_amber" onclick="setTheme('cyber_amber')">
-                    <div class="theme-preview cyber-amber-prev"></div>
-                    <div class="theme-info">
-                        <strong>⚡ Amber Cyber</strong>
-                        <small>Бурштиновий кіберпанк</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="nordic_frost" onclick="setTheme('nordic_frost')">
-                    <div class="theme-preview nordic-frost-prev"></div>
-                    <div class="theme-info">
-                        <strong>❄️ Nordic Glacier</strong>
-                        <small>Арктичний льодовиковий ціан</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="vintage_retro" onclick="setTheme('vintage_retro')">
-                    <div class="theme-preview vintage-prev"></div>
-                    <div class="theme-info">
-                        <strong>📼 80s Synthwave</strong>
-                        <small>Ретро футуризм та м'ята</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="matrix_terminal" onclick="setTheme('matrix_terminal')">
-                    <div class="theme-preview matrix-prev"></div>
-                    <div class="theme-info">
-                        <strong>📟 Matrix Terminal</strong>
-                        <small>Фосфорний зелений CRT</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="obsidian_gold" onclick="setTheme('obsidian_gold')">
-                    <div class="theme-preview obsidian-prev"></div>
-                    <div class="theme-info">
-                        <strong>👑 Obsidian Royal Gold</strong>
-                        <small>Чорне золото та розкіш</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="dark" onclick="setTheme('dark')">
-                    <div class="theme-preview dark-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌙 Dark Charcoal</strong>
-                        <small>Глибокий темний графіт</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="light" onclick="setTheme('light')">
-                    <div class="theme-preview light-prev"></div>
-                    <div class="theme-info">
-                        <strong>☀️ Clean Porcelain</strong>
-                        <small>Чиста світла класика</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="neon" onclick="setTheme('neon')">
-                    <div class="theme-preview neon-prev"></div>
-                    <div class="theme-info">
-                        <strong>⚡ Cyberpunk Glow</strong>
-                        <small>Неонове сяйво</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="purple" onclick="setTheme('purple')">
-                    <div class="theme-preview purple-prev"></div>
-                    <div class="theme-info">
-                        <strong>🔮 Midnight Purple</strong>
-                        <small>Космічна галактика</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="emerald" onclick="setTheme('emerald')">
-                    <div class="theme-preview emerald-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌲 Emerald Forest</strong>
-                        <small>Смарагдова природа</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="sunset" onclick="setTheme('sunset')">
-                    <div class="theme-preview sunset-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌅 Sunset Aura</strong>
-                        <small>Теплий захід сонця</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="ocean" onclick="setTheme('ocean')">
-                    <div class="theme-preview ocean-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌊 Nordic Ocean</strong>
-                        <small>Океанічна глибина</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="coffee" onclick="setTheme('coffee')">
-                    <div class="theme-preview coffee-prev"></div>
-                    <div class="theme-info">
-                        <strong>☕ Mocha Latte</strong>
-                        <small>Затишна кава та карамель</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="sakura" onclick="setTheme('sakura')">
-                    <div class="theme-preview sakura-prev"></div>
-                    <div class="theme-info">
-                        <strong>🌸 Sakura Bloom</strong>
-                        <small>Пастельний рожевий шовк</small>
-                    </div>
-                </button>
-                <button class="theme-card" data-theme="glass" onclick="setTheme('glass')">
-                    <div class="theme-preview glass-prev"></div>
-                    <div class="theme-info">
-                        <strong>💎 Frost Glassmorphism</strong>
-                        <small>Матове люксове скло</small>
-                    </div>
-                </button>
-            </div>
-            <button class="close-btn" onclick="closeModal('theme-modal')">Закрити</button>
-        </div>
-    </div>
-
-    <!-- Wallpaper Studio (З новими шпалерами Redstone 3) -->
+    <!-- Шпалери та Фон Інтерфейсу (Wallpaper Studio) -->
     <div class="modal-overlay" id="wallpaper-modal">
         <div class="modal-content wallpaper-modal-content">
-            <h3>🖼️ Шпалери & Фонове оформлення Redstone 3</h3>
-            
+            <h3>🖼️ Студія Шпалер & Фону</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;">
+                Оберіть якісне фото для фону інтерфейсу або завантажте власне:
+            </p>
+
             <div class="wallpaper-presets-grid">
                 <div class="wallpaper-card active" data-wp="burgundy" onclick="setWallpaper('burgundy')">
                     <div class="wp-thumb wp-thumb-burgundy"></div>
@@ -1312,78 +1254,285 @@
                 </div>
                 <div class="wallpaper-card" data-wp="nebula_wine" onclick="setWallpaper('nebula_wine')">
                     <div class="wp-thumb wp-thumb-nebula-wine"></div>
-                    <span>🌌 Wine Nebula Space</span>
+                    <span>🌌 Wine Nebula</span>
                 </div>
                 <div class="wallpaper-card" data-wp="cyber_redstone3" onclick="setWallpaper('cyber_redstone3')">
                     <div class="wp-thumb wp-thumb-cyber-redstone3"></div>
-                    <span>⚡ Redstone 3 Cybernet</span>
-                </div>
-                <div class="wallpaper-card" data-wp="default" onclick="setWallpaper('default')">
-                    <div class="wp-thumb wp-thumb-default"></div>
-                    <span>Динамічний градієнт</span>
+                    <span>⚡ Redstone 3 Cyber</span>
                 </div>
                 <div class="wallpaper-card" data-wp="cyber" onclick="setWallpaper('cyber')">
                     <div class="wp-thumb wp-thumb-cyber"></div>
-                    <span>Кіберсітка (Cyber)</span>
+                    <span>🏙️ Кіберсітка</span>
                 </div>
                 <div class="wallpaper-card" data-wp="sunset" onclick="setWallpaper('sunset')">
                     <div class="wp-thumb wp-thumb-sunset"></div>
-                    <span>Захід Сонця (Sunset)</span>
+                    <span>🌅 Захід Сонця</span>
                 </div>
                 <div class="wallpaper-card" data-wp="emerald" onclick="setWallpaper('emerald')">
                     <div class="wp-thumb wp-thumb-emerald"></div>
-                    <span>Смарагдова Небула</span>
+                    <span>🌲 Смарагд Небула</span>
                 </div>
                 <div class="wallpaper-card" data-wp="stars" onclick="setWallpaper('stars')">
                     <div class="wp-thumb wp-thumb-stars"></div>
-                    <span>Космічні Зорі</span>
+                    <span>✨ Космічні Зорі</span>
                 </div>
                 <div class="wallpaper-card" data-wp="grid" onclick="setWallpaper('grid')">
                     <div class="wp-thumb wp-thumb-grid"></div>
-                    <span>Blueprint Креслення</span>
+                    <span>📐 Blueprint Сітка</span>
+                </div>
+                <div class="wallpaper-card" data-wp="default" onclick="setWallpaper('default')">
+                    <div class="wp-thumb wp-thumb-default"></div>
+                    <span>🎨 Без зображення</span>
                 </div>
             </div>
 
             <div class="wallpaper-controls-box">
-                <h4>⚙️ Налаштування прозорості та розмиття</h4>
                 <div class="control-row">
-                    <label for="wp-blur-slider">Розмиття фону (Glass Blur): <span id="wp-blur-val">12px</span></label>
-                    <input type="range" id="wp-blur-slider" min="0" max="40" value="12" oninput="adjustWallpaperBlur(this.value)">
+                    <label>Розмиття фону (Blur): <span id="wp-blur-val">12px</span></label>
+                    <input type="range" id="wp-blur-slider" min="0" max="30" value="12" oninput="adjustWallpaperBlur(this.value)">
                 </div>
                 <div class="control-row">
-                    <label for="wp-opacity-slider">Затемнення фону (Overlay): <span id="wp-opacity-val">60%</span></label>
-                    <input type="range" id="wp-opacity-slider" min="0" max="95" value="60" oninput="adjustWallpaperOverlay(this.value)">
+                    <label>Затемнення фону (Overlay): <span id="wp-opacity-val">60%</span></label>
+                    <input type="range" id="wp-opacity-slider" min="10" max="90" value="60" oninput="adjustWallpaperOverlay(this.value)">
                 </div>
             </div>
 
             <div class="custom-wallpaper-section">
-                <h4>📁 Завантажити власне зображення</h4>
+                <label>Завантажити власне зображення або вставити посилання:</label>
                 <div class="custom-wp-inputs">
                     <input type="file" id="wallpaper-file-input" accept="image/*" onchange="handleWallpaperUpload(event)">
                     <div class="url-input-group">
-                        <input type="text" id="wallpaper-url-input" placeholder="Або посилання https://...">
-                        <button class="btn-secondary" onclick="applyWallpaperUrl()">Застосувати</button>
+                        <input type="text" id="wallpaper-url-input" placeholder="https://example.com/wallpaper.jpg">
+                        <button class="btn-secondary" onclick="applyWallpaperUrl()">Встановити URL</button>
                     </div>
                 </div>
             </div>
 
             <div class="modal-actions">
                 <button class="btn-secondary btn-danger" onclick="resetWallpaper()">Скинути фон</button>
-                <button class="close-btn" style="margin-top:0;" onclick="closeModal('wallpaper-modal')">Готово</button>
+                <button class="close-btn" style="margin-top:0;" onclick="closeModal('wallpaper-modal')">Закрити</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Фінансовий Калькулятор -->
+    <div class="modal-overlay" id="finance-modal">
+        <div class="modal-content finance-modal-content">
+            <h3>💰 Фінансовий Калькулятор (Знижки & Чайові & Податки)</h3>
+            <div class="finance-body">
+                <div class="finance-input-row">
+                    <label>Початкова сума рахунку (₴):</label>
+                    <input type="number" id="fin-amount" value="1000" oninput="calculateFinance()">
+                </div>
+                <div class="finance-input-row">
+                    <label>Знижка (%):</label>
+                    <input type="number" id="fin-discount" value="10" oninput="calculateFinance()">
+                </div>
+                <div class="finance-input-row">
+                    <label>Податок / ПДВ (%):</label>
+                    <input type="number" id="fin-tax" value="20" oninput="calculateFinance()">
+                </div>
+                <div class="finance-input-row">
+                    <label>Чайові (%):</label>
+                    <input type="number" id="fin-tip" value="5" oninput="calculateFinance()">
+                </div>
+
+                <div class="finance-results-box">
+                    <div class="fin-res-line">
+                        <span>Сума зі знижкою:</span>
+                        <strong id="fin-discounted-val">900.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line">
+                        <span>Податок:</span>
+                        <strong id="fin-tax-val">+ 180.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line">
+                        <span>Чайові:</span>
+                        <strong id="fin-tip-val">+ 45.00 ₴</strong>
+                    </div>
+                    <div class="fin-res-line total-line">
+                        <span>РАЗОМ ДО СПЛАТИ:</span>
+                        <strong id="fin-total-val">1125.00 ₴</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:14px;">
+                <button class="btn-secondary" onclick="insertFinanceToCalc()">📥 Вставити підсумок у калькулятор</button>
+                <button class="btn-secondary" onclick="copyFinanceTotal()">📋 Скопіювати</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('finance-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- RNG & Кубики -->
+    <div class="modal-overlay" id="rng-modal">
+        <div class="modal-content rng-modal-content">
+            <h3>🎲 Генератор Випадкових Чисел та Кубики</h3>
+            <div class="rng-body">
+                <div class="rng-range-row">
+                    <label>Від (Min):</label>
+                    <input type="number" id="rng-min" value="1">
+                    <label>До (Max):</label>
+                    <input type="number" id="rng-max" value="100">
+                </div>
+
+                <div class="rng-result-display" id="rng-result">
+                    77
+                </div>
+
+                <div class="rng-actions-row">
+                    <button class="btn-secondary" style="width:100%;" onclick="generateRandomNumber()">⚡ Згенерувати випадкове число</button>
+                </div>
+
+                <div class="dice-section" style="margin-top:14px;">
+                    <label style="display:block; font-size:0.86rem; color:var(--text-muted); margin-bottom:6px;">Кинути гральні кубики:</label>
+                    <div class="dice-grid">
+                        <button class="btn-secondary" onclick="rollDice(4)">d4</button>
+                        <button class="btn-secondary" onclick="rollDice(6)">d6</button>
+                        <button class="btn-secondary" onclick="rollDice(8)">d8</button>
+                        <button class="btn-secondary" onclick="rollDice(10)">d10</button>
+                        <button class="btn-secondary" onclick="rollDice(12)">d12</button>
+                        <button class="btn-secondary" onclick="rollDice(20)">d20</button>
+                        <button class="btn-secondary" onclick="rollDice(100)">d100</button>
+                        <button class="btn-secondary" onclick="flipCoin()">🪙 Монета</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="converter-quick-actions" style="margin-top:14px;">
+                <button class="btn-secondary" onclick="insertRngToCalc()">📥 Вставити в калькулятор</button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('rng-modal')">Закрити</button>
+        </div>
+    </div>
+
+    <!-- 24 Теми оформлення -->
+    <div class="modal-overlay" id="theme-modal">
+        <div class="modal-content theme-modal-content">
+            <h3>🎨 Каталог Колірних Тем (24 теми)</h3>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:12px;">
+                Оберіть стиль оформлення. Всі теми повністю підтримують glassmorphism та анімації:
+            </p>
+
+            <div class="theme-grid">
+                <!-- 4 Бордові флагманські теми v1.8 -->
+                <button class="theme-card active" data-theme="bordeaux_luxury" onclick="setTheme('bordeaux_luxury')">
+                    <span class="theme-preview bordeaux-prev"></span>
+                    <div class="theme-info"><strong>🍷 Bordeaux Imperial</strong><small>Бордовий оксамит & золото</small></div>
+                </button>
+                <button class="theme-card" data-theme="velvet_burgundy" onclick="setTheme('velvet_burgundy')">
+                    <span class="theme-preview velvet-prev"></span>
+                    <div class="theme-info"><strong>🍇 Velvet Burgundy</strong><small>Ультратемний винний нуар</small></div>
+                </button>
+                <button class="theme-card" data-theme="autumn_crimson" onclick="setTheme('autumn_crimson')">
+                    <span class="theme-preview autumn-prev"></span>
+                    <div class="theme-info"><strong>🍁 Autumn Crimson</strong><small>Осінній багрянець</small></div>
+                </button>
+                <button class="theme-card" data-theme="volcanic_magma" onclick="setTheme('volcanic_magma')">
+                    <span class="theme-preview magma-prev"></span>
+                    <div class="theme-info"><strong>🌋 Volcanic Magma</strong><small>Палаюча лава & рубін</small></div>
+                </button>
+
+                <!-- Інші 20 преміальних тем -->
+                <button class="theme-card" data-theme="redstone2" onclick="setTheme('redstone2')">
+                    <span class="theme-preview redstone2-prev"></span>
+                    <div class="theme-info"><strong>⚡ Redstone 2 Pulse</strong><small>Квантовий неон</small></div>
+                </button>
+                <button class="theme-card" data-theme="deep_space" onclick="setTheme('deep_space')">
+                    <span class="theme-preview deepspace-prev"></span>
+                    <div class="theme-info"><strong>🌌 Deep Space</strong><small>Космічна небула</small></div>
+                </button>
+                <button class="theme-card" data-theme="cyber_lime" onclick="setTheme('cyber_lime')">
+                    <span class="theme-preview lime-prev"></span>
+                    <div class="theme-info"><strong>🧪 Cyber Lime</strong><small>Кислотно-лаймовий</small></div>
+                </button>
+                <button class="theme-card" data-theme="royal_amethyst" onclick="setTheme('royal_amethyst')">
+                    <span class="theme-preview amethyst-prev"></span>
+                    <div class="theme-info"><strong>🔮 Royal Amethyst</strong><small>Королівський аметист</small></div>
+                </button>
+                <button class="theme-card" data-theme="redstone" onclick="setTheme('redstone')">
+                    <span class="theme-preview redstone-prev"></span>
+                    <div class="theme-info"><strong>🔴 Redstone 1 Flux</strong><small>Червоний кристал</small></div>
+                </button>
+                <button class="theme-card" data-theme="cyber_amber" onclick="setTheme('cyber_amber')">
+                    <span class="theme-preview cyber-amber-prev"></span>
+                    <div class="theme-info"><strong>🔶 Amber Cyber</strong><small>Бурштиновий термінал</small></div>
+                </button>
+                <button class="theme-card" data-theme="nordic_frost" onclick="setTheme('nordic_frost')">
+                    <span class="theme-preview nordic-frost-prev"></span>
+                    <div class="theme-info"><strong>❄️ Nordic Glacier</strong><small>Арктичний льодовик</small></div>
+                </button>
+                <button class="theme-card" data-theme="vintage_retro" onclick="setTheme('vintage_retro')">
+                    <span class="theme-preview vintage-prev"></span>
+                    <div class="theme-info"><strong>📼 80s Synthwave</strong><small>Ретро-вейв неон</small></div>
+                </button>
+                <button class="theme-card" data-theme="matrix_terminal" onclick="setTheme('matrix_terminal')">
+                    <span class="theme-preview matrix-prev"></span>
+                    <div class="theme-info"><strong>🟩 Matrix Terminal</strong><small>Хакерський зелений</small></div>
+                </button>
+                <button class="theme-card" data-theme="obsidian_gold" onclick="setTheme('obsidian_gold')">
+                    <span class="theme-preview obsidian-prev"></span>
+                    <div class="theme-info"><strong>👑 Obsidian Gold</strong><small>Чорне золото</small></div>
+                </button>
+                <button class="theme-card" data-theme="dark" onclick="setTheme('dark')">
+                    <span class="theme-preview dark-prev"></span>
+                    <div class="theme-info"><strong>🌑 Dark Charcoal</strong><small>Темний мінімалізм</small></div>
+                </button>
+                <button class="theme-card" data-theme="light" onclick="setTheme('light')">
+                    <span class="theme-preview light-prev"></span>
+                    <div class="theme-info"><strong>☀️ Clean Porcelain</strong><small>Світла порцеляна</small></div>
+                </button>
+                <button class="theme-card" data-theme="neon" onclick="setTheme('neon')">
+                    <span class="theme-preview neon-prev"></span>
+                    <div class="theme-info"><strong>⚡ Cyberpunk Glow</strong><small>Кіберпанк неон</small></div>
+                </button>
+                <button class="theme-card" data-theme="purple" onclick="setTheme('purple')">
+                    <span class="theme-preview purple-prev"></span>
+                    <div class="theme-info"><strong>🟣 Midnight Purple</strong><small>Опівнічний фіолетовий</small></div>
+                </button>
+                <button class="theme-card" data-theme="emerald" onclick="setTheme('emerald')">
+                    <span class="theme-preview emerald-prev"></span>
+                    <div class="theme-info"><strong>🌲 Emerald Forest</strong><small>Смарагдовий ліс</small></div>
+                </button>
+                <button class="theme-card" data-theme="sunset" onclick="setTheme('sunset')">
+                    <span class="theme-preview sunset-prev"></span>
+                    <div class="theme-info"><strong>🌅 Sunset Aura</strong><small>Захід сонця</small></div>
+                </button>
+                <button class="theme-card" data-theme="ocean" onclick="setTheme('ocean')">
+                    <span class="theme-preview ocean-prev"></span>
+                    <div class="theme-info"><strong>🌊 Nordic Ocean</strong><small>Глибокий океан</small></div>
+                </button>
+                <button class="theme-card" data-theme="coffee" onclick="setTheme('coffee')">
+                    <span class="theme-preview coffee-prev"></span>
+                    <div class="theme-info"><strong>☕ Mocha Latte</strong><small>Кава мокко</small></div>
+                </button>
+                <button class="theme-card" data-theme="sakura" onclick="setTheme('sakura')">
+                    <span class="theme-preview sakura-prev"></span>
+                    <div class="theme-info"><strong>🌸 Sakura Bloom</strong><small>Цвіт сакури</small></div>
+                </button>
+                <button class="theme-card" data-theme="glass" onclick="setTheme('glass')">
+                    <span class="theme-preview glass-prev"></span>
+                    <div class="theme-info"><strong>🪟 Frost Glass</strong><small>Кришталеве скло</small></div>
+                </button>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('theme-modal')">Закрити</button>
         </div>
     </div>
 
     <!-- Конвертер Величин -->
     <div class="modal-overlay" id="converter-modal">
         <div class="modal-content converter-modal-content">
-            <h3>🔄 Універсальний Конвертер Величин</h3>
+            <h3>🔄 Універсальний Конвертер Одиниць</h3>
             
             <div class="converter-tabs">
                 <button class="conv-tab active" data-cat="length" onclick="switchConverterCategory('length')">Довжина</button>
-                <button class="conv-tab" data-cat="weight" onclick="switchConverterCategory('weight')">Маса</button>
+                <button class="conv-tab" data-cat="weight" onclick="switchConverterCategory('weight')">Маса / Вага</button>
                 <button class="conv-tab" data-cat="temp" onclick="switchConverterCategory('temp')">Температура</button>
-                <button class="conv-tab" data-cat="data" onclick="switchConverterCategory('data')">Пам'ять (Data)</button>
+                <button class="conv-tab" data-cat="data" onclick="switchConverterCategory('data')">Дані (IT)</button>
                 <button class="conv-tab" data-cat="speed" onclick="switchConverterCategory('speed')">Швидкість</button>
                 <button class="conv-tab" data-cat="time" onclick="switchConverterCategory('time')">Час</button>
             </div>
@@ -1563,27 +1712,28 @@
         <div class="modal-content" style="text-align: center;">
             <h3>👋 Ласкаво просимо!</h3>
             <p>Калькулятор скинуто до початкового стану <strong>Головної сторінки</strong>.</p>
-            <p><strong>Calculator Pro v1.8 Redstone 3 Bordeaux</strong> готовий до нових розрахунків!</p>
+            <p><strong>Calculator Pro v1.8.1 (Build 180) Redstone 3.1 Bordeaux</strong> готовий до нових розрахунків!</p>
             <button class="close-btn" onclick="closeModal('home-modal')" style="background-color: var(--accent-operator); color: var(--bg-card);">Почати роботу</button>
         </div>
     </div>
 
-    <!-- Про застосунок v1.8 Redstone 3 -->
+    <!-- Про застосунок v1.8.1 Redstone 3.1 -->
     <div class="modal-overlay" id="about-modal">
         <div class="modal-content">
             <h3>ℹ️ Про застосунок</h3>
-            <p><strong>Calculator Pro™ Redstone 3 Bordeaux Master Edition</strong> — ультрасучасний багатофункціональний інженерний калькулятор.</p>
-            <p>Версія релізу: <strong>v1.8 (Build 179) Redstone 3</strong></p>
+            <p><strong>Calculator Pro™ Redstone 3.1 Bordeaux Master Edition</strong> — ультрасучасний багатофункціональний інженерний калькулятор.</p>
+            <p>Версія релізу: <strong>v1.8.1 (Build 180) Redstone 3.1</strong></p>
             <p>Розробник & Автор: <strong>MaxNT Official, 2026(с)</strong></p>
-            <p><strong>Головні нововведення версії 1.8 Redstone 3:</strong></p>
+            <p><strong>Головні можливості версії 1.8.1 Redstone 3.1:</strong></p>
             <ul style="padding-left: 20px; font-size: 0.9rem; margin-bottom: 12px;">
-                <li>🍷 <strong>Бордовий фірмовий стиль:</strong> флагманська тема Bordeaux Imperial Wine та оксамитові шпалери.</li>
-                <li>🧮 <strong>Матричний Калькулятор:</strong> матриці 2×2 та 3×3, детермінант `det(A)`, слід, транспонування `Aᵀ`, обернена матриця `A⁻¹`.</li>
+                <li>📐 <strong>Правильно орієнтована іконка:</strong> чіткий векторний SVG логотип та favicon без деформацій.</li>
+                <li>📜 <strong>Розрахункова Стрічка (Tape Roll):</strong> живий чек із можливістю нотаток, друку та підрахунку суми.</li>
+                <li>🔢 <strong>НСД, НСК та Прості Множники:</strong> знаходження найбільшого спільного дільника, кратного та канонічного розкладу.</li>
+                <li>⚖️ <strong>Порівняння Цін:</strong> інструмент визначення вигіднішої ціни за 1 кг / 1 л / 1 шт.</li>
+                <li>📐 <strong>Обчислювач f(x):</strong> розрахунок довільних формул і генерація таблиці значень.</li>
+                <li>🧮 <strong>Матриці 2×2 та 3×3:</strong> детермінант `det(A)`, слід, транспонування `Aᵀ`, обернена матриця `A⁻¹`.</li>
                 <li>👾 <strong>Бітовий Інспектор:</strong> інтерактивна 64-бітна сітка бітів з миттєвим розрахунком DEC/HEX.</li>
-                <li>📈 <strong>Відсотки Pro:</strong> % від числа, дельта зміни (Δ %), розрахунок маржі та націнки.</li>
-                <li>💱 <strong>Валюти & Криптовалюти:</strong> швидкий конвертер UAH, USD, EUR, GBP, PLN, BTC, ETH, SOL.</li>
-                <li>🖼️ <strong>Нові шпалери:</strong> Bordeaux Velvet, Wine Nebula Space, Redstone 3 Cybernet та живі частинки Canvas.</li>
-                <li>⏱️ <strong>Покращений Master Footer:</strong> таймер сесії та панель швидкого доступу.</li>
+                <li>🍷 <strong>24 Колірні Теми:</strong> включно з Bordeaux Imperial Wine, Velvet Burgundy, Autumn Crimson та Volcanic Magma.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
         </div>
@@ -1592,11 +1742,12 @@
     <!-- Довідка -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-content">
-            <h3>❓ Довідка (v1.8 Build 179 Redstone 3)</h3>
+            <h3>❓ Довідка (v1.8.1 Build 180 Redstone 3.1)</h3>
             <ul style="padding-left: 20px; font-size: 0.92rem; margin-bottom: 15px; line-height:1.6;">
-                <li><strong>Матриці:</strong> відкрийте `[A] Матриці` для розрахунку визначника та обернених матриць.</li>
-                <li><strong>Бітовий інспектор:</strong> клікайте по бітах `0/1` для швидкого аналізу байтів та прапорців.</li>
-                <li><strong>Шпалери:</strong> обирайте Bordeaux Velvet або Wine Nebula у меню `🖼️ Шпалери`.</li>
+                <li><strong>Стрічка:</strong> натисніть `📜 Стрічка` для перегляду розрахункового чека та додавання коментарів.</li>
+                <li><strong>НСД/НСК:</strong> відкрийте `🔢 НСД/НСК` для миттєвого розкладу числа на множники та пошуку дільників.</li>
+                <li><strong>Порівняння цін:</strong> введіть ціну та вагу двох упаковок у `⚖️ Порівняти` для пошуку вигіднішої.</li>
+                <li><strong>Матриці:</strong> відкрийте `🧮 Матриці` для розрахунку визначника та обернених матриць.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>
