@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged
+ * Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -37,6 +37,8 @@ const state = {
     activeGraphFunc: 'sin',
     activeDateTab: 'diff',
     activeTriangleMode: 'sss', // 'sss', 'sas', 'asa'
+    activeConstantsCat: 'all',
+    trigAngleDeg: 45,
     triangleResults: { area: '14.697', perim: '18.00' },
     loanResults: { monthly: '17205.12', total: '619384.32' },
     matrixSize: 2,
@@ -58,6 +60,58 @@ const state = {
         SOL: 7885.0
     }
 };
+
+// База 40+ фундаментальних наукових та математичних констант
+const EXTENDED_CONSTANTS = [
+    // 1. Фундаментальні
+    { sym: 'c', name: 'Швидкість світла у вакуумі', val: '299792458', unit: 'м/с', cat: 'fundamental' },
+    { sym: 'G', name: 'Гравітаційна стала Ньютона', val: '6.67430e-11', unit: 'м³/(кг·с²)', cat: 'fundamental' },
+    { sym: 'h', name: 'Стала Планка', val: '6.62607015e-34', unit: 'Дж·с', cat: 'fundamental' },
+    { sym: 'ħ', name: 'Зведена стала Планка (h/2π)', val: '1.054571817e-34', unit: 'Дж·с', cat: 'fundamental' },
+    { sym: 'k_B', name: 'Стала Больцмана', val: '1.380649e-23', unit: 'Дж/К', cat: 'fundamental' },
+    { sym: 'N_A', name: 'Число Авогадро', val: '6.02214076e23', unit: 'моль⁻¹', cat: 'fundamental' },
+    { sym: 'R', name: 'Універсальна газова стала', val: '8.314462618', unit: 'Дж/(моль·К)', cat: 'fundamental' },
+    { sym: 'σ', name: 'Стала Стефана-Больцмана', val: '5.670374419e-8', unit: 'Вт/(м²·К⁴)', cat: 'fundamental' },
+
+    // 2. Електромагнетизм
+    { sym: 'e', name: 'Елементарний електричний заряд', val: '1.602176634e-19', unit: 'Кл', cat: 'em' },
+    { sym: 'ε₀', name: 'Електрична стала (діелектрична)', val: '8.8541878128e-12', unit: 'Ф/м', cat: 'em' },
+    { sym: 'μ₀', name: 'Магнітна стала (проникність)', val: '1.25663706212e-6', unit: 'Гн/м', cat: 'em' },
+    { sym: 'α', name: 'Стала тонкої структури', val: '0.0072973525693', unit: '—', cat: 'em' },
+    { sym: 'F', name: 'Стала Фарадея', val: '96485.33212', unit: 'Кл/моль', cat: 'em' },
+    { sym: 'Z₀', name: 'Хвильовий опір вакууму', val: '376.730313668', unit: 'Ом', cat: 'em' },
+
+    // 3. Атом & Кванти
+    { sym: 'm_e', name: 'Маса спокою електрона', val: '9.1093837015e-31', unit: 'кг', cat: 'atomic' },
+    { sym: 'm_p', name: 'Маса спокою протона', val: '1.67262192369e-27', unit: 'кг', cat: 'atomic' },
+    { sym: 'm_n', name: 'Маса спокою нейтрона', val: '1.67492749804e-27', unit: 'кг', cat: 'atomic' },
+    { sym: 'u', name: 'Атомна одиниця маси (а.о.м.)', val: '1.66053906660e-27', unit: 'кг', cat: 'atomic' },
+    { sym: 'R_∞', name: 'Стала Рідберга', val: '10973731.568160', unit: 'м⁻¹', cat: 'atomic' },
+    { sym: 'a₀', name: 'Боровський радіус', val: '5.29177210903e-11', unit: 'м', cat: 'atomic' },
+    { sym: 'μ_B', name: 'Магнетон Бора', val: '9.2740100783e-24', unit: 'Дж/Тл', cat: 'atomic' },
+    { sym: 'μ_N', name: 'Ядерний магнетон', val: '5.0507837461e-27', unit: 'Дж/Тл', cat: 'atomic' },
+
+    // 4. Астрофізика & Гео
+    { sym: 'g', name: 'Стандартне прискорення вільного падіння', val: '9.80665', unit: 'м/с²', cat: 'astro' },
+    { sym: 'M_⊕', name: 'Маса планети Земля', val: '5.9722e24', unit: 'кг', cat: 'astro' },
+    { sym: 'R_⊕', name: 'Середній радіус Землі', val: '6371000', unit: 'м', cat: 'astro' },
+    { sym: 'M_☉', name: 'Маса Сонця', val: '1.98847e30', unit: 'кг', cat: 'astro' },
+    { sym: 'R_☉', name: 'Радіус Сонця', val: '6.957e8', unit: 'м', cat: 'astro' },
+    { sym: 'AU', name: 'Астрономічна одиниця', val: '149597870700', unit: 'м', cat: 'astro' },
+    { sym: 'ly', name: 'Світловий рік', val: '9.4607304725808e15', unit: 'м', cat: 'astro' },
+    { sym: 'pc', name: 'Парсек', val: '3.08567758149137e16', unit: 'м', cat: 'astro' },
+    { sym: 'atm', name: 'Стандартний атмосферний тиск', val: '101325', unit: 'Па', cat: 'astro' },
+
+    // 5. Математичні
+    { sym: 'π', name: 'Число Пі (Архімеда)', val: '3.141592653589793', unit: '—', cat: 'math' },
+    { sym: 'e', name: 'Число Ейлера (основа ln)', val: '2.718281828459045', unit: '—', cat: 'math' },
+    { sym: 'φ', name: 'Золотий перетин (Фібоначчі)', val: '1.618033988749895', unit: '—', cat: 'math' },
+    { sym: '√2', name: 'Головна діагональ (Піфагор)', val: '1.414213562373095', unit: '—', cat: 'math' },
+    { sym: '√3', name: 'Кубічна просторова діагональ', val: '1.732050807568877', unit: '—', cat: 'math' },
+    { sym: 'ln(2)', name: 'Натуральний логарифм двійки', val: '0.693147180559945', unit: '—', cat: 'math' },
+    { sym: 'ln(10)', name: 'Модуль десяткового переходу', val: '2.302585092994046', unit: '—', cat: 'math' },
+    { sym: 'γ', name: 'Стала Ейлера-Маскероні', val: '0.577215664901532', unit: '—', cat: 'math' }
+];
 
 // Елементи інтерфейсу (DOM Elements)
 const dom = {
@@ -240,6 +294,25 @@ setInterval(() => {
 }, 1000);
 
 // ==========================================================================
+// Повноекранний Режим (Fullscreen Toggle)
+// ==========================================================================
+function toggleFullScreen() {
+    audio.playAction();
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+            showToast('Повноекранний режим активовано (Esc для виходу)', '⛶');
+        }).catch(() => {
+            showToast('Повноекранний режим не підтримується браузером', '⚠️');
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            showToast('Вихід з повноекранного режиму', '🪟');
+        }
+    }
+}
+
+// ==========================================================================
 // Динамічний Canvas з Інтерактивними Частинками (Particle Dynamics)
 // ==========================================================================
 let particles = [];
@@ -292,7 +365,7 @@ function initParticlesCanvas() {
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
 
-            // Інтерактивне гравітаційне тяжіння до миші
+            // Інтерактивне тяжіння до миші
             if (mousePos.active) {
                 const dx = mousePos.x - p.x;
                 const dy = mousePos.y - p.y;
@@ -394,6 +467,209 @@ document.addEventListener('click', (e) => {
     btn.appendChild(circle);
     setTimeout(() => circle.remove(), 550);
 });
+
+// ==========================================================================
+// 1. НОВЕ v1.8.4: Інтерактивне Тригонометричне Коло (Unit Circle Visualizer)
+// ==========================================================================
+function updateTrigCircle(angleVal) {
+    state.trigAngleDeg = parseFloat(angleVal) || 0;
+    const slider = document.getElementById('trig-angle-slider');
+    if (slider) slider.value = state.trigAngleDeg;
+
+    const rad = state.trigAngleDeg * (Math.PI / 180);
+    const sinVal = Math.sin(rad);
+    const cosVal = Math.cos(rad);
+    const tanVal = Math.abs(cosVal) > 0.0001 ? sinVal / cosVal : (sinVal > 0 ? Infinity : -Infinity);
+
+    // Оновлення текстових міток
+    const angleLabel = document.getElementById('trig-angle-val');
+    const sinEl = document.getElementById('trig-res-sin');
+    const cosEl = document.getElementById('trig-res-cos');
+    const tanEl = document.getElementById('trig-res-tan');
+    const quadEl = document.getElementById('trig-res-quad');
+
+    const piFraction = (state.trigAngleDeg / 180).toFixed(2);
+    if (angleLabel) angleLabel.innerText = `${state.trigAngleDeg}° (${piFraction}π rad)`;
+    if (sinEl) sinEl.innerText = sinVal.toFixed(4);
+    if (cosEl) cosEl.innerText = cosVal.toFixed(4);
+    if (tanEl) tanEl.innerText = isFinite(tanVal) ? tanVal.toFixed(4) : '±∞ (розрив)';
+
+    let quadText = 'I Чверть (+, +)';
+    if (state.trigAngleDeg > 90 && state.trigAngleDeg <= 180) quadText = 'II Чверть (−, +)';
+    else if (state.trigAngleDeg > 180 && state.trigAngleDeg <= 270) quadText = 'III Чверть (−, −)';
+    else if (state.trigAngleDeg > 270 && state.trigAngleDeg <= 360) quadText = 'IV Чверть (+, −)';
+    if (quadEl) quadEl.innerText = quadText;
+
+    drawTrigUnitCircleCanvas(state.trigAngleDeg, sinVal, cosVal);
+}
+
+function setTrigAngle(deg) {
+    audio.playAction();
+    updateTrigCircle(deg);
+}
+
+function drawTrigUnitCircleCanvas(deg, sinVal, cosVal) {
+    const canvas = document.getElementById('trig-unit-circle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const r = 95; // Радіус кола
+
+    ctx.clearRect(0, 0, w, h);
+
+    // 1. Сітка та осі
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+    ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+    ctx.stroke();
+
+    // 2. Одиничне коло
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3. Точка на колі
+    const px = cx + cosVal * r;
+    const py = cy - sinVal * r; // Інверсія Y у Canvas
+
+    // 4. Проекція Косинуса (на осі X)
+    ctx.strokeStyle = '#f59e0b'; // Gold
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, cy);
+    ctx.stroke();
+
+    // 5. Проекція Синуса (вертикаль)
+    ctx.strokeStyle = '#c026d3'; // Magenta
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px, cy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+
+    // 6. Радіус-вектор гіпотенузи
+    ctx.strokeStyle = '#38bdf8'; // Cyan
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+
+    // 7. Сектор кута
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, 26, 0, -deg * (Math.PI / 180), true);
+    ctx.closePath();
+    ctx.fill();
+
+    // 8. Маркер точки на колі
+    ctx.fillStyle = '#ff0055';
+    ctx.beginPath();
+    ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Підписи осей
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText('1', cx + r + 2, cy - 4);
+    ctx.fillText('-1', cx - r - 12, cy - 4);
+    ctx.fillText('1 (sin)', cx + 4, cy - r - 4);
+    ctx.fillText('(cos)', w - 28, cy - 4);
+}
+
+function insertTrigSinToCalc() {
+    audio.playAction();
+    const rad = state.trigAngleDeg * (Math.PI / 180);
+    const val = formatResult(Math.sin(rad));
+    state.currentInput = val;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('trig-circle-modal');
+    showToast(`sin(${state.trigAngleDeg}°) = ${val} вставлено`, '⭕');
+}
+
+function insertTrigCosToCalc() {
+    audio.playAction();
+    const rad = state.trigAngleDeg * (Math.PI / 180);
+    const val = formatResult(Math.cos(rad));
+    state.currentInput = val;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('trig-circle-modal');
+    showToast(`cos(${state.trigAngleDeg}°) = ${val} вставлено`, '⭕');
+}
+
+// ==========================================================================
+// 2. НОВЕ v1.8.4: Розширена База Наукових Констант (40+)
+// ==========================================================================
+function renderExtendedConstants(filterText = '', category = state.activeConstantsCat) {
+    const list = document.getElementById('constants-extended-list');
+    if (!list) return;
+
+    const q = filterText.trim().toLowerCase();
+    const items = EXTENDED_CONSTANTS.filter(c => {
+        const matchesCat = category === 'all' || c.cat === category;
+        const matchesQ = !q || c.name.toLowerCase().includes(q) || c.sym.toLowerCase().includes(q) || c.val.includes(q);
+        return matchesCat && matchesQ;
+    });
+
+    if (items.length === 0) {
+        list.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:20px;">Констант не знайдено за вашим запитом.</div>';
+        return;
+    }
+
+    list.innerHTML = '';
+    items.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'const-ext-card';
+        card.innerHTML = `
+            <div class="const-ext-sym">${c.sym}</div>
+            <div class="const-ext-info">
+                <strong>${c.name}</strong>
+                <span>${c.val} ${c.unit !== '—' ? c.unit : ''}</span>
+            </div>
+            <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" title="Вставити в калькулятор">📥</button>
+        `;
+        card.onclick = () => {
+            insertExtConstant(c.val, c.sym);
+        };
+        list.appendChild(card);
+    });
+}
+
+function filterExtendedConstants(val) {
+    renderExtendedConstants(val, state.activeConstantsCat);
+}
+
+function switchConstantsCategory(cat) {
+    state.activeConstantsCat = cat;
+    document.querySelectorAll('.constants-tabs-row .conv-tab').forEach(t => {
+        t.classList.toggle('active', t.getAttribute('data-ccat') === cat);
+    });
+    const inp = document.getElementById('const-search-inp');
+    renderExtendedConstants(inp ? inp.value : '', cat);
+}
+
+function insertExtConstant(val, sym) {
+    audio.playAction();
+    state.currentInput = val;
+    state.shouldResetDisplay = true;
+    updateDisplay();
+    closeModal('constants-search-modal');
+    showToast(`Константу ${sym} (${val}) вставлено`, '⚛️');
+}
 
 // ==========================================================================
 // Форматування чисел з розділювачами розрядів
@@ -663,7 +939,7 @@ function updateDisplay() {
         } else if (len > 11) {
             dom.display.style.fontSize = '1.75rem';
         } else {
-            dom.display.style.fontSize = '2.2rem';
+            dom.display.style.fontSize = '2.1rem';
         }
         dom.display.innerText = formatted;
     }
@@ -1263,7 +1539,7 @@ function clearAllMemorySlots() {
 }
 
 // ==========================================================================
-// 1. НОВЕ v1.8.3: Фізико-Математичний Формулатор (Formula Solver)
+// Фізико-Математичний Формулатор
 // ==========================================================================
 function solvePhysicsFormula(type) {
     if (type === 'ek') {
@@ -1296,7 +1572,7 @@ function solvePhysicsFormula(type) {
         const m1 = parseFloat(document.getElementById('f-grav-m1').value) || 0;
         const m2 = parseFloat(document.getElementById('f-grav-m2').value) || 0;
         const G = 6.6743e-11;
-        const r = 6371000; // радіус Землі за замовчуванням
+        const r = 6371000;
         const f = (G * m1 * m2) / (r * r);
         const el = document.getElementById('f-grav-res');
         if (el) el.innerText = `${formatResult(f)} Н`;
@@ -1327,7 +1603,7 @@ function insertFormulaValToCalc(resId) {
 }
 
 // ==========================================================================
-// 2. НОВЕ v1.8.3: Геометричний Розв'язувач Трикутників (Triangle Solver)
+// Геометричний Розв'язувач Трикутників
 // ==========================================================================
 function switchTriangleMode(mode) {
     state.activeTriangleMode = mode;
@@ -1389,7 +1665,6 @@ function solveTriangleGeometry() {
             if (perimEl) perimEl.innerText = '—';
             return;
         }
-        // Теорема косинусів
         const cosA = (b * b + c * c - a * a) / (2 * b * c);
         const cosB = (a * a + c * c - b * b) / (2 * a * c);
         const cosC = (a * a + b * b - c * c) / (2 * a * b);
@@ -1435,7 +1710,6 @@ function solveTriangleGeometry() {
     if (anglesEl) anglesEl.innerText = `${alpha.toFixed(1)}° / ${beta.toFixed(1)}° / ${gamma.toFixed(1)}°`;
     if (radiiEl) radiiEl.innerText = `r = ${rIn.toFixed(2)} | R = ${rOut.toFixed(2)}`;
 
-    // Класифікація
     let typeStr = '';
     if (Math.abs(a - b) < 0.01 && Math.abs(b - c) < 0.01) typeStr = 'Рівносторонній';
     else if (Math.abs(a - b) < 0.01 || Math.abs(b - c) < 0.01 || Math.abs(a - c) < 0.01) typeStr = 'Рівнобедрений';
@@ -1468,7 +1742,7 @@ function insertTrianglePerimToCalc() {
 }
 
 // ==========================================================================
-// 3. НОВЕ v1.8.3: Іпотечний та Кредитний Калькулятор (Loan Amortization)
+// Іпотечний та Кредитний Калькулятор
 // ==========================================================================
 function calculateLoanAmortization() {
     const P = parseFloat(document.getElementById('loan-amount').value) || 0;
@@ -1484,7 +1758,7 @@ function calculateLoanAmortization() {
 
     if (P <= 0 || n <= 0) return;
 
-    const r = annualRate / 100 / 12; // місячна ставка
+    const r = annualRate / 100 / 12;
     let monthlyPay = 0;
     let totalPaid = 0;
     let totalInterest = 0;
@@ -1501,7 +1775,7 @@ function calculateLoanAmortization() {
         totalInterest = totalPaid - P;
 
         let balance = P;
-        const previewLimit = Math.min(n, 24); // показуємо до 24 рядків
+        const previewLimit = Math.min(n, 24);
         for (let m = 1; m <= previewLimit; m++) {
             const interest = balance * r;
             const principal = monthlyPay - interest;
@@ -1520,7 +1794,6 @@ function calculateLoanAmortization() {
             }
         }
     } else {
-        // Диференційований
         const principalFixed = P / n;
         let balance = P;
         let firstMonthPay = 0;
@@ -1545,7 +1818,7 @@ function calculateLoanAmortization() {
             }
         }
         totalInterest = totalPaid - P;
-        monthlyPay = firstMonthPay; // стартовий платіж
+        monthlyPay = firstMonthPay;
     }
 
     state.loanResults.monthly = monthlyPay.toFixed(2);
@@ -1576,7 +1849,7 @@ function insertLoanTotalToCalc() {
 }
 
 // ==========================================================================
-// 4. НОВЕ v1.8.3: Блокнот Обраних Виразів (Bookmarks & Memory Pad)
+// Блокнот Обраних Виразів (Bookmarks)
 // ==========================================================================
 function renderBookmarks() {
     const container = document.getElementById('bookmarks-list-box');
@@ -1652,7 +1925,7 @@ function clearAllBookmarks() {
 }
 
 // ==========================================================================
-// 5. НОВЕ v1.8.3: 3-Канальний Живий HSL Мікшер та Гармонії
+// 3-Канальний Живий HSL Мікшер
 // ==========================================================================
 let mixerHue = 340;
 let mixerSat = 80;
@@ -1818,7 +2091,7 @@ function printTapeRoll() {
 
 function copyTapeAsText() {
     audio.playAction();
-    let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.3 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
+    let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.4 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
     let sum = 0;
     state.tapeEntries.forEach((it, i) => {
         text += `${i+1}. ${it.equation} = ${it.result} ${it.note ? '(' + it.note + ')' : ''}\n`;
@@ -3461,7 +3734,7 @@ function exportHistoryFormat(format) {
         mimeType = 'application/json;charset=utf-8';
         fileExt = 'json';
         content = JSON.stringify({
-            application: "Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged",
+            application: "Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged",
             exportedAt: new Date().toISOString(),
             author: "MaxNT Official, 2026",
             totalRecords: state.history.length,
@@ -3469,7 +3742,7 @@ function exportHistoryFormat(format) {
         }, null, 2);
     } else {
         content = `====================================================\n`;
-        content += `  КАЛЬКУЛЯТОР PRO v1.8.3 (Build 184) Redstone 3.3 Bordeaux - ІСТОРІЯ\n`;
+        content += `  КАЛЬКУЛЯТОР PRO v1.8.4 (Build 188) Redstone 3.4 Bordeaux - ІСТОРІЯ\n`;
         content += `  Дата експорту: ${new Date().toLocaleString('uk-UA')}\n`;
         content += `  Автор: MaxNT Official, 2026\n`;
         content += `====================================================\n\n`;
@@ -3484,7 +3757,7 @@ function exportHistoryFormat(format) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Calculator_History_v1.8.3_${dateStr}.${fileExt}`;
+    a.download = `Calculator_History_v1.8.4_${dateStr}.${fileExt}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3526,6 +3799,12 @@ function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
+        if (modalId === 'trig-circle-modal') {
+            setTimeout(() => updateTrigCircle(state.trigAngleDeg), 50);
+        }
+        if (modalId === 'constants-search-modal') {
+            renderExtendedConstants();
+        }
         if (modalId === 'formula-solver-modal') {
             solvePhysicsFormula('ek');
             solvePhysicsFormula('ohm');
@@ -3655,6 +3934,12 @@ document.addEventListener('keydown', (event) => {
             return;
         }
         clearDisplay();
+        return;
+    }
+
+    if (event.key === 'F11') {
+        event.preventDefault();
+        toggleFullScreen();
         return;
     }
 
@@ -3815,7 +4100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticlesCanvas();
     }
 
-    console.log('%c 🍷 Calculator Pro v1.8.3 (Build 184) Redstone 3.3 Bordeaux Supercharged Loaded %c', 
+    console.log('%c 🍷 Calculator Pro v1.8.4 (Build 188) Redstone 3.4 Bordeaux Supercharged Loaded %c', 
         'background: linear-gradient(90deg, #c026d3, #8b1538, #f59e0b); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
         '');
 });

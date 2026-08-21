@@ -701,11 +701,12 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     transition: background-color 0.35s ease, color 0.35s ease;
-    padding: 12px;
+    padding: 12px 10px 24px;
 }
 
 /* Фоновий шар шпалер та частинок */
@@ -768,7 +769,8 @@ body {
     align-items: center;
     width: 100%;
     max-width: 980px;
-    gap: 12px;
+    margin: 0 auto;
+    gap: 10px;
 }
 
 .app-container {
@@ -778,43 +780,45 @@ body {
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
-    border-radius: 24px;
+    border-radius: 22px;
     box-shadow: 0 20px 60px var(--shadow-color);
     overflow: hidden;
     width: 100%;
-    min-height: 580px;
+    position: relative;
 }
 
 /* --------------------------------------------------------------------------
    4. Бічне Меню (Sidebar) & Чітка Іконка Калькулятора
    -------------------------------------------------------------------------- */
 .sidebar {
-    width: 255px;
+    width: 250px;
     background: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
-    padding: 18px 14px;
+    padding: 14px 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     flex-shrink: 0;
+    max-height: 680px;
 }
 
 .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 12px;
+    gap: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 /* Компактна та правильно орієнтована іконка калькулятора (icon_calc.png) */
 .app-icon-badge {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-    min-height: 42px;
-    max-width: 42px;
-    max-height: 42px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -825,7 +829,7 @@ body {
     box-shadow: 0 4px 14px var(--shadow-color);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
-    padding: 3px;
+    padding: 2px;
 }
 
 .app-icon-badge:hover {
@@ -846,20 +850,20 @@ body {
 }
 
 .sidebar-title-group h2 {
-    font-size: 1.15rem;
+    font-size: 1.08rem;
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.5px;
-    line-height: 1.2;
+    line-height: 1.15;
 }
 
 .version-tag {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
     color: var(--accent-operator);
     background: var(--badge-bg);
-    padding: 2px 7px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
     border: 1px solid var(--badge-border);
     display: inline-block;
     margin-top: 2px;
@@ -868,10 +872,9 @@ body {
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: 450px;
     padding-right: 4px;
 }
 
@@ -887,16 +890,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 10px;
-    padding: 9px 12px;
+    gap: 8px;
+    padding: 8px 10px;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 12px;
+    border-radius: 10px;
     color: var(--text-primary);
-    font-size: 0.88rem;
+    font-size: 0.84rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     text-align: left;
     width: 100%;
 }
@@ -908,36 +911,37 @@ body {
 }
 
 .btn-icon {
-    font-size: 1.1rem;
-    width: 22px;
+    font-size: 1.05rem;
+    width: 20px;
     text-align: center;
 }
 
 .nav-chip {
     margin-left: auto;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     background: var(--badge-bg);
     border: 1px solid var(--badge-border);
-    padding: 2px 6px;
-    border-radius: 8px;
+    padding: 1px 5px;
+    border-radius: 6px;
     color: var(--accent-operator);
     font-weight: 800;
 }
 
 .sidebar-extra {
-    padding-top: 10px;
+    padding-top: 8px;
     border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .sidebar-sound-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.8rem;
-    padding: 6px 10px;
+    font-size: 0.78rem;
+    padding: 5px 8px;
     background: var(--badge-bg);
     border: 1px solid var(--badge-border);
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     color: var(--text-primary);
     font-weight: 600;
@@ -953,10 +957,10 @@ body {
    -------------------------------------------------------------------------- */
 .calculator {
     flex-grow: 1;
-    padding: 20px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
     min-width: 320px;
 }
 
@@ -964,13 +968,13 @@ body {
 .display {
     background: var(--bg-display);
     border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 14px 18px;
+    border-radius: 16px;
+    padding: 10px 14px;
     box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 125px;
+    min-height: 112px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -985,29 +989,31 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 24px;
+    min-height: 22px;
 }
 
 .display-badges {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 2px;
 }
 
-.mode-badge, .secondary-badge, .memory-badge, .speech-badge, .advisor-badge, .settings-badge, .audio-badge, .tape-badge, .prime-badge {
-    font-size: 0.72rem;
+.mode-badge, .secondary-badge, .memory-badge, .speech-badge, .advisor-badge, .settings-badge, .audio-badge, .tape-badge, .prime-badge, .formula-badge, .triangle-badge, .loan-badge, .bookmarks-badge, .trig-circle-badge, .fullscreen-badge {
+    font-size: 0.68rem;
     font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 8px;
+    padding: 2px 7px;
+    border-radius: 6px;
     background: var(--badge-bg);
     border: 1px solid var(--badge-border);
     color: var(--accent-operator);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
+    user-select: none;
 }
 
-.mode-badge:hover, .secondary-badge:hover, .memory-badge:hover, .speech-badge:hover, .advisor-badge:hover, .settings-badge:hover, .audio-badge:hover, .tape-badge:hover, .prime-badge:hover {
+.mode-badge:hover, .secondary-badge:hover, .memory-badge:hover, .speech-badge:hover, .advisor-badge:hover, .settings-badge:hover, .audio-badge:hover, .tape-badge:hover, .prime-badge:hover, .formula-badge:hover, .triangle-badge:hover, .loan-badge:hover, .bookmarks-badge:hover, .trig-circle-badge:hover, .fullscreen-badge:hover {
     background: var(--accent-operator);
     color: var(--bg-body);
 }
@@ -1020,22 +1026,22 @@ body {
 }
 
 .history-line {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
-    min-height: 20px;
+    min-height: 18px;
     text-align: right;
     word-break: break-all;
     font-weight: 500;
 }
 
 .current-line {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
     font-weight: 800;
     text-align: right;
     color: var(--text-primary);
     word-break: break-all;
-    line-height: 1.15;
-    margin: 4px 0;
+    line-height: 1.1;
+    margin: 2px 0;
     letter-spacing: -0.5px;
     transition: font-size 0.15s ease, color 0.2s ease;
 }
@@ -1044,23 +1050,23 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     color: var(--text-muted);
 }
 
 .display-footer-meta {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .separator-indicator, .precision-indicator {
     background: var(--badge-bg);
     border: 1px solid var(--badge-border);
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .separator-indicator:hover, .precision-indicator:hover {
@@ -1078,31 +1084,34 @@ body {
 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
     flex-grow: 1;
 }
 
 .buttons button {
-    padding: 13px 6px;
-    font-size: 1.05rem;
+    padding: 9px 4px;
+    min-height: 39px;
+    font-size: 1.02rem;
     font-weight: 700;
     border: 1px solid var(--border-color);
-    border-radius: 14px;
+    border-radius: 12px;
     background: var(--bg-btn);
     color: var(--text-primary);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .buttons button:hover {
     background: var(--bg-btn-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px var(--shadow-color);
+    transform: translateY(-1.5px);
+    box-shadow: 0 5px 12px var(--shadow-color);
     border-color: var(--accent-operator);
 }
 
@@ -1114,26 +1123,26 @@ body {
 .buttons button.memory {
     background: var(--accent-memory);
     color: var(--text-primary);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     border-color: rgba(255, 255, 255, 0.12);
 }
 
 .buttons button.sci {
     background: var(--accent-sci);
     color: var(--accent-sci-text);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     border-color: rgba(255, 255, 255, 0.1);
 }
 
 .buttons button.action {
     background: var(--accent-action);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
 }
 
 .buttons button.operator {
     background: var(--accent-operator);
     color: #fff;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     border-color: var(--accent-operator);
     box-shadow: 0 4px 14px var(--shadow-color);
 }
@@ -1151,7 +1160,7 @@ body {
 .buttons button.equals {
     background: var(--accent-equals);
     color: #000;
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 900;
     border-color: var(--accent-equals);
     box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
@@ -3448,6 +3457,186 @@ body {
     border-color: var(--accent-operator);
     background: var(--accent-operator);
     color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   24. НОВЕ v1.8.4: Тригонометричне Коло (Trig Unit Circle Visualizer)
+   -------------------------------------------------------------------------- */
+.trig-circle-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.trig-canvas-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.trig-info-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trig-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.trig-metric-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trig-metric-card small {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.trig-metric-card strong {
+    font-size: 1.05rem;
+    color: var(--accent-operator);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.trig-slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.trig-slider-row label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+}
+
+.trig-exact-table-box {
+    max-height: 140px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    margin-top: 6px;
+}
+
+.trig-exact-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.74rem;
+    text-align: center;
+}
+
+.trig-exact-table th, .trig-exact-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.trig-exact-table th {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-muted);
+    position: sticky;
+    top: 0;
+}
+
+/* --------------------------------------------------------------------------
+   25. НОВЕ v1.8.4: Розширений Пошук Наукових Констант
+   -------------------------------------------------------------------------- */
+.constants-search-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.constants-filter-input {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.constants-tabs-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.constants-tabs-row .conv-tab {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    white-space: nowrap;
+}
+
+.constants-extended-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.const-ext-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.const-ext-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-operator);
+}
+
+.const-ext-sym {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-equals);
+    min-width: 32px;
+    text-align: center;
+}
+
+.const-ext-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.const-ext-info strong {
+    font-size: 0.84rem;
+    color: var(--text-primary);
+}
+
+.const-ext-info span {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* --------------------------------------------------------------------------
