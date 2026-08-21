@@ -2,9 +2,9 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition</title>
-    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro v1.8.5 build 190 Redstone 3.5: 3D Вектори, Комплексні числа ℂ, Математичний довідник, Тригонометричне коло, База констант 40+, 32 теми, 12 HD шпалер, мобільна оптимізація.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Калькулятор v1.8.6 (Build 204) Redstone 4.0 Titanium Ultra</title>
+    <meta name="description" content="Сучасний інженерний та науковий калькулятор Pro v1.8.6 build 204 Redstone 4.0 Titanium Ultra: Command Palette (Ctrl+K), 3D Вектори, Комплексні числа ℂ, Математичний довідник, 32 теми, 12 HD шпалер, мобільний Bottom Bar.">
     <!-- Favicon: icon_calc.png -->
     <link rel="icon" type="image/png" href="icon_calc.png">
     <link rel="apple-touch-icon" href="icon_calc.png">
@@ -27,24 +27,31 @@
             <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" id="btn-mobile-toggle">
                 <span>☰</span> Меню
             </button>
-            <div style="font-weight:800; font-size:0.9rem; color:var(--text-primary);">Calculator Pro <span style="font-size:0.7rem; color:var(--accent-operator);">v1.8.5</span></div>
+            <div style="font-weight:800; font-size:0.88rem; color:var(--text-primary);">Calculator Pro <span style="font-size:0.68rem; color:var(--accent-operator); background:var(--badge-bg); border:1px solid var(--badge-border); padding:1px 4px; border-radius:4px;">v1.8.6</span></div>
             <div style="display:flex; gap:4px;">
-                <button class="mobile-menu-btn" style="padding:4px 8px;" onclick="openModal('history-modal')" title="Історія">🕒</button>
-                <button class="mobile-menu-btn" style="padding:4px 8px;" onclick="openModal('theme-modal')" title="Теми">🎨</button>
+                <button class="mobile-menu-btn" style="padding:4px 7px;" onclick="openCommandPalette()" title="Пошук (Ctrl+K)">🔍</button>
+                <button class="mobile-menu-btn" style="padding:4px 7px;" onclick="openModal('history-modal')" title="Історія">🕒</button>
+                <button class="mobile-menu-btn" style="padding:4px 7px;" onclick="openModal('theme-modal')" title="Теми">🎨</button>
             </div>
         </div>
 
         <div class="app-container">
+            <!-- Декоративні кути Titanium Laser Chamfer -->
+            <div class="app-corner app-corner-tl"></div>
+            <div class="app-corner app-corner-tr"></div>
+            <div class="app-corner app-corner-bl"></div>
+            <div class="app-corner app-corner-br"></div>
+
             <!-- Бічне меню керування (Sidebar) -->
             <aside class="sidebar" id="app-sidebar">
                 <div class="sidebar-header">
                     <!-- Компактна та правильно орієнтована іконка калькулятора (icon_calc.png) -->
-                    <div class="app-icon-badge" id="app-logo-badge" title="Calculator Pro v1.8.5">
+                    <div class="app-icon-badge" id="app-logo-badge" title="Calculator Pro v1.8.6">
                         <img src="icon_calc.png" alt="Калькулятор" class="app-icon-img" id="app-logo-img">
                     </div>
                     <div class="sidebar-title-group">
                         <h2>Calculator Pro</h2>
-                        <span class="version-tag">v1.8.5 b190 Titanium 3.5</span>
+                        <span class="version-tag">v1.8.6 b204 Redstone 4</span>
                     </div>
                 </div>
 
@@ -52,20 +59,25 @@
                     <button onclick="goHome()" title="Скинути стан калькулятора" id="btn-nav-home">
                         <span class="btn-icon">🏠</span> Головна
                     </button>
+                    <button onclick="openCommandPalette()" title="Швидкий пошук інструментів та команд (Ctrl+K)" id="btn-nav-command">
+                        <span class="btn-icon">⚡</span> Швидкий пошук <span class="nav-chip">Ctrl+K</span>
+                    </button>
+
+                    <div class="sidebar-cat-label">📐 Наука & Вектори</div>
                     <button onclick="openModal('vector-calc-modal')" title="3D Векторний калькулятор (Dot, Cross, Кут, Довжина)" id="btn-nav-vectors">
-                        <span class="btn-icon">📐</span> 3D Вектори <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">📐</span> 3D Вектори <span class="nav-chip">3D</span>
                     </button>
                     <button onclick="openModal('complex-calc-modal')" title="Комплексні числа (a + bi, Модуль, Аргумент, Форми)" id="btn-nav-complex">
-                        <span class="btn-icon">⚛️</span> Комплексні ℂ <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">⚛️</span> Комплексні ℂ <span class="nav-chip">ℂ</span>
                     </button>
                     <button onclick="openModal('math-ref-modal')" title="Інтерактивний математичний довідник формул" id="btn-nav-math-ref">
-                        <span class="btn-icon">📖</span> Довідник формул <span class="nav-chip">NEW</span>
+                        <span class="btn-icon">📖</span> Довідник формул
                     </button>
                     <button onclick="openModal('trig-circle-modal')" title="Інтерактивне тригонометричне одиничне коло" id="btn-nav-trig-circle">
-                        <span class="btn-icon">⭕</span> Тригонометричне коло
+                        <span class="btn-icon">⭕</span> Одиничне коло
                     </button>
                     <button onclick="openModal('constants-search-modal')" title="Розширена база 40+ фундаментальних констант" id="btn-nav-const-search">
-                        <span class="btn-icon">⚛️</span> База констант 40+
+                        <span class="btn-icon">⚛️</span> База констант <span class="nav-chip">40+</span>
                     </button>
                     <button onclick="openModal('formula-solver-modal')" title="Фізико-математичний формулатор (Ом, Енергія, Гравітація, Гази)" id="btn-nav-formulas">
                         <span class="btn-icon">⚡</span> Формули фізики
@@ -73,8 +85,54 @@
                     <button onclick="openModal('triangle-solver-modal')" title="Геометричний розв'язувач трикутників (SSS, SAS, ASA)" id="btn-nav-triangle">
                         <span class="btn-icon">📐</span> Трикутники 2D
                     </button>
+
+                    <div class="sidebar-cat-label">🧮 Алгебра & Фінанси</div>
+                    <button onclick="openModal('quadratic-modal')" title="Розв'язувач квадратних рівнянь (ax² + bx + c = 0)" id="btn-nav-quad">
+                        <span class="btn-icon">📐</span> Квадратні рівняння
+                    </button>
+                    <button onclick="openModal('matrix-modal')" title="Матричний калькулятор (2x2 та 3x3, Det, Транспонування)" id="btn-nav-matrix">
+                        <span class="btn-icon">🧮</span> Матриці 2x2/3x3
+                    </button>
+                    <button onclick="openModal('prime-gcd-modal')" title="НСД, НСК та розклад на прості множники" id="btn-nav-prime-gcd">
+                        <span class="btn-icon">🔢</span> НСД / НСК / Множники
+                    </button>
+                    <button onclick="openModal('func-eval-modal')" title="Обчислювач виразів та функцій f(x) з таблицею" id="btn-nav-func-eval">
+                        <span class="btn-icon">📈</span> Функція f(x)
+                    </button>
+                    <button onclick="openModal('graph-modal')" title="Інтерактивний 2D Графік функцій" id="btn-nav-graph">
+                        <span class="btn-icon">📈</span> Графік 2D
+                    </button>
+                    <button onclick="openModal('stats-modal')" title="Статистичний аналіз даних (Середнє, Медіана, Дисперсія)" id="btn-nav-stats">
+                        <span class="btn-icon">📊</span> Статистика
+                    </button>
+                    <button onclick="openModal('percent-modal')" title="Розширений калькулятор відсотків та маржі" id="btn-nav-percent">
+                        <span class="btn-icon">📊</span> Відсотки Pro
+                    </button>
                     <button onclick="openModal('loan-calc-modal')" title="Іпотечний та кредитний калькулятор з графіком виплат" id="btn-nav-loan">
                         <span class="btn-icon">🏦</span> Кредит & Іпотека
+                    </button>
+                    <button onclick="openModal('currency-modal')" title="Конвертер валют та криптовалют (UAH, USD, EUR, BTC)" id="btn-nav-currency">
+                        <span class="btn-icon">💱</span> Валюти & Крипта
+                    </button>
+                    <button onclick="openModal('deal-calc-modal')" title="Порівняння вигідності цін за одиницю ваги чи об'єму" id="btn-nav-deal">
+                        <span class="btn-icon">⚖️</span> Порівняння цін
+                    </button>
+                    <button onclick="openModal('finance-modal')" title="Фінансовий калькулятор: знижки, чайові, податки" id="btn-nav-finance">
+                        <span class="btn-icon">💰</span> Фінанси & Знижки
+                    </button>
+
+                    <div class="sidebar-cat-label">🛠️ Інженерія & Пам'ять</div>
+                    <button onclick="openModal('converter-modal')" title="Конвертер величин" id="btn-nav-converter">
+                        <span class="btn-icon">🔄</span> Конвертер величин
+                    </button>
+                    <button onclick="openModal('programmer-modal')" title="Програмістські системи числення (HEX/BIN/OCT)" id="btn-nav-prog">
+                        <span class="btn-icon">💻</span> Програміст
+                    </button>
+                    <button onclick="openModal('bitmask-modal')" title="Інтерактивний бітовий інспектор 8/16/32/64-bit" id="btn-nav-bitmask">
+                        <span class="btn-icon">👾</span> Бітовий інспектор
+                    </button>
+                    <button onclick="openModal('memory-modal')" title="Матриця пам'яті (слоти M1, M2, M3, M4)" id="btn-nav-memory">
+                        <span class="btn-icon">🗄️</span> Пам'ять M1–M4
                     </button>
                     <button onclick="openModal('bookmarks-modal')" title="Блокнот обраних формул, виразів та констант" id="btn-nav-bookmarks">
                         <span class="btn-icon">🔖</span> Блокнот виразів
@@ -82,77 +140,39 @@
                     <button onclick="openModal('tape-modal')" title="Розрахункова стрічка з нотатками та чеком" id="btn-nav-tape">
                         <span class="btn-icon">📜</span> Стрічка нотаток
                     </button>
-                    <button onclick="openModal('prime-gcd-modal')" title="НСД, НСК та розклад на прості множники" id="btn-nav-prime-gcd">
-                        <span class="btn-icon">🔢</span> НСД / НСК / Множники
+                    <button onclick="openModal('date-modal')" title="Калькулятор дат та різниці часу" id="btn-nav-date">
+                        <span class="btn-icon">📅</span> Дата та час
                     </button>
-                    <button onclick="openModal('deal-calc-modal')" title="Порівняння вигідності цін за одиницю ваги чи об'єму" id="btn-nav-deal">
-                        <span class="btn-icon">⚖️</span> Порівняння цін
+                    <button onclick="openModal('rng-modal')" title="Генератор випадкових чисел та кубики" id="btn-nav-rng">
+                        <span class="btn-icon">🎲</span> RNG & Кубики
                     </button>
-                    <button onclick="openModal('func-eval-modal')" title="Обчислювач виразів та функцій f(x) з таблицею" id="btn-nav-func-eval">
-                        <span class="btn-icon">📈</span> Функція f(x)
+
+                    <div class="sidebar-cat-label">🎨 Стилі & Персоналізація</div>
+                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (32 теми + Палітра)" id="btn-nav-themes">
+                        <span class="btn-icon">🎨</span> Теми & Стилі <span class="nav-chip">32</span>
                     </button>
-                    <button onclick="openModal('matrix-modal')" title="Матричний калькулятор (2x2 та 3x3, Det, Транспонування)" id="btn-nav-matrix">
-                        <span class="btn-icon">🧮</span> Матриці 2x2/3x3
+                    <button onclick="openModal('wallpaper-modal')" title="Шпалери та фон інтерфейсу (12 HD фонів)" id="btn-nav-wallpapers">
+                        <span class="btn-icon">🖼️</span> Шпалери & Фон <span class="nav-chip">12</span>
                     </button>
-                    <button onclick="openModal('bitmask-modal')" title="Інтерактивний бітовий інспектор 8/16/32/64-bit" id="btn-nav-bitmask">
-                        <span class="btn-icon">👾</span> Бітовий інспектор
+                    <button onclick="openModal('color-studio-modal')" title="Кастомізатор кольорів інтерфейсу в реальному часі" id="btn-nav-colors">
+                        <span class="btn-icon">🌈</span> Кастомізатор
                     </button>
-                    <button onclick="openModal('percent-modal')" title="Розширений калькулятор відсотків та маржі" id="btn-nav-percent">
-                        <span class="btn-icon">📊</span> Відсотки Pro
+                    <button onclick="openModal('font-modal')" title="Змінити шрифт та масштаб інтерфейсу" id="btn-nav-fonts">
+                        <span class="btn-icon">🔤</span> Шрифти & Масштаб <span class="nav-chip" id="current-font-chip">Inter</span>
                     </button>
-                    <button onclick="openModal('currency-modal')" title="Конвертер валют та криптовалют (UAH, USD, EUR, BTC)" id="btn-nav-currency">
-                        <span class="btn-icon">💱</span> Валюти & Крипта
-                    </button>
+
+                    <div class="sidebar-cat-label">ℹ️ Система & Довідка</div>
                     <button onclick="openModal('settings-modal')" title="Центр налаштувань калькулятора" id="btn-nav-settings">
                         <span class="btn-icon">⚙️</span> Налаштування
                     </button>
                     <button onclick="openModal('history-modal')" title="Переглянути історію" id="btn-nav-history">
                         <span class="btn-icon">🕒</span> Історія
                     </button>
-                    <button onclick="openModal('theme-modal')" title="Змінити тему оформлення (32 теми + Палітра)" id="btn-nav-themes">
-                        <span class="btn-icon">🎨</span> Теми & Стилі <span class="nav-chip">32</span>
-                    </button>
-                    <button onclick="openModal('color-studio-modal')" title="Кастомізатор кольорів інтерфейсу в реальному часі" id="btn-nav-colors">
-                        <span class="btn-icon">🌈</span> Кастомізатор кольорів
-                    </button>
-                    <button onclick="openModal('font-modal')" title="Змінити шрифт інтерфейсу та дисплею" id="btn-nav-fonts">
-                        <span class="btn-icon">🔤</span> Шрифти <span class="nav-chip" id="current-font-chip">Inter</span>
-                    </button>
                     <button onclick="openModal('advisor-modal')" title="Математичний порадник щодо заборонених операцій" id="btn-nav-advisor">
                         <span class="btn-icon">🧠</span> Порадник помилок
                     </button>
-                    <button onclick="openModal('quadratic-modal')" title="Розв'язувач квадратних рівнянь (ax² + bx + c = 0)" id="btn-nav-quad">
-                        <span class="btn-icon">📐</span> Квадратні рівняння
-                    </button>
-                    <button onclick="openModal('stats-modal')" title="Статистичний аналіз даних (Середнє, Медіана, Дисперсія)" id="btn-nav-stats">
-                        <span class="btn-icon">📊</span> Статистика
-                    </button>
-                    <button onclick="openModal('date-modal')" title="Калькулятор дат та різниці часу" id="btn-nav-date">
-                        <span class="btn-icon">📅</span> Дата та час
-                    </button>
-                    <button onclick="openModal('memory-modal')" title="Матриця пам'яті (слоти M1, M2, M3, M4)" id="btn-nav-memory">
-                        <span class="btn-icon">🗄️</span> Пам'ять M1–M4
-                    </button>
-                    <button onclick="openModal('graph-modal')" title="Інтерактивний 2D Графік функцій" id="btn-nav-graph">
-                        <span class="btn-icon">📈</span> Графік 2D
-                    </button>
-                    <button onclick="openModal('wallpaper-modal')" title="Шпалери та фон інтерфейсу (12 HD фонів)" id="btn-nav-wallpapers">
-                        <span class="btn-icon">🖼️</span> Шпалери & Фон <span class="nav-chip">12</span>
-                    </button>
-                    <button onclick="openModal('converter-modal')" title="Конвертер величин" id="btn-nav-converter">
-                        <span class="btn-icon">🔄</span> Конвертер
-                    </button>
-                    <button onclick="openModal('programmer-modal')" title="Програмістські системи числення (HEX/BIN/OCT)" id="btn-nav-prog">
-                        <span class="btn-icon">💻</span> Програміст
-                    </button>
-                    <button onclick="openModal('finance-modal')" title="Фінансовий калькулятор: знижки, чайові, податки" id="btn-nav-finance">
-                        <span class="btn-icon">💰</span> Фінанси & Знижки
-                    </button>
-                    <button onclick="openModal('rng-modal')" title="Генератор випадкових чисел та кубики" id="btn-nav-rng">
-                        <span class="btn-icon">🎲</span> RNG & Кубики
-                    </button>
-                    <button onclick="openModal('hotkeys-modal')" title="Переглянути гарячі клавіші" id="btn-nav-hotkeys">
-                        <span class="btn-icon">⌨️</span> Клавіші
+                    <button onclick="openModal('shortcuts-modal')" title="Гарячі клавіші (F1 або ?)" id="btn-nav-shortcuts">
+                        <span class="btn-icon">⌨️</span> Гарячі клавіші <span class="nav-chip">F1</span>
                     </button>
                     <button onclick="openModal('about-modal')" title="Про розробника та застосунок" id="btn-nav-about">
                         <span class="btn-icon">ℹ️</span> Про застосунок
@@ -176,6 +196,9 @@
                 <div class="display" onclick="copyToClipboard()" title="Натисніть, щоб скопіювати результат у буфер">
                     <div class="display-header">
                         <div class="display-badges">
+                            <span class="display-led-status" title="Калькулятор активний"></span>
+                            <span class="command-badge" id="command-badge" onclick="event.stopPropagation(); openCommandPalette();" title="Швидкий пошук інструментів (Ctrl+K)">⚡ Пошук</span>
+                            <span class="shortcuts-badge" id="shortcuts-badge" onclick="event.stopPropagation(); openModal('shortcuts-modal');" title="Гарячі клавіші (F1 або ?)">⌨️ F1</span>
                             <span class="mode-badge" id="mode-badge" onclick="event.stopPropagation(); toggleAngleMode();" title="Натисніть для зміни DEG / RAD / GRAD">DEG</span>
                             <span class="secondary-badge" id="secondary-badge" onclick="event.stopPropagation(); toggleSecondMode();" title="Режим додаткових функцій (2nd / Shift)">2nd</span>
                             <span class="memory-badge" id="memory-badge" onclick="event.stopPropagation(); openModal('memory-modal');" title="Матриця пам'яті M1-M4">M</span>
@@ -2440,14 +2463,17 @@
     <!-- 36. Гарячі клавіші -->
     <div class="modal-overlay" id="hotkeys-modal">
         <div class="modal-content">
+            <span class="sheet-drag-handle"></span>
             <h3>⌨️ Гарячі клавіші</h3>
             <table class="hotkeys-table">
                 <tr><td>0 - 9</td><td>Введення цифр</td></tr>
                 <tr><td>. або ,</td><td>Десяткова крапка</td></tr>
                 <tr><td>+  -  *  /</td><td>Базові операції (+, −, ×, ÷)</td></tr>
                 <tr><td>Enter або =</td><td>Обчислити результат</td></tr>
-                <tr><td>Backspace</td><td>Стерти останній символ</td></tr>
+                <tr><td>Backspace</td><td>Стерти останній символ або функцію</td></tr>
                 <tr><td>Escape</td><td>Повне очищення (C)</td></tr>
+                <tr><td>Ctrl + K</td><td>Швидкий пошук (Command Palette)</td></tr>
+                <tr><td>F1 або ?</td><td>Довідник гарячих клавіш</td></tr>
                 <tr><td>(  і  )</td><td>Дужки виразу</td></tr>
                 <tr><td>%</td><td>Розрахунок відсотка</td></tr>
                 <tr><td>^</td><td>Піднесення до степеня (xⁿ)</td></tr>
@@ -2463,52 +2489,154 @@
         </div>
     </div>
 
-    <!-- 37. Головна -->
+    <!-- 37. Command Palette (Ctrl+K) -->
+    <div class="modal-overlay" id="command-palette-modal">
+        <div class="modal-content command-palette-content">
+            <div class="command-search-header">
+                <span class="command-search-icon">⚡</span>
+                <input type="text" id="command-search-input" class="command-search-inp" placeholder="Пошук інструментів, функцій, тем чи команд... (наприклад: вектор, тема, граф)" oninput="filterCommandPalette(this.value)" autocomplete="off">
+                <span class="command-kbd-badge">ESC</span>
+            </div>
+            <div class="command-results-list" id="command-results-list">
+                <!-- Генерується динамічно через app.js -->
+            </div>
+            <div class="command-footer">
+                <span>Використовуйте <kbd class="command-kbd-badge">↑</kbd> <kbd class="command-kbd-badge">↓</kbd> для вибору, <kbd class="command-kbd-badge">Enter</kbd> для переходу</span>
+                <span>MaxNT Pro v1.8.6</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 38. Довідник Гарячих Клавіш (F1 / ?) -->
+    <div class="modal-overlay" id="shortcuts-modal">
+        <div class="modal-content">
+            <span class="sheet-drag-handle"></span>
+            <h3>⌨️ Гарячі клавіші (v1.8.6 Ultra)</h3>
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">⚡ Швидкий пошук (Command Palette)</span>
+                    <span class="shortcut-key-badge">Ctrl + K</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">📖 Довідник гарячих клавіш</span>
+                    <span class="shortcut-key-badge">F1 / ?</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">⛶ Повноекранний режим Focus</span>
+                    <span class="shortcut-key-badge">F11</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">⌫ Стерти останній символ / функцію</span>
+                    <span class="shortcut-key-badge">Backspace</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">🗑️ Повне очищення дисплея</span>
+                    <span class="shortcut-key-badge">Escape</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">🟰 Обчислити результат</span>
+                    <span class="shortcut-key-badge">Enter / =</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">📋 Скопіювати результат</span>
+                    <span class="shortcut-key-badge">Ctrl + C</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">📥 Вставити число з буфера</span>
+                    <span class="shortcut-key-badge">Ctrl + V</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">🔄 Перемкнути 2nd (Shift)</span>
+                    <span class="shortcut-key-badge">S</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">📐 Перемкнути DEG / RAD / GRAD</span>
+                    <span class="shortcut-key-badge">D</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">🗣️ Озвучити результат голосом</span>
+                    <span class="shortcut-key-badge">V</span>
+                </div>
+                <div class="shortcut-card">
+                    <span class="shortcut-card-title">🕒 Відкрити історію</span>
+                    <span class="shortcut-key-badge">H</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeModal('shortcuts-modal')">Зрозуміло</button>
+        </div>
+    </div>
+
+    <!-- 39. Головна -->
     <div class="modal-overlay" id="home-modal">
         <div class="modal-content" style="text-align: center;">
+            <span class="sheet-drag-handle"></span>
             <h3>👋 Ласкаво просимо!</h3>
             <p>Калькулятор скинуто до початкового стану <strong>Головної сторінки</strong>.</p>
-            <p><strong>Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition</strong> готовий до нових розрахунків!</p>
+            <p><strong>Calculator Pro v1.8.6 (Build 204) Redstone 4.0 Titanium Ultra Edition</strong> готовий до нових розрахунків!</p>
             <button class="close-btn" onclick="closeModal('home-modal')" style="background-color: var(--accent-operator); color: var(--bg-card);">Почати роботу</button>
         </div>
     </div>
 
-    <!-- 38. Про застосунок v1.8.5 Redstone 3.5 -->
+    <!-- 40. Про застосунок v1.8.6 Redstone 4.0 -->
     <div class="modal-overlay" id="about-modal">
         <div class="modal-content">
+            <span class="sheet-drag-handle"></span>
             <h3>ℹ️ Про застосунок</h3>
-            <p><strong>Calculator Pro™ Redstone 3.5 Bordeaux Titanium Edition</strong> — флагманський багатофункціональний інженерний та науковий калькулятор.</p>
-            <p>Версія релізу: <strong>v1.8.5 (Build 190) Titanium 3.5</strong></p>
+            <p><strong>Calculator Pro™ Redstone 4.0 Bordeaux Titanium Ultra Edition</strong> — флагманський багатофункціональний інженерний та науковий калькулятор нового покоління.</p>
+            <p>Версія релізу: <strong>v1.8.6 (Build 204) Titanium Ultra 4.0</strong></p>
             <p>Розробник & Автор: <strong>MaxNT Official, 2026(с)</strong></p>
-            <p><strong>Головні можливості версії 1.8.5 Titanium 3.5:</strong></p>
+            <p><strong>Головні оновлення версії 1.8.6 Titanium Ultra:</strong></p>
             <ul style="padding-left: 20px; font-size: 0.9rem; margin-bottom: 12px; line-height:1.5;">
-                <li>📐 <strong>3D Векторний Калькулятор:</strong> скалярний і векторний добутки $\vec{u} \cdot \vec{v}, \vec{u} \times \vec{v}$, модулі $|\vec{u}|, |\vec{v}|$, кут між векторами та відстань $d$.</li>
-                <li>⚛️ <strong>Комплексні Числа $\mathbb{C}$:</strong> $z_1 + z_2, z_1 \times z_2$, модуль $\sqrt{a^2 + b^2}$, аргумент $\arg(z)$, тригонометрична форма.</li>
-                <li>📖 <strong>Інтерактивний Математичний Довідник:</strong> повна база формул з тригонометрії, алгебри, похідних та геометрії.</li>
-                <li>📱 <strong>Покращена Мобільна Версія:</strong> швидке висувне мобільне меню <code>☰ Меню</code>, оптимізовані сенсорні кнопки, адаптивний інтерфейс для смартфонів.</li>
-                <li>🖼️ <strong>3 Нові HD Шпалери:</strong> Titanium Ruby, Crimson Supernova, Cyberpunk Bordeaux (12 шпалер разом).</li>
-                <li>🎨 <strong>4 Нові Флагманські Теми:</strong> Titanium Ruby Master, Crimson Supernova, Cyberpunk Neon, Emerald Platinum (32 теми в каталозі).</li>
-                <li>⭕ <strong>Тригонометричне Одиничне Коло:</strong> жива візуалізація $(\cos \theta, \sin \theta)$, $\tan \theta$, радіанів та чвертей.</li>
-                <li>⚛️ <strong>Розширена База Констант (40+):</strong> швидкий пошук та вставка фундаментальних величин.</li>
+                <li>⚡ <strong>Command Palette (Ctrl+K / ⌘K):</strong> швидкий пошук та миттєвий запуск будь-якого з 30+ інструментів, 32 тем, 12 шпалер та налаштувань за лічені мілісекунди.</li>
+                <li>⌨️ <strong>Інтерактивний Довідник Клавіш (F1 / ?):</strong> візуальна матриця всіх клавіатурних комбінацій для максимальної продуктивності на ПК.</li>
+                <li>📱 <strong>Мобільний Bottom Navigation Bar:</strong> нижня панель швидких дій для смартфонів та плавні Bottom Sheet модальні вікна.</li>
+                <li>✨ <strong>Titanium Ultra Decor:</strong> лазерні акцентні кути, статусний пульсуючий LED-індикатор на дисплеї, глянцеві бліки на кнопках та неонові підсвітки.</li>
+                <li>🛠️ <strong>Виправлення багів:</strong> інтелектуальне стирання математичних функцій (sin, cos, ln) одним кліком Backspace, авто-балансування дужок перед обчисленням, захист від подвійної крапки.</li>
+                <li>🔠 <strong>Динамічний масштаб шрифтів (85%–150%):</strong> повний контроль розміру тексту під будь-який екран.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('about-modal')">Закрити</button>
         </div>
     </div>
 
-    <!-- 39. Довідка -->
+    <!-- 41. Довідка -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-content">
-            <h3>❓ Довідка (v1.8.5 Build 190 Titanium 3.5)</h3>
+            <span class="sheet-drag-handle"></span>
+            <h3>❓ Довідка (v1.8.6 Build 204 Titanium Ultra)</h3>
             <ul style="padding-left: 20px; font-size: 0.92rem; margin-bottom: 15px; line-height:1.6;">
+                <li><strong>Швидкий пошук:</strong> натисніть <code>Ctrl + K</code> або іконку <code>⚡ Пошук</code> на дисплеї для миттєвого відкриття будь-якого інструменту чи теми.</li>
+                <li><strong>Гарячі клавіші:</strong> натисніть <code>F1</code> або <code>?</code> для перегляду всіх шорткатів.</li>
                 <li><strong>3D Вектори:</strong> відкрийте `📐 Вектори` для обчислення скалярного, векторного добутку, довжин векторів і кута.</li>
                 <li><strong>Комплексні числа:</strong> використовуйте `ℂ Числа` для дій з комплексними виразами $a + bi$.</li>
-                <li><strong>Довідник формул:</strong> розділ `📖 Довідник` містить готові формули з математики та тригонометрії.</li>
-                <li><strong>Тригонометричне коло:</strong> натисніть `⭕ Коло` для візуального вивчення синусів, косинусів та чвертей кола.</li>
-                <li><strong>Мобільний режим:</strong> на смартфонах натисніть `☰ Меню` зверху для відкриття всіх інструментів.</li>
+                <li><strong>Мобільний режим:</strong> внизу смартфона доступний зручний Bottom Bar для швидкого доступу до меню, пошуку, історії та тем.</li>
             </ul>
             <button class="close-btn" onclick="closeModal('help-modal')">Зрозуміло</button>
         </div>
     </div>
+
+    <!-- Мобільна нижня панель швидких дій (Mobile Bottom Bar) -->
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+        <button class="mobile-bottom-btn active" onclick="goHome()" title="Головна">
+            <span class="bottom-icon">🧮</span>
+            <span>Головна</span>
+        </button>
+        <button class="mobile-bottom-btn" onclick="toggleMobileSidebar()" title="Меню інструментів">
+            <span class="bottom-icon">☰</span>
+            <span>Меню</span>
+        </button>
+        <button class="mobile-bottom-btn" onclick="openCommandPalette()" title="Швидкий пошук">
+            <span class="bottom-icon">⚡</span>
+            <span>Пошук</span>
+        </button>
+        <button class="mobile-bottom-btn" onclick="openModal('history-modal')" title="Історія розрахунків">
+            <span class="bottom-icon">🕒</span>
+            <span>Історія</span>
+        </button>
+        <button class="mobile-bottom-btn" onclick="openModal('theme-modal')" title="Теми оформлення">
+            <span class="bottom-icon">🎨</span>
+            <span>Теми</span>
+        </button>
+    </nav>
 
     <!-- Підключення скрипта -->
     <script src="app.js"></script>

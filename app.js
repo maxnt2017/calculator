@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition
+ * Calculator Pro v1.8.6 (Build 204) Redstone 4.0 Bordeaux Titanium Ultra
  * Author: MaxNT Official, 2026
  * ==========================================================================
  */
@@ -225,7 +225,7 @@ class SoundEngine {
 
     triggerHaptic(ms = 12) {
         if (navigator.vibrate) {
-            try { navigator.vibrate(ms); } catch (e) {}
+            try { navigator.vibrate(ms); } catch (e) { }
         }
     }
 
@@ -277,7 +277,7 @@ class SoundEngine {
             gain.connect(this.ctx.destination);
             osc.start(now);
             osc.stop(now + Math.max(duration, 0.06));
-        } catch (e) {}
+        } catch (e) { }
     }
 
     playAction() {
@@ -306,7 +306,7 @@ class SoundEngine {
             gain.connect(this.ctx.destination);
             osc.start(now);
             osc.stop(now + 0.12);
-        } catch (e) {}
+        } catch (e) { }
     }
 
     playError() {
@@ -331,7 +331,7 @@ class SoundEngine {
             gain.connect(this.ctx.destination);
             osc.start(now);
             osc.stop(now + 0.22);
-        } catch (e) {}
+        } catch (e) { }
     }
 }
 
@@ -1175,6 +1175,23 @@ function clearDisplay() {
 function backspace() {
     audio.playClick(500);
     if (state.shouldResetDisplay) return;
+
+    // Перевірка на багатосимвольні математичні токени
+    const mathTokens = [
+        'asin(', 'acos(', 'atan(', 'asinh(', 'acosh(', 'atanh(',
+        'sinh(', 'cosh(', 'tanh(', 'sin(', 'cos(', 'tan(',
+        'log10(', 'log2(', 'log(', 'ln(', 'sqrt(', 'cbrt(',
+        '10^(', 'e^(', 'abs('
+    ];
+    for (const token of mathTokens) {
+        if (state.currentInput.endsWith(token)) {
+            state.currentInput = state.currentInput.slice(0, -token.length);
+            if (state.currentInput === '') state.currentInput = '0';
+            updateDisplay();
+            return;
+        }
+    }
+
     if (
         state.currentInput.length === 1 ||
         (state.currentInput.length === 2 && state.currentInput.startsWith('-')) ||
@@ -2150,7 +2167,7 @@ function copyTapeAsText() {
     let text = `=== РОЗРАХУНКОВИЙ ЧЕК PRO v1.8.4 ===\nДата: ${new Date().toLocaleString('uk-UA')}\n------------------------------------\n`;
     let sum = 0;
     state.tapeEntries.forEach((it, i) => {
-        text += `${i+1}. ${it.equation} = ${it.result} ${it.note ? '(' + it.note + ')' : ''}\n`;
+        text += `${i + 1}. ${it.equation} = ${it.result} ${it.note ? '(' + it.note + ')' : ''}\n`;
         sum += parseFloat(it.result) || 0;
     });
     text += `------------------------------------\nЗАГАЛЬНИЙ ПІДСУМОК: ${sum.toFixed(2)}\n`;
@@ -2204,7 +2221,7 @@ function solvePrimeFactorization() {
     }
 
     const factorParts = [];
-    const supMap = { '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+    const supMap = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
     for (let prime in factors) {
         const pwr = factors[prime];
         if (pwr === 1) {
@@ -2509,8 +2526,8 @@ function solveMatrixMath() {
         det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
     } else {
         det = mat[0][0] * (mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) -
-              mat[0][1] * (mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) +
-              mat[0][2] * (mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]);
+            mat[0][1] * (mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) +
+            mat[0][2] * (mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]);
     }
 
     state.matrixDetVal = det.toFixed(4);
@@ -2719,6 +2736,12 @@ function copyCurrencyVal() {
 // Головний розрахунок (Calculate) + Результатне Світіння
 // ==========================================================================
 function calculate(saveToHistory = true) {
+    // Авто-балансування відкритих дужок перед обчисленням
+    if (state.bracketDepth > 0) {
+        state.currentInput += ')'.repeat(state.bracketDepth);
+        state.bracketDepth = 0;
+    }
+
     let computation;
     const prev = parseFloat(state.previousInput);
     const current = parseFloat(state.currentInput);
@@ -3195,7 +3218,7 @@ function setTheme(themeName) {
     document.body.setAttribute('data-theme', themeName);
     state.currentTheme = themeName;
     localStorage.setItem('calc_theme', themeName);
-    
+
     resetCustomColors();
 
     document.querySelectorAll('.theme-card').forEach(btn => {
@@ -3555,7 +3578,7 @@ function handleWallpaperUpload(event) {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         state.customWallpaperUrl = e.target.result;
         state.currentWallpaper = 'custom';
         localStorage.setItem('calc_custom_wp', state.customWallpaperUrl);
@@ -3851,24 +3874,24 @@ function runConversion(direction = 'from') {
             const val = parseFloat(fromInput.value) || 0;
             let c;
             if (uFrom === 'C') c = val;
-            else if (uFrom === 'F') c = (val - 32) * (5/9);
+            else if (uFrom === 'F') c = (val - 32) * (5 / 9);
             else if (uFrom === 'K') c = val - 273.15;
 
             let res;
             if (uTo === 'C') res = c;
-            else if (uTo === 'F') res = (c * (9/5)) + 32;
+            else if (uTo === 'F') res = (c * (9 / 5)) + 32;
             else if (uTo === 'K') res = c + 273.15;
             toInput.value = parseFloat(res.toFixed(6)).toString();
         } else {
             const val = parseFloat(toInput.value) || 0;
             let c;
             if (uTo === 'C') c = val;
-            else if (uTo === 'F') c = (val - 32) * (5/9);
+            else if (uTo === 'F') c = (val - 32) * (5 / 9);
             else if (uTo === 'K') c = val - 273.15;
 
             let res;
             if (uFrom === 'C') res = c;
-            else if (uFrom === 'F') res = (c * (9/5)) + 32;
+            else if (uFrom === 'F') res = (c * (9 / 5)) + 32;
             else if (uFrom === 'K') res = c + 273.15;
             fromInput.value = parseFloat(res.toFixed(6)).toString();
         }
@@ -3946,7 +3969,7 @@ function syncProgrammerBase(sourceBase, value) {
         if (sourceBase !== 'HEX') document.getElementById('prog-hex').value = num.toString(16).toUpperCase();
         if (sourceBase !== 'OCT') document.getElementById('prog-oct').value = num.toString(8);
         if (sourceBase !== 'BIN') document.getElementById('prog-bin').value = num.toString(2);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function progBitwise(op) {
@@ -4024,8 +4047,8 @@ function renderHistory(items = state.history) {
 function filterHistory(query) {
     const q = query.trim().toLowerCase();
     if (!q) { renderHistory(); return; }
-    const filtered = state.history.filter(item => 
-        item.equation.toLowerCase().includes(q) || 
+    const filtered = state.history.filter(item =>
+        item.equation.toLowerCase().includes(q) ||
         item.result.toLowerCase().includes(q)
     );
     renderHistory(filtered);
@@ -4268,112 +4291,160 @@ window.onclick = function (event) {
 // ==========================================================================
 // Клавіатурна навігація
 // ==========================================================================
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        const activeModal = document.querySelector('.modal-overlay.active');
-        if (activeModal) {
-            activeModal.classList.remove('active');
-            return;
-        }
-        clearDisplay();
-        return;
-    }
+// Command Palette (Ctrl+K / ⌘K)
+if ((event.ctrlKey || event.metaKey) && (event.key === 'k' || event.key === 'K' || event.key === 'л' || event.key === 'Л')) {
+    event.preventDefault();
+    openCommandPalette();
+    return;
+}
 
-    if (event.key === 'F11') {
+// Довідник клавіш (F1 або ?)
+if (event.key === 'F1' || (event.key === '?' && document.activeElement.tagName !== 'INPUT')) {
+    event.preventDefault();
+    openModal('shortcuts-modal');
+    return;
+}
+
+// Навігація всередині відкритого Command Palette
+const paletteModal = document.getElementById('command-palette-modal');
+if (paletteModal && paletteModal.classList.contains('active')) {
+    if (event.key === 'ArrowDown') {
         event.preventDefault();
-        toggleFullScreen();
+        if (filteredCommandItems.length > 0) {
+            selectedCommandIndex = (selectedCommandIndex + 1) % filteredCommandItems.length;
+            selectCommandIndex(selectedCommandIndex);
+            scrollSelectedCommandIntoView();
+        }
         return;
     }
-
-    if (event.key >= '0' && event.key <= '9') {
-        appendNumber(event.key);
-        triggerKeyEffect(event.key);
-        return;
-    }
-
-    if (event.key === '.' || event.key === ',') {
-        appendNumber('.');
-        triggerKeyEffect('.');
-        return;
-    }
-
-    if (event.key === '=' || event.key === 'Enter') {
+    if (event.key === 'ArrowUp') {
         event.preventDefault();
-        calculate();
-        triggerKeyEffect('=');
+        if (filteredCommandItems.length > 0) {
+            selectedCommandIndex = (selectedCommandIndex - 1 + filteredCommandItems.length) % filteredCommandItems.length;
+            selectCommandIndex(selectedCommandIndex);
+            scrollSelectedCommandIntoView();
+        }
         return;
     }
-
-    if (event.key === 'Backspace') {
-        backspace();
-        triggerKeyEffect('⌫');
-        return;
-    }
-
-    if (event.key === '+' || event.key === '-') {
-        appendOperator(event.key);
-        triggerKeyEffect(event.key === '-' ? '−' : '+');
-        return;
-    }
-    if (event.key === '*' || event.key === 'x' || event.key === 'X') {
-        appendOperator('*');
-        triggerKeyEffect('×');
-        return;
-    }
-    if (event.key === '/') {
+    if (event.key === 'Enter') {
         event.preventDefault();
-        appendOperator('/');
-        triggerKeyEffect('÷');
-        return;
-    }
-    if (event.key === '^') {
-        appendOperator('^');
-        triggerKeyEffect('xⁿ');
-        return;
-    }
-    if (event.key === '(' || event.key === ')') {
-        appendBracket(event.key);
-        triggerKeyEffect(event.key);
-        return;
-    }
-
-    if (event.key === 's' || event.key === 'S' || event.key === 'і' || event.key === 'І') {
-        if (!event.ctrlKey && !event.metaKey) {
-            toggleSecondMode();
-            return;
+        if (filteredCommandItems.length > 0) {
+            executeCommandPaletteItem(selectedCommandIndex);
         }
-    }
-    if (event.key === 'd' || event.key === 'D' || event.key === 'в' || event.key === 'В') {
-        if (!event.ctrlKey && !event.metaKey) {
-            toggleAngleMode();
-            return;
-        }
-    }
-    if (event.key === 'v' || event.key === 'V' || event.key === 'м' || event.key === 'М') {
-        if (!event.ctrlKey && !event.metaKey) {
-            speakCurrentResult();
-            return;
-        }
-    }
-
-    if ((event.ctrlKey || event.metaKey) && (event.key === 'v' || event.key === 'V')) {
-        navigator.clipboard.readText().then(text => {
-            const clean = text.trim().replace(',', '.').replace(/\s/g, '');
-            if (!isNaN(parseFloat(clean))) {
-                state.currentInput = clean;
-                state.shouldResetDisplay = true;
-                updateDisplay();
-                showToast(`Вставлено: ${clean}`, '📋');
-            }
-        }).catch(() => {});
         return;
     }
+}
 
-    if ((event.ctrlKey || event.metaKey) && (event.key === 'c' || event.key === 'C')) {
-        copyToClipboard();
+if (event.key === 'Escape') {
+    const activeModal = document.querySelector('.modal-overlay.active');
+    if (activeModal) {
+        activeModal.classList.remove('active');
         return;
     }
-});
+    clearDisplay();
+    return;
+}
+
+if (event.key === 'F11') {
+    event.preventDefault();
+    toggleFullScreen();
+    return;
+}
+
+if (event.key >= '0' && event.key <= '9') {
+    appendNumber(event.key);
+    triggerKeyEffect(event.key);
+    return;
+}
+
+if (event.key === '.' || event.key === ',') {
+    appendNumber('.');
+    triggerKeyEffect('.');
+    return;
+}
+
+if (event.key === '=' || event.key === 'Enter') {
+    event.preventDefault();
+    calculate();
+    triggerKeyEffect('=');
+    return;
+}
+
+if (event.key === 'Backspace') {
+    backspace();
+    triggerKeyEffect('⌫');
+    return;
+}
+
+if (event.key === '+' || event.key === '-') {
+    appendOperator(event.key);
+    triggerKeyEffect(event.key === '-' ? '−' : '+');
+    return;
+}
+if (event.key === '*' || event.key === 'x' || event.key === 'X') {
+    appendOperator('*');
+    triggerKeyEffect('×');
+    return;
+}
+if (event.key === '/') {
+    event.preventDefault();
+    appendOperator('/');
+    triggerKeyEffect('÷');
+    return;
+}
+if (event.key === '^') {
+    appendOperator('^');
+    triggerKeyEffect('xⁿ');
+    return;
+}
+if (event.key === '(' || event.key === ')') {
+    appendBracket(event.key);
+    triggerKeyEffect(event.key);
+    return;
+}
+
+if (event.key === 's' || event.key === 'S' || event.key === 'і' || event.key === 'І') {
+    if (!event.ctrlKey && !event.metaKey && document.activeElement.tagName !== 'INPUT') {
+        toggleSecondMode();
+        return;
+    }
+}
+if (event.key === 'd' || event.key === 'D' || event.key === 'в' || event.key === 'В') {
+    if (!event.ctrlKey && !event.metaKey && document.activeElement.tagName !== 'INPUT') {
+        toggleAngleMode();
+        return;
+    }
+}
+if (event.key === 'v' || event.key === 'V' || event.key === 'м' || event.key === 'М') {
+    if (!event.ctrlKey && !event.metaKey && document.activeElement.tagName !== 'INPUT') {
+        speakCurrentResult();
+        return;
+    }
+}
+if (event.key === 'h' || event.key === 'H' || event.key === 'р' || event.key === 'Р') {
+    if (!event.ctrlKey && !event.metaKey && document.activeElement.tagName !== 'INPUT') {
+        openModal('history-modal');
+        return;
+    }
+}
+
+if ((event.ctrlKey || event.metaKey) && (event.key === 'v' || event.key === 'V')) {
+    navigator.clipboard.readText().then(text => {
+        const clean = text.trim().replace(',', '.').replace(/\s/g, '');
+        if (!isNaN(parseFloat(clean))) {
+            state.currentInput = clean;
+            state.shouldResetDisplay = true;
+            updateDisplay();
+            showToast(`Вставлено: ${clean}`, '📋');
+        }
+    }).catch(() => { });
+    return;
+}
+
+if ((event.ctrlKey || event.metaKey) && (event.key === 'c' || event.key === 'C')) {
+    copyToClipboard();
+    return;
+}
 
 function triggerKeyEffect(label) {
     const buttons = document.querySelectorAll('.buttons button');
@@ -4383,6 +4454,144 @@ function triggerKeyEffect(label) {
             setTimeout(() => btn.classList.remove('is-pressed'), 140);
         }
     });
+}
+
+// ==========================================================================
+// 20. Command Palette Engine (Ctrl+K / ⌘K)
+// ==========================================================================
+let commandPaletteItems = [
+    // Інструменти
+    { id: 'vector', title: '3D Векторний калькулятор', desc: 'Скалярний, векторний добуток, кут, модулі', icon: '📐', cat: 'Інструменти', action: () => openModal('vector-calc-modal') },
+    { id: 'complex', title: 'Комплексні числа ℂ', desc: 'Дії з комплексними числами a + bi, модуль, аргумент', icon: '⚛️', cat: 'Інструменти', action: () => openModal('complex-calc-modal') },
+    { id: 'math-ref', title: 'Математичний довідник', desc: 'Формули тригонометрії, алгебри, похідних', icon: '📖', cat: 'Довідка', action: () => openModal('math-ref-modal') },
+    { id: 'trig-circle', title: 'Тригонометричне коло', desc: 'Одиничне коло, sin, cos, tan, радіани', icon: '⭕', cat: 'Інструменти', action: () => openModal('trig-circle-modal') },
+    { id: 'constants', title: 'База констант 40+', desc: 'Фундаментальні фізичні та математичні константи', icon: '⚛️', cat: 'База даних', action: () => openModal('constants-search-modal') },
+    { id: 'formulas', title: 'Фізичний формулатор', desc: 'Закон Ома, кінетична енергія, гравітація, гази', icon: '⚡', cat: 'Інструменти', action: () => openModal('formula-solver-modal') },
+    { id: 'triangles', title: 'Розв\'язувач трикутників 2D', desc: 'Сторони, кути, площа, периметр (SSS, SAS, ASA)', icon: '📐', cat: 'Геометрія', action: () => openModal('triangle-solver-modal') },
+    { id: 'quad', title: 'Квадратні рівняння', desc: 'ax² + bx + c = 0, дискримінант D, корені x₁, x₂', icon: '📐', cat: 'Алгебра', action: () => openModal('quadratic-modal') },
+    { id: 'matrix', title: 'Матриці 2x2 та 3x3', desc: 'Детермінант, додавання, множення, транспонування', icon: '🧮', cat: 'Алгебра', action: () => openModal('matrix-modal') },
+    { id: 'prime-gcd', title: 'НСД / НСК / Прості множники', desc: 'Розклад на множники та дільники чисел', icon: '🔢', cat: 'Алгебра', action: () => openModal('prime-gcd-modal') },
+    { id: 'func-eval', title: 'Обчислювач функцій f(x)', desc: 'Таблиця значень функції на діапазоні', icon: '📈', cat: 'Алгебра', action: () => openModal('func-eval-modal') },
+    { id: 'graph', title: '2D Графік функцій', desc: 'Візуалізація sin(x), cos(x), x², x³', icon: '📈', cat: 'Графіка', action: () => openModal('graph-modal') },
+    { id: 'stats', title: 'Статистичний аналіз', desc: 'Середнє, медіана, дисперсія, розмах', icon: '📊', cat: 'Статистика', action: () => openModal('stats-modal') },
+    { id: 'percent', title: 'Відсотки Pro & Маржа', desc: 'Знижки, націнки, ПДВ, приріст', icon: '📊', cat: 'Фінанси', action: () => openModal('percent-modal') },
+    { id: 'loan', title: 'Кредит & Іпотека', desc: 'Ануїтетний графік виплат та переплата', icon: '🏦', cat: 'Фінанси', action: () => openModal('loan-calc-modal') },
+    { id: 'currency', title: 'Конвертер валют & Крипта', desc: 'UAH, USD, EUR, GBP, BTC, ETH, SOL', icon: '💱', cat: 'Фінанси', action: () => openModal('currency-modal') },
+    { id: 'deal', title: 'Порівняння вигідності цін', desc: 'Ціна за 1 кг / 1 л для розумних покупок', icon: '⚖️', cat: 'Фінанси', action: () => openModal('deal-calc-modal') },
+    { id: 'finance', title: 'Чайові, податки, знижки', desc: 'Розрахунок чеку на компанію', icon: '💰', cat: 'Фінанси', action: () => openModal('finance-modal') },
+    { id: 'converter', title: 'Конвертер величин', desc: 'Довжина, маса, температура, швидкість, час', icon: '🔄', cat: 'Конвертери', action: () => openModal('converter-modal') },
+    { id: 'programmer', title: 'Програмістський режим', desc: 'HEX, DEC, OCT, BIN конвертер та бітові операції', icon: '💻', cat: 'Програмування', action: () => openModal('programmer-modal') },
+    { id: 'bitmask', title: 'Бітовий інспектор 64-bit', desc: 'Візуальні прапорці бітів та маски', icon: '👾', cat: 'Програмування', action: () => openModal('bitmask-modal') },
+    { id: 'memory', title: 'Матриця пам\'яті M1–M4', desc: 'Слоти збереження та відновлення чисел', icon: '🗄️', cat: 'Пам\'ять', action: () => openModal('memory-modal') },
+    { id: 'bookmarks', title: 'Блокнот виразів', desc: 'Збереження важливих формул та результатів', icon: '🔖', cat: 'Пам\'ять', action: () => openModal('bookmarks-modal') },
+    { id: 'tape', title: 'Стрічка розрахунків (Чек)', desc: 'Історія дій з можливістю додавання нотаток', icon: '📜', cat: 'Пам\'ять', action: () => openModal('tape-modal') },
+    { id: 'date', title: 'Калькулятор дат & часу', desc: 'Різниця між датами, додавання днів', icon: '📅', cat: 'Утиліти', action: () => openModal('date-modal') },
+    { id: 'rng', title: 'Генератор чисел & Кубики', desc: 'Випадкові числа, кидок d6/d20, монета', icon: '🎲', cat: 'Утиліти', action: () => openModal('rng-modal') },
+    { id: 'history', title: 'Історія розрахунків', desc: 'Перегляд та експорт журналу операцій', icon: '🕒', cat: 'Історія', action: () => openModal('history-modal') },
+    { id: 'settings', title: 'Центр налаштувань', desc: 'Точність, звук, розділювачі, скло', icon: '⚙️', cat: 'Система', action: () => openModal('settings-modal') },
+    { id: 'advisor', title: 'Математичний порадник', desc: 'Довідка щодо заборонених математичних дій', icon: '🧠', cat: 'Довідка', action: () => openModal('advisor-modal') },
+    { id: 'shortcuts', title: 'Гарячі клавіші (F1 / ?)', desc: 'Список всіх клавіатурних скорочень', icon: '⌨️', cat: 'Довідка', action: () => openModal('shortcuts-modal') },
+    { id: 'about', title: 'Про Calculator Pro', desc: 'Інформація про реліз v1.8.6 та автора', icon: 'ℹ️', cat: 'Система', action: () => openModal('about-modal') },
+
+    // Стилі та дизайн
+    { id: 'theme-bordeaux', title: 'Тема: Bordeaux Luxury', desc: 'Флагманська бордова палітра Redstone 4.0', icon: '🍷', cat: 'Теми', action: () => setTheme('bordeaux_luxury') },
+    { id: 'theme-titanium-ruby', title: 'Тема: Titanium Ruby Master', desc: 'Темний титан з рубіновим неоном', icon: '💎', cat: 'Теми', action: () => setTheme('titanium_ruby_master') },
+    { id: 'theme-crimson', title: 'Тема: Crimson Supernova', desc: 'Яскравий малиново-червоний градієнт', icon: '✨', cat: 'Теми', action: () => setTheme('crimson_supernova') },
+    { id: 'theme-cyberpunk', title: 'Тема: Cyberpunk Neon Bordeaux', desc: 'Неоновий кіберпанк бордо', icon: '🌆', cat: 'Теми', action: () => setTheme('cyberpunk_neon') },
+    { id: 'theme-emerald', title: 'Тема: Emerald Platinum', desc: 'Смарагдовий з платиновими акцентами', icon: '❇️', cat: 'Теми', action: () => setTheme('emerald_platinum') },
+    { id: 'theme-midnight', title: 'Тема: Midnight OLED', desc: 'Глибокий чорний OLED для заощадження енергії', icon: '🌑', cat: 'Теми', action: () => setTheme('midnight_oled') },
+    { id: 'theme-matrix', title: 'Тема: Cyber Matrix', desc: 'Зелений кібер-стиль Matrix', icon: '🟩', cat: 'Теми', action: () => setTheme('matrix_cyber') },
+
+    // Шпалери
+    { id: 'wp-titanium-ruby', title: 'Шпалери: Titanium Ruby', desc: 'HD Титаново-рубіновий кристал', icon: '🖼️', cat: 'Шпалери', action: () => setWallpaper('titanium_ruby') },
+    { id: 'wp-crimson', title: 'Шпалери: Crimson Supernova', desc: 'HD Космічна малинова наднова', icon: '🖼️', cat: 'Шпалери', action: () => setWallpaper('crimson_supernova') },
+    { id: 'wp-cyberpunk', title: 'Шпалери: Cyberpunk Bordeaux', desc: 'HD Неонове нічне місто бордо', icon: '🖼️', cat: 'Шпалери', action: () => setWallpaper('cyberpunk_bordeaux') },
+    { id: 'wp-burgundy', title: 'Шпалери: Burgundy Velvet', desc: 'HD Бордовий шовковий оксамит', icon: '🖼️', cat: 'Шпалери', action: () => setWallpaper('burgundy') },
+    { id: 'wp-particles', title: 'Шпалери: Неоновий пил', desc: 'Динамічні частинки Aurora', icon: '✨', cat: 'Шпалери', action: () => setWallpaper('particles') },
+
+    // Дії
+    { id: 'act-voice', title: 'Озвучити результат голосом', desc: 'Синтез мови для поточного числа', icon: '🗣️', cat: 'Дії', action: () => speakCurrentResult() },
+    { id: 'act-copy', title: 'Скопіювати число в буфер', desc: 'Ctrl + C', icon: '📋', cat: 'Дії', action: () => copyToClipboard() },
+    { id: 'act-fullscreen', title: 'Повноекранний режим', desc: 'F11 / Focus Mode', icon: '⛶', cat: 'Дії', action: () => toggleFullScreen() },
+    { id: 'act-clear', title: 'Очистити все', desc: 'Скинути дисплей калькулятора (C)', icon: '🗑️', cat: 'Дії', action: () => clearDisplay() }
+];
+
+let selectedCommandIndex = 0;
+let filteredCommandItems = [];
+
+function openCommandPalette() {
+    audio.playAction();
+    openModal('command-palette-modal');
+    const input = document.getElementById('command-search-input');
+    if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 80);
+    }
+    filterCommandPalette('');
+}
+
+function filterCommandPalette(query) {
+    const listEl = document.getElementById('command-results-list');
+    if (!listEl) return;
+
+    const q = (query || '').toLowerCase().trim();
+    filteredCommandItems = commandPaletteItems.filter(item =>
+        item.title.toLowerCase().includes(q) ||
+        item.desc.toLowerCase().includes(q) ||
+        item.cat.toLowerCase().includes(q)
+    );
+
+    selectedCommandIndex = 0;
+    renderCommandPaletteList();
+}
+
+function renderCommandPaletteList() {
+    const listEl = document.getElementById('command-results-list');
+    if (!listEl) return;
+
+    if (filteredCommandItems.length === 0) {
+        listEl.innerHTML = `
+            <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.88rem;">
+                🔍 Нічого не знайдено за вашим запитом.<br>
+                <small style="opacity:0.7;">Спробуйте: "вектор", "тема", "графік", "шрифт"</small>
+            </div>
+        `;
+        return;
+    }
+
+    listEl.innerHTML = filteredCommandItems.map((item, idx) => `
+        <div class="command-item ${idx === selectedCommandIndex ? 'selected' : ''}" onclick="executeCommandPaletteItem(${idx})" onmouseenter="selectCommandIndex(${idx})">
+            <span class="command-item-icon">${item.icon}</span>
+            <div class="command-item-info">
+                <div class="command-item-title">${item.title}</div>
+                <div class="command-item-desc">${item.desc}</div>
+            </div>
+            <span class="command-item-category">${item.cat}</span>
+        </div>
+    `).join('');
+}
+
+function selectCommandIndex(idx) {
+    selectedCommandIndex = idx;
+    const items = document.querySelectorAll('.command-item');
+    items.forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+    });
+}
+
+function scrollSelectedCommandIntoView() {
+    const items = document.querySelectorAll('.command-item');
+    if (items[selectedCommandIndex]) {
+        items[selectedCommandIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+}
+
+function executeCommandPaletteItem(idx) {
+    const item = filteredCommandItems[idx];
+    if (item && item.action) {
+        closeModal('command-palette-modal');
+        setTimeout(() => item.action(), 120);
+    }
 }
 
 // ==========================================================================
@@ -4445,7 +4654,14 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticlesCanvas();
     }
 
-    console.log('%c 🛡️ Calculator Pro v1.8.5 (Build 190) Redstone 3.5 Bordeaux Titanium Edition Loaded %c', 
-        'background: linear-gradient(90deg, #e11d48, #8b1538, #f43f5e); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;', 
+    // Безпечне розблокування AudioContext при першому натисканні
+    window.addEventListener('pointerdown', () => {
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => { });
+        }
+    }, { once: true });
+
+    console.log('%c 🛡️ Calculator Pro v1.8.6 (Build 204) Redstone 4.0 Bordeaux Titanium Ultra Loaded %c',
+        'background: linear-gradient(90deg, #e11d48, #8b1538, #f43f5e); color: #fff; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 8px;',
         '');
 });
